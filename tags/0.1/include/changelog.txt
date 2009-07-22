@@ -1,0 +1,11 @@
+2009-05-21
+* dropped 'previous_hex_otp' from the output of the generateOtpList() method
+* version 1.0.2
+
+2009-05-20
+* modification of the generateOtp() method and generateOtpList() method so that
+	their usage makes more sense for an OTP generator
+* version 1.0.1
+
+2009-05-18
+* first release - version 1.0.0
