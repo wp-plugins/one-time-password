@@ -10,8 +10,7 @@ One-time password system to protect your weblog in less trustworthy environments
 
 == Description ==
 
-This simple to use plugin enables you to login to your WordPress weblog using passwords which are valid for one session only. One-time passwords prevents stealing of your main password in less trustworthy environments, like internet cafés, for example by keyloggers.
-For each login you can choose between using your main password or a one-time password. The one-time password system conforms to [RFC 2289](http://tools.ietf.org/html/rfc2289 "RFC 2289").
+This simple to use plugin enables you to login to your WordPress weblog using passwords which are valid for one session only. One-time passwords prevents stealing of your main password in less trustworthy environments, like internet cafés, for example by keyloggers. For each login you can choose between using your main password or a one-time password. The one-time password system conforms to [RFC 2289](http://tools.ietf.org/html/rfc2289 "RFC 2289").
 
 See [Other Notes](http://wordpress.org/extend/plugins/one-time-password/other_notes/ "Other Notes") for usage instructions.
 
