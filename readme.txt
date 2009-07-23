@@ -4,7 +4,7 @@ Donate link: http://blog.bokhorst.biz/
 Tags: login, password, security, admin
 Requires at least: 2.8
 Tested up to: 2.8.2
-Stable tag: 0.3
+Stable tag: 0.4
 
 One-time password system to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -35,7 +35,9 @@ No.
 
 No, if you plan to use a printed password list only.
 
-Yes, if you plan to use a password generator, for example [on your iPhone](http://www.apptism.com/apps/otp-generator "iPhone OTP Generator").
+Yes, if you plan to use a password generator, 
+for example [on your iPhone](http://www.apptism.com/apps/otp-generator "iPhone OTP Generator") 
+or [on phones that supports Java](http://tanso.net/j2me-otp/ "j2me-otp")
 
 = Are pass-phrases to generate one-time password lists stored? =
 
