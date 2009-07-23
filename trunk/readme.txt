@@ -4,7 +4,7 @@ Donate link: http://blog.bokhorst.biz/
 Tags: login, password, security, admin
 Requires at least: 2.8
 Tested up to: 2.8.2
-Stable tag: 0.1
+Stable tag: 0.2
 
 One-time password system to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -14,6 +14,11 @@ This simple to use plugin enables you to login to your WordPress weblog using pa
 One-time passwords prevents stealing of your main password in less trustworthy environments, like internet cafés, for example by keyloggers.
 For each login you can choose between using your main password or a one-time password.
 The one-time password system conforms to [RFC 2289](http://tools.ietf.org/html/rfc2289 "RFC 2289").
+
+See [Other Notes](http://wordpress.org/extend/plugins/one-time-password/other_notes/ "Other Notes") for usage instructions.
+
+If you find this plugin useful, please vote for it on the
+[WordPress Competition Blog](http://weblogtoolscollection.com/pluginblog/2009/07/22/wordpress-plugin-one-time-password/ "WordPress Competition Blog").
 
 == Installation ==
 
@@ -25,11 +30,21 @@ Or use the WordPress Plugin Add New menu.
 
 == Frequently Asked Questions ==
 
-= Are one-time password words case sensitive? =
+= Should the pass-phrase equal to my main password? =
 
 No.
 
+= Should I remember the pass-phrase? =
+
+No, if you plan to use a printed password list only.
+
+Yes, if you plan to use a password generator, for example on your iPhone.
+
 = Are pass-phrases to generate one-time password lists stored? =
+
+No.
+
+= Are one-time password words case sensitive? =
 
 No.
 
@@ -37,6 +52,10 @@ No.
 
 Because the new *authenticate* filter is used. 
 See [this article](http://willnorris.com/2009/03/authentication-in-wordpress-28 "Authentication in WordPress 2.8") for more details. 
+
+= Is this plugin multi-user? =
+
+Yes.
 
 = Where can I ask questions, report bugs and request features? =
 
@@ -49,10 +68,15 @@ See [this article](http://willnorris.com/2009/03/authentication-in-wordpress-28 
 
 == Changelog ==
 
+= 0.2 =
+* Show admin notice if password list should be generated
+* Improved documentation
+
 = 0.1 =
 * Initial version
 
 == Usage ==
+
 
 *Preparation*
 
@@ -69,11 +93,14 @@ See [this article](http://willnorris.com/2009/03/authentication-in-wordpress-28 
 1. Use the sequence number in the challenge to look up a one-time password on your printed list
 1. Enter either the hex or words representation of the one-time password
 
-== Notes ==
+== Acknowledgments ==
 
-This plugin uses the [PHP One-Time Passwords class](http://sourceforge.net/projects/php-otp/ "PHP One-Time Passwords class") written by *Tomas Mrozek* and published under the GNU Lesser General Public License version 3. The *readme.txt* file of this class contains useful information, for example a list of applications to compute one-time passwords.
+This plugin uses the [PHP One-Time Passwords class](http://sourceforge.net/projects/php-otp/ "PHP One-Time Passwords class")
+written by *Tomas Mrozek* and published under the GNU Lesser General Public License version 3. 
+The *readme.txt* file of this class contains useful information, for example a list of applications to compute one-time passwords.
 
-This plugin uses the [jqPrint](http://plugins.jquery.com/project/jqPrint "jqPrint") plugin written by *tanathos* and published under both the GNU General Public License and MIT License.
+This plugin uses the [jqPrint](http://plugins.jquery.com/project/jqPrint "jqPrint") plugin
+written by *tanathos* and published under both the GNU General Public License and MIT License.
 
 
 
