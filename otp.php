@@ -259,7 +259,7 @@ function otp_options() {
 	// Render generate form
 ?>
 	<h3><?php _e('Generate One-Time Password list', 'one-time-password') ?></h3>
-	<form method="post" action="<?php echo add_query_arg('action', 'generate'); ?>">
+	<form method="post" action="<?php echo remove_query_arg('updated', add_query_arg('action', 'generate')); ?>">
 
 	<?php wp_nonce_field('otp-generate'); ?>
 
@@ -427,7 +427,7 @@ function otp_options() {
 		// Render revoke form
 ?>
 		<h3><?php _e('Revoke One-Time Password list', 'one-time-password') ?></h3>
-		<form method="post" action="<?php echo add_query_arg('action', 'revoke'); ?>">
+		<form method="post" action="<?php echo remove_query_arg('updated', add_query_arg('action', 'revoke')); ?>">
 
 		<?php wp_nonce_field('otp-revoke'); ?>
 
