@@ -35,7 +35,7 @@ No.
 
 No, if you plan to use a printed password list only.
 
-Yes, if you plan to use a password generator, for example on your iPhone.
+Yes, if you plan to use a password generator, for example [on your iPhone](http://www.apptism.com/apps/otp-generator "iPhone OTP Generator").
 
 = Are pass-phrases to generate one-time password lists stored? =
 
@@ -44,6 +44,10 @@ No.
 = Are one-time password words case sensitive? =
 
 No.
+
+= How do I choose between logging-in using a one-time password or my main password? =
+
+Simply enter the password of your choice into the password box.
 
 = Why is this plugin not compatible with WordPress version 2.7 or lower? =
 
@@ -91,11 +95,13 @@ Yes.
 
 == Acknowledgments ==
 
-This plugin uses the [PHP One-Time Passwords class](http://sourceforge.net/projects/php-otp/ "PHP One-Time Passwords class")
+This plugin uses:
+
+* [PHP One-Time Passwords class](http://sourceforge.net/projects/php-otp/ "PHP One-Time Passwords class")
 written by *Tomas Mrozek* and published under the GNU Lesser General Public License version 3. 
 The *readme.txt* file of this class contains useful information, for example a list of applications to compute one-time passwords.
 
-This plugin uses the [jqPrint](http://plugins.jquery.com/project/jqPrint "jqPrint") plugin
+* [jqPrint](http://plugins.jquery.com/project/jqPrint "jqPrint") plugin
 written by *tanathos* and published under both the GNU General Public License and MIT License.
 
 
