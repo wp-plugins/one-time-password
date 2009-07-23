@@ -3,7 +3,7 @@
 Plugin Name: One-Time Password
 Plugin URI: http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/
 Description: One-Time Password System conforming to <a href="http://tools.ietf.org/html/rfc2289">RFC 2289</a> to protect your weblog in less trustworthy environments, like internet cafés.
-Version: 0.3
+Version: 0.4
 Author: Marcel Bokhorst
 Author URI: http://blog.bokhorst.biz/
 */
@@ -35,20 +35,12 @@ Author URI: http://blog.bokhorst.biz/
 	This jQuery plugin is publised under the GNU General Public License and MIT License
 */
 
-/*
-	ToDo:
-	- ajax new seed
-	- error handling ajax get challenge
-	- ajax error messages (validators)
-	- last used time
-*/
-
 #error_reporting(E_ALL);
 
 require_once('include/class.otp.php');
 
 // Get challenge
-if (isset($_GET['otp_user'])) {
+if (isset($_GET['action']) && $_GET['action'] == 'challenge') {
 	try {
 		global $wpdb;
 		$otp_user = $wpdb->escape($_GET['otp_user']);
@@ -65,27 +57,66 @@ if (isset($_GET['otp_user'])) {
 	exit;
 }
 
+// Get seed
+if (isset($_GET['action']) && $_GET['action'] == 'seed') {
+	$otp_class = new otp();
+	echo $otp_class->generateSeed();
+	exit;
+}
+
 // Handle plugin activation
 if (!function_exists('otp_activate')) {
 	function otp_activate() {
-		// Create table
 		global $wpdb;
+
+		// Check if table exists
 		$otp_table = $wpdb->prefix . 'otp';
 		if ($wpdb->get_var("SHOW TABLES LIKE '" . $otp_table . "'") != $otp_table) {
+			// Create table
 			$sql = "CREATE TABLE " . $otp_table . " (
 				user VARCHAR(60) NOT NULL,
 				seed VARCHAR(60) NOT NULL,
 				algorithm VARCHAR(60) NOT NULL,
 				sequence INT(11) NOT NULL,
 				hash VARCHAR(60) NOT NULL,
-				time DATETIME NOT NULL,
+				generated DATETIME NOT NULL,
+				last_login DATETIME NULL,
 				UNIQUE KEY user (user)
 			);";
-			$wpdb->query($sql);
+			if ($wpdb->query($sql) === false)
+				$wpdb->print_error();
+
+			// Store database version
+			update_option('otp_dbver', 1);
 		}
 
-		// Store database version
-		update_option('otp_dbver', 0);
+		// Update table definition
+		else if (get_option('otp_dbver') < 1) {
+			$sql = "ALTER TABLE " . $otp_table . " CHANGE COLUMN time generated DATETIME NOT NULL;";
+			if ($wpdb->query($sql) === false)
+				$wpdb->print_error();
+			$sql = "ALTER TABLE " . $otp_table . " ADD COLUMN last_login DATETIME NULL;";
+			if ($wpdb->query($sql) === false)
+				$wpdb->print_error();
+		}
+	}
+}
+
+// Handle plugin deactivation
+function otp_deactivate() {
+	if (get_option('otp_cleanup')) {
+		global $wpdb;
+
+		// Check if table exists
+		$otp_table = $wpdb->prefix . 'otp';
+		if ($wpdb->get_var("SHOW TABLES LIKE '" . $otp_table . "'") == $otp_table) {
+			$sql = "DROP TABLE " . $otp_table . ";";
+			if ($wpdb->query($sql) === false)
+				$wpdb->print_error();
+		}
+
+		delete_option('otp_dbver');
+		delete_option('otp_cleanup');
 	}
 }
 
@@ -141,7 +172,7 @@ function otp_login_form() {
 				$.ajax({
 					url: '<?php echo $plugin_url . '/opt.php';  ?>',
 					type: 'GET',
-					data: 'otp_user=' + $('#user_login').val(),
+					data: {action: 'challenge', otp_user: $('#user_login').val()},
 					dataType: 'text',
 					cache: false,
 					success: function(result) {
@@ -162,31 +193,37 @@ function otp_login_form() {
 
 // Authenticate using OTP
 function otp_authenticate($user) {
-	// Get data
-	global $wpdb;
-	$otp_user = $wpdb->escape($_POST['log']);
-	$otp_table = $wpdb->prefix . 'otp';
-	$otp_row = $wpdb->get_row('SELECT seed, algorithm, sequence, hash FROM ' . $otp_table . " WHERE user='" . $otp_user . "'");
-	if ($otp_row != null && $otp_row->sequence >= 0) {
-		// Check OTP
-		$otp_class = new otp();
-		$otp_data = $otp_class->initializeOtp($otp_row->hash, $otp_row->seed, $otp_row->sequence, $otp_row->algorithm);
-		$otp_auth = $otp_class->authAgainstHexOtp($_POST['pwd'], $otp_data['previous_hex_otp'], 'previous', $otp_row->sequence, $otp_row->algorithm);
-		if ($otp_auth['result']) {
-			// Update data
-			$wpdb->update(
-				$otp_table,
-				array('sequence' => $otp_row->sequence - 1, 'hash' => $otp_auth['otp']['previous_hex_otp']),
-				array('user' => $otp_user),
-				array('%d', '%s'),
-				array('%d'));
-			// Athenticate user
-			return new WP_User($otp_user);
+	try {
+		// Get data
+		global $wpdb;
+		$otp_user = $wpdb->escape($_POST['log']);
+		$otp_table = $wpdb->prefix . 'otp';
+		$otp_row = $wpdb->get_row('SELECT seed, algorithm, sequence, hash FROM ' . $otp_table . " WHERE user='" . $otp_user . "'");
+		if ($otp_row != null && $otp_row->sequence >= 0) {
+			// Check password
+			$otp_class = new otp();
+			$otp_data = $otp_class->initializeOtp($otp_row->hash, $otp_row->seed, $otp_row->sequence, $otp_row->algorithm);
+			$otp_auth = $otp_class->authAgainstHexOtp($_POST['pwd'], $otp_data['previous_hex_otp'], 'previous', $otp_row->sequence, $otp_row->algorithm);
+			if ($otp_auth['result']) {
+				// Update data
+				$next_seq = $otp_row->sequence - 1;
+				$query = "UPDATE " . $otp_table . " SET sequence=" . $next_seq . ", hash='" . $otp_auth['otp']['previous_hex_otp'] . "', last_login=now();";
+				if ($wpdb->query($query) === false)
+					$wpdb->print_error();
+
+				// Athenticate user
+				return new WP_User($otp_user);
+			}
 		}
+
+		// Fallback to other handlers
+		return null;
 	}
 
-	// Fallback to other handlers
-	return null;
+	// Safety brake
+	catch (Exception $e) {
+		return null;
+	}
 }
 
 // Register options page
@@ -228,25 +265,30 @@ function otp_options() {
 
 	<table class="form-table">
 
-	<tr valign="top">
-	<th scope="row"><?php _e('Pass-phrase: ', 'one-time-password') ?></th>
+	<tr>
+	<th scope="row"><?php _e('Pass-phrase:', 'one-time-password') ?></th>
 	<td><input type="password" name="otp_pwd" />
 	<span class="otp_hint"><?php _e('At least 10 characters', 'one-time-password') ?></span></td>
 	</tr>
 
-	<tr valign="top">
-	<th scope="row"><?php _e('Confirm pass-phrase: ', 'one-time-password') ?></th>
+	<tr>
+	<th scope="row"><?php _e('Confirm pass-phrase:', 'one-time-password') ?></th>
 	<td><input type="password" name="otp_pwd_verify" /></td>
 	</tr>
 
-	<tr valign="top">
-	<th scope="row"><?php _e('Seed: ', 'one-time-password') ?></th>
-	<td><input type="text" name="otp_seed" value="<?php echo $otp_class->generateSeed(); ?>" />
+	<tr>
+	<th scope="row"><?php _e('Seed:', 'one-time-password') ?></th>
+	<td><input type="text" name="otp_seed" id="otp_seed" value="<?php echo $otp_class->generateSeed(); ?>" />
 	<span class="otp_hint"><?php _e('Only alphanumeric characters', 'one-time-password') ?></span></td>
 	</tr>
 
-	<tr valign="top">
-	<th scope="row"><?php _e('Algorithm: ', 'one-time-password') ?></th>
+	<tr>
+	<th scope="row" />
+	<td><a id="otp_reseed" href="#"><?php _e('New', 'one-time-password') ?></a></td>
+	</tr>
+
+	<tr>
+	<th scope="row"><?php _e('Algorithm:', 'one-time-password') ?></th>
 	<td><select name="otp_algorithm">
 <?php
 		$aa = $otp_class->getAvailableAlgorithms();
@@ -308,32 +350,40 @@ function otp_options() {
 
 			// Delete old data
 			$sql = "DELETE FROM " . $otp_table . " WHERE user='" . $otp_user . "'";
-			$wpdb->query($sql);
+			if ($wpdb->query($sql) === false)
+				$wpdb->print_error();
 
 			// Store new data
 			$sql = "INSERT INTO " . $otp_table .
-				" (user, seed, algorithm, sequence, hash, time) VALUES (" .
+				" (user, seed, algorithm, sequence, hash, generated) VALUES (" .
 				"'" . $otp_user . "', " .
 				"'" . $otp_seed . "', " .
 				"'" . $otp_algorithm . "', " .
 				$otp_list[1]['sequence'] . ", " .
 				"'" . $otp_list[0]['hex_otp'] . "',  " .
 				"now());";
-			$wpdb->query($sql);
+			if ($wpdb->query($sql) === false)
+				$wpdb->print_error();
 			
-			// Render password list
-			echo '<h3>' . __('One-Time Password list', 'one-time-password') . '</h3>';
-			echo '<form id="otp_form_print" method="post" action="#">';
-			echo '<div id="otp_table">';
+			// Render password list / print form
+?>
+			<h3><?php _e('One-Time Password list', 'one-time-password') ?></h3>
+			<form id="otp_form_print" method="post" action="#">
+			<div id="otp_table">
 
-			echo '<table class="otp_legend">';
-			echo '<tr valign="top"><th scope="row">' . __('Seed: ', 'one-time-password') . '</th><td>' . $otp_seed . '</td></tr>';
-			echo '<tr valign="top"><th scope="row">' . __('Algorithm: ', 'one-time-password') . '</th><td>' . $otp_algorithm . '</td></tr>';
-			echo '</table>';
+			<table class="otp_legend">
+			<tr><th scope="row"><?php _e('Seed:', 'one-time-password') ?></th><td><?php echo $otp_seed; ?></td></tr>
+			<tr><th scope="row"><?php _e('Algorithm:', 'one-time-password') ?></th><td><?php echo $otp_algorithm; ?></td></tr>
+			</table>
 			
-			echo '<table id="otp_list">';
-			echo '<th>' . __('Seq', 'one-time-password') . '</th><th>' . __('Hex', 'one-time-password') . '</th><th>' . __('Words', 'one-time-password') . '</th>';
-			echo '<th>' . __('Seq', 'one-time-password') . '</th><th>' . __('Hex', 'one-time-password') . '</th><th>' . __('Words', 'one-time-password') . '</th>';
+			<table id="otp_list">
+			<th><?php _e('Seq', 'one-time-password') ?></th>
+			<th><?php _e('Hex', 'one-time-password') ?></th>
+			<th><?php _e('Words', 'one-time-password') ?></th>
+			<th><?php _e('Seq', 'one-time-password') ?></th>
+			<th><?php _e('Hex', 'one-time-password') ?></th>
+			<th><?php _e('Words', 'one-time-password') ?></th>
+<?php
 			for ($i = 1; $i <= $otp_count / 2; $i++) {
 				echo '<tr><td>' . $otp_list[$i]['sequence'] . '</td>';
 				echo '<td>' . $otp_list[$i]['hex_otp'] . '</td>';
@@ -343,14 +393,14 @@ function otp_options() {
 				echo '<td>' . $otp_list[$i + $otp_count / 2]['hex_otp'] . '</td>';
 				echo '<td>' . $otp_list[$i + $otp_count / 2]['words_otp'] . '</td></tr>';
 			}
-			echo '</table>';
-
-			echo '</div>';
-
-			echo '<p class="submit">';
-			echo '<input type="submit" class="button-primary" value="' . __('Print', 'one-time-password') .'" />';
-			echo '</p>';
-			echo '</form>';
+?>
+			</table>
+			</div>
+			<p class="submit">
+			<input type="submit" class="button-primary" value="<?php _e('Print', 'one-time-password') ?>" />
+			</p>
+			</form>
+<?php
 		}
 	}
 
@@ -364,14 +414,15 @@ function otp_options() {
 
 		// Revoke
 		if ($otp_revoke) {
-			// Delete old data
+			// Delete data
 			$sql = "DELETE FROM " . $otp_table . " WHERE user='" . $otp_user . "'";
-			$wpdb->query($sql);
+			if ($wpdb->query($sql) === false)
+				$wpdb->print_error();
 		}
 	}
 
 	// Check for existing data
-	$otp_row = $wpdb->get_row("SELECT seed, algorithm, sequence, hash FROM " . $otp_table . " WHERE user='" . $otp_user . "'");
+	$otp_row = $wpdb->get_row("SELECT seed, algorithm, sequence, generated, last_login FROM " . $otp_table . " WHERE user='" . $otp_user . "'");
 	if ($otp_row != null) {
 		// Render revoke form
 ?>
@@ -382,14 +433,34 @@ function otp_options() {
 
 		<table class="form-table">
 
-		<tr valign="top">
-		<th scope="row"><?php _e('Seed: ', 'one-time-password') ?></th>
+		<tr>
+		<th scope="row"><?php _e('Seed:', 'one-time-password') ?></th>
 		<td><?php echo $otp_row->seed; ?></td>
 		</tr>
 
-		<tr valign="top">
-		<th scope="row">&nbsp;</th>
-		<td><input type="checkbox" name="otp_revoke" /> <?php _e('I am sure', 'one-time-password') ?></td>
+		<tr>
+		<th scope="row"><?php _e('Algorithm:', 'one-time-password') ?></th>
+		<td><?php echo $otp_row->algorithm; ?></td>
+		</tr>
+
+		<tr>
+		<th scope="row"><?php _e('Sequence:', 'one-time-password') ?></th>
+		<td><?php echo $otp_row->sequence; ?></td>
+		</tr>
+
+		<tr>
+		<th scope="row"><?php _e('Generated:', 'one-time-password') ?></th>
+		<td><?php echo $otp_row->generated; ?></td>
+		</tr>
+
+		<tr>
+		<th scope="row"><?php _e('Last login:', 'one-time-password') ?></th>
+		<td><?php echo $otp_row->last_login; ?></td>
+		</tr>
+
+		<tr>
+		<th scope="row"><?php _e('I am sure:', 'one-time-password') ?></th>
+		<td><input type="checkbox" name="otp_revoke" /></td>
 		</tr>
 
 		</table>
@@ -407,15 +478,59 @@ function otp_options() {
 		if (!$_POST['otp_revoke'])
 			echo '<span class="otp_message">' . __('Select "I am sure" to revoke', 'one-time-password') . '</span><br />';
 
+	// Render settings form
+	$opt_cleanup = get_option('otp_cleanup') ? "checked" : "unchecked";
+?>
+	<h3><?php _e('Settings One-Time Password', 'one-time-password') ?></h3>
+	<form method="post" action="<?php echo add_query_arg('action', 'settings', admin_url('options.php')); ?>">
+	<?php wp_nonce_field('update-options', '_wpnonce', false); ?>
+	<input type="hidden" name="_wp_http_referer" value="/wp-admin/options-general.php?page=one-time-password%2Fotp.php&amp;action=settings" />
+
+	<table class="form-table">
+
+	<tr>
+	<th scope="row"><?php _e('Delete data on deactivation:', 'one-time-password') ?></th>
+	<td><input type="checkbox" name="otp_cleanup" <?php echo $opt_cleanup; ?> /></td>
+	</tr>
+	 
+	</table>
+
+	<input type="hidden" name="action" value="update" />
+	<input type="hidden" name="page_options" value="otp_cleanup" />
+
+	<p class="submit">
+	<input type="submit" class="button-primary" value="<?php _e('Save') ?>" />
+	</p>
+
+	</form>
+<?php
+
 	// Output footer
 	echo '</div>';
 
-	// Output jQuery for printing
+	// Output jQuery
+	$plugin_url = WP_PLUGIN_URL . '/' . plugin_basename(dirname(__FILE__));
 ?>
 	<script type="text/javascript">
 		jQuery(document).ready(function($) {
 			$('#otp_form_print').submit(function() {
-				$("#otp_table").jqprint();
+				$('#otp_table').jqprint();
+				return false;
+			});
+			$('#otp_reseed').click(function() {
+				$.ajax({
+					url: '<?php echo $plugin_url . '/opt.php';  ?>',
+					type: 'GET',
+					data: {action: 'seed'},
+					dataType: 'text',
+					cache: false,
+					success: function(result) {
+						$('[name=otp_seed]').val(result);
+					},
+					error: function(x, stat, e) {
+						$('[name=otp_seed]').val('Error ' + x.status);
+					}
+				});
 				return false;
 			});
 		});
@@ -427,6 +542,7 @@ function otp_admin_notices() {
 	global $wpdb;
 	global $current_user;
 
+	// Do not display on admin page
 	if (strpos($_SERVER['REQUEST_URI'], 'one-time-password') === false) {
 		// Get current user
 		get_currentuserinfo();
@@ -438,6 +554,7 @@ function otp_admin_notices() {
 
 		// Check password list
 		if ($otp_row == null || $otp_row->sequence <= 0) {
+			// Render notice
 			$url = admin_url('options-general.php?page=one-time-password/otp.php');
 			echo '<div id="otp_notice"><p>' . __('One-Time Password list', 'one-time-password');
 			echo ' <a href="' . $url . '">' . __('should be generated', 'one-time-password') . '</a></p></div>';
@@ -445,17 +562,21 @@ function otp_admin_notices() {
 	}
 }
 
-// Register activation hook
+// Register (de)activation hook
 if (function_exists('register_activation_hook'))
-	register_activation_hook( __FILE__, 'otp_activate' );
+	register_activation_hook(__FILE__, 'otp_activate');
+if (function_exists('register_deactivation_hook'))
+	register_deactivation_hook(__FILE__, 'otp_deactivate');
 
 // Register actions
 if (function_exists('add_action')) {
 	add_action('init', 'otp_init');
 	add_action('login_head', 'otp_login_head');
 	add_action('login_form', 'otp_login_form');
-	add_action('admin_menu', 'otp_admin_menu');
-	add_action('admin_notices', 'otp_admin_notices');
+	if (is_admin()) {
+		add_action('admin_menu', 'otp_admin_menu');
+		add_action('admin_notices', 'otp_admin_notices');
+	}
 }
 
 // Register filters
@@ -464,5 +585,7 @@ if (function_exists('add_filter')) {
 	// 20 wp_authenticate_username_password
 	// 30 wp_authenticate_cookie
 }
+
+// That's it!
 
 ?>

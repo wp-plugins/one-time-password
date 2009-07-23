@@ -69,6 +69,19 @@ Yes.
 
 == Changelog ==
 
+= 0.4 =
+* Register last login time
+* Renamed time column to generated
+* Catch exceptions in wp_authenticate filter
+* Added ajax new seed link
+* Added query variable action=challenge
+* Added algoritm, sequence, registered and last login to revoke form
+* Removed one-time-password-nl_NL.po from distribution
+* Added flemish translation (be_NL)
+* Changed background admin notice to orange-red
+* Improved formatting of admin menu
+* Added setting to delete data on deactivation
+
 = 0.3 =
 * [I18n](http://codex.wordpress.org/I18n_for_WordPress_Developers "I18n")
 * Dutch translation

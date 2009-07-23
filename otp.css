@@ -11,9 +11,13 @@
 }
 
 #otp_notice {
-	background-color: red;
+	background-color: #ff4500; /* OrangeRed */
 	font-weight: bold;
 	width: 70%;
+}
+
+#otp_notice p {
+	padding: 3px;
 }
 
 .otp_message {
