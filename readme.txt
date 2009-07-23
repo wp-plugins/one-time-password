@@ -4,7 +4,7 @@ Donate link: http://blog.bokhorst.biz/
 Tags: login, password, security, admin
 Requires at least: 2.8
 Tested up to: 2.8.2
-Stable tag: 0.2
+Stable tag: 0.3
 
 One-time password system to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -68,6 +68,10 @@ Yes.
 1. One-time password login
 
 == Changelog ==
+
+= 0.3 =
+* [I18n](http://codex.wordpress.org/I18n_for_WordPress_Developers "I18n")
+* Dutch translation
 
 = 0.2 =
 * Show admin notice if password list should be generated
