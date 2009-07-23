@@ -5,6 +5,17 @@
 	font-size: 13px;
 }
 
+#otp_challenge {
+	font-style: italic;
+	color: #555555;
+}
+
+#otp_notice {
+	background-color: red;
+	font-weight: bold;
+	width: 70%;
+}
+
 .otp_message {
 	font-weight: bold;
 	color: red;
@@ -12,12 +23,6 @@
 
 .otp_hint {
 	margin: 0 0 0 10px;
-}
-
-
-.otp_challenge {
-	font-style: italic;
-	color: #555555;
 }
 
 #otp_list {
