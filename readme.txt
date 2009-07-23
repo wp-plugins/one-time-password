@@ -37,7 +37,7 @@ No, if you plan to use a printed password list only.
 
 Yes, if you plan to use a password generator, 
 for example [on your iPhone](http://www.apptism.com/apps/otp-generator "iPhone OTP Generator") 
-or [on phones that supports Java](http://tanso.net/j2me-otp/ "j2me-otp")
+or [on phones that supports Java](http://tanso.net/j2me-otp/ "j2me-otp").
 
 = Are pass-phrases to generate one-time password lists stored? =
 
@@ -78,7 +78,6 @@ Yes.
 * Added ajax new seed link
 * Added query variable action=challenge
 * Added algoritm, sequence, registered and last login to revoke form
-* Removed one-time-password-nl_NL.po from distribution
 * Added flemish translation (be_NL)
 * Changed background admin notice to orange-red
 * Improved formatting of admin menu
