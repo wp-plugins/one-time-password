@@ -70,7 +70,7 @@ Yes, since version 0.5.
 
 == Screenshots ==
 
-1. One-time password table
+1. One-time password list
 1. One-time password login
 
 == Changelog ==
