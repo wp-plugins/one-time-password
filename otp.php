@@ -3,7 +3,7 @@
 Plugin Name: One-Time Password
 Plugin URI: http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/
 Description: One-Time Password System conforming to <a href="http://tools.ietf.org/html/rfc2289">RFC 2289</a> to protect your weblog in less trustworthy environments, like internet cafés.
-Version: 0.4
+Version: 0.5
 Author: Marcel Bokhorst
 Author URI: http://blog.bokhorst.biz/
 */
@@ -41,6 +41,7 @@ require_once('include/class.otp.php');
 
 // Get challenge
 if (isset($_GET['action']) && $_GET['action'] == 'challenge') {
+	@header('Content-Type: text/html; charset=' . get_option('blog_charset'));
 	try {
 		global $wpdb;
 		$otp_user = $wpdb->escape($_GET['otp_user']);
@@ -59,6 +60,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'challenge') {
 
 // Get seed
 if (isset($_GET['action']) && $_GET['action'] == 'seed') {
+	@header('Content-Type: text/html; charset=' . get_option('blog_charset'));
 	$otp_class = new otp();
 	echo $otp_class->generateSeed();
 	exit;
@@ -228,11 +230,11 @@ function otp_authenticate($user) {
 
 // Register options page
 function otp_admin_menu() {
-	add_options_page(__('One-Time Password Administration', 'one-time-password'), __('One-Time Password', 'one-time-password'), 8, __FILE__, 'otp_options');
+	add_options_page(__('One-Time Password Administration', 'one-time-password'), __('One-Time Password', 'one-time-password'), 0, __FILE__, 'otp_administration');
 }
 
 // Handle option page
-function otp_options() {
+function otp_administration() {
 	// Check wordpress version
 	global $wp_version;
 	if (version_compare($wp_version, '2.8') < 0) {
@@ -294,7 +296,7 @@ function otp_options() {
 		$aa = $otp_class->getAvailableAlgorithms();
 		for ($i = 0; $i < count($aa); $i++) {
 			$sel = '';
-			if ($i + 1 == count($aa))
+			if ($aa[$i] == 'md5')
 				$sel = ' selected="selected"';
 			echo '<option value="' . $aa[$i] . '"' . $sel . '>' . $aa[$i] .'</option>';
 		}
@@ -364,7 +366,9 @@ function otp_options() {
 				"now());";
 			if ($wpdb->query($sql) === false)
 				$wpdb->print_error();
-			
+
+			$otp_time = $wpdb->get_var("SELECT generated FROM " . $otp_table . " WHERE user='" . $otp_user . "'");			
+
 			// Render password list / print form
 ?>
 			<h3><?php _e('One-Time Password list', 'one-time-password') ?></h3>
@@ -372,8 +376,10 @@ function otp_options() {
 			<div id="otp_table">
 
 			<table class="otp_legend">
+			<tr><th scope="row"><?php _e('User:', 'one-time-password') ?></th><td><?php echo $otp_user; ?></td></tr>
 			<tr><th scope="row"><?php _e('Seed:', 'one-time-password') ?></th><td><?php echo $otp_seed; ?></td></tr>
 			<tr><th scope="row"><?php _e('Algorithm:', 'one-time-password') ?></th><td><?php echo $otp_algorithm; ?></td></tr>
+			<tr><th scope="row"><?php _e('Generated:', 'one-time-password') ?></th><td><?php echo $otp_time; ?></td></tr>
 			</table>
 			
 			<table id="otp_list">
@@ -479,31 +485,33 @@ function otp_options() {
 			echo '<span class="otp_message">' . __('Select "I am sure" to revoke', 'one-time-password') . '</span><br />';
 
 	// Render settings form
-	$opt_cleanup = get_option('otp_cleanup') ? "checked" : "unchecked";
+	if (current_user_can('manage_options')) {
+		$opt_cleanup = get_option('otp_cleanup') ? "checked" : "unchecked";
 ?>
-	<h3><?php _e('Settings One-Time Password', 'one-time-password') ?></h3>
-	<form method="post" action="<?php echo add_query_arg('action', 'settings', admin_url('options.php')); ?>">
-	<?php wp_nonce_field('update-options', '_wpnonce', false); ?>
-	<input type="hidden" name="_wp_http_referer" value="/wp-admin/options-general.php?page=one-time-password%2Fotp.php&amp;action=settings" />
+		<h3><?php _e('Settings One-Time Password', 'one-time-password') ?></h3>
+		<form method="post" action="<?php echo add_query_arg('action', 'settings', admin_url('options.php')); ?>">
+		<?php wp_nonce_field('update-options', '_wpnonce', false); ?>
+		<input type="hidden" name="_wp_http_referer" value="/wp-admin/options-general.php?page=one-time-password%2Fotp.php&amp;action=settings" />
 
-	<table class="form-table">
+		<table class="form-table">
 
-	<tr>
-	<th scope="row"><?php _e('Delete data on deactivation:', 'one-time-password') ?></th>
-	<td><input type="checkbox" name="otp_cleanup" <?php echo $opt_cleanup; ?> /></td>
-	</tr>
-	 
-	</table>
+		<tr>
+		<th scope="row"><?php _e('Delete data on deactivation:', 'one-time-password') ?></th>
+		<td><input type="checkbox" name="otp_cleanup" <?php echo $opt_cleanup; ?> /></td>
+		</tr>
+		 
+		</table>
 
-	<input type="hidden" name="action" value="update" />
-	<input type="hidden" name="page_options" value="otp_cleanup" />
+		<input type="hidden" name="action" value="update" />
+		<input type="hidden" name="page_options" value="otp_cleanup" />
 
-	<p class="submit">
-	<input type="submit" class="button-primary" value="<?php _e('Save') ?>" />
-	</p>
+		<p class="submit">
+		<input type="submit" class="button-primary" value="<?php _e('Save', 'one-time-password') ?>" />
+		</p>
 
-	</form>
+		</form>
 <?php
+	}
 
 	// Output footer
 	echo '</div>';
