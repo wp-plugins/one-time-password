@@ -73,7 +73,7 @@ and because the try-catch construction is used as a fail-safe for the login scre
 
 = Where can I ask questions, report bugs and request features? =
 
-On the [plugin homepage](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/#comments "Marcel's weblog")
+You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/#comments "Marcel's weblog").
 
 == Screenshots ==
 
