@@ -10,6 +10,11 @@
 	color: #555555;
 }
 
+#otp_sequence {
+	font-weight: bold;
+	font-size: 110%;
+}
+
 #otp_notice {
 	background-color: #ff4500; /* OrangeRed */
 	font-weight: bold;
@@ -23,6 +28,10 @@
 .otp_message {
 	font-weight: bold;
 	color: red;
+}
+
+#otp_count {
+	width: 50px;
 }
 
 .otp_hint {

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin
 Requires at least: 2.8
 Tested up to: 2.8.2
-Stable tag: 0.5
+Stable tag: 1.0
 
 One-time password system to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -74,6 +74,13 @@ Yes, since version 0.5.
 1. One-time password login
 
 == Changelog ==
+
+= 1.0 =
+* Only load styles and scripts when necessary
+* Remove leading/trailing spaces user name
+* Show sequence number within challenge bold and somewhat larger
+* Added input field to choose number of passwords
+* Minor code improvements, mostly comments
 
 = 0.5 =
 * Added text domain to 'Save' text
