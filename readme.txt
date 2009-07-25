@@ -1,16 +1,16 @@
 ﻿=== One-Time Password ===
 Contributors: Marcel Bokhorst
-Donate link: http://blog.bokhorst.biz/
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB7DGNA3MJ&lc=US&item_name=One%2dTime%20Password%20WordPress%20Plugin&item_number=wp%2dotp&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted
 Tags: login, password, security, admin
 Requires at least: 2.8
 Tested up to: 2.8.2
-Stable tag: 0.5
+Stable tag: 1.0
 
 One-time password system to protect your weblog in less trustworthy environments, like internet cafés.
 
 == Description ==
 
-This simple to use plugin enables you to login to your WordPress weblog using passwords which are valid for one session only. One-time passwords prevent stealing of your main password in less trustworthy environments, like internet cafés, for example by keyloggers. For each login you can choose between using your main password or a one-time password. The one-time password system conforms to [RFC 2289](http://tools.ietf.org/html/rfc2289 "RFC 2289").
+This simple to use plugin enables you to login to your WordPress weblog using passwords which are valid for one session only. One-time passwords prevent stealing of your main WordPress password in less trustworthy environments, like internet cafés, for example by keyloggers. For each login you can choose between using your main password or a one-time password. The one-time password system conforms to [RFC 2289](http://tools.ietf.org/html/rfc2289 "RFC 2289") of the [Internet Engineering Task Force](http://www.ietf.org/ "IETF") (IETF).
 
 See [Other Notes](http://wordpress.org/extend/plugins/one-time-password/other_notes/ "Other Notes") for usage instructions.
 
@@ -29,15 +29,15 @@ Or use the WordPress Plugin Add New menu.
 
 = Should the pass-phrase be equal to my main password? =
 
-No.
+No, but it could be.
 
 = Should I remember the pass-phrase? =
 
 No, if you plan to use a printed one-time password list only.
 
 Yes, if you plan to use a one-time password generator, 
-for example [on your iPhone](http://www.apptism.com/apps/otp-generator "iPhone OTP Generator") 
-or [on phones that supports Java](http://tanso.net/j2me-otp/ "j2me-otp").
+for example [on your iPhone](http://www.apptism.com/apps/otp-generator "iPhone OTP Generator") (not tried)
+or [on mobile phones that supports Java](http://tanso.net/j2me-otp/ "j2me-otp") (tried with success).
 
 = Are pass-phrases to generate one-time password lists stored? =
 
@@ -51,7 +51,7 @@ Yes, if you remember the pass-phrase, seed and algorithm, but the one-time passw
 
 No.
 
-= How do I choose between logging-in using a one-time password or my main password? =
+= How do I choose between logging-in using a one-time password or my main WordPress password? =
 
 Simply enter the password of your choice into the WordPress password box.
 
@@ -70,10 +70,17 @@ Yes, since version 0.5.
 
 == Screenshots ==
 
-1. One-time password table
+1. One-time password list
 1. One-time password login
 
 == Changelog ==
+
+= 1.0 =
+* Only load styles and scripts when necessary
+* Remove leading/trailing spaces user name
+* Show sequence number within challenge bold and somewhat larger
+* Added input field to choose number of passwords
+* Minor code improvements, mostly comments
 
 = 0.5 =
 * Added text domain to 'Save' text
@@ -122,7 +129,12 @@ Yes, since version 0.5.
 1. Go to the password box
 1. Wait until the challenge is displayed below the password field
 1. Use the sequence number in the challenge to look up a one-time password on your printed list
-1. Enter either the hex or words representation of the one-time password
+1. Enter either the hex or words representation of the looked-up one-time password
+
+You can always login with your main WordPress password too.
+
+Instead of using a printed one-time password list you could use a one-time password generator on your mobile phone, 
+see the [Faq](http://wordpress.org/extend/plugins/one-time-password/faq/ "Faq") for some links.
 
 == Acknowledgments ==
 
