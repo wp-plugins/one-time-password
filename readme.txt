@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin
 Requires at least: 2.8
 Tested up to: 2.8.2
-Stable tag: 1.1
+Stable tag: 1.2
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -64,7 +64,11 @@ See [this article](http://willnorris.com/2009/03/authentication-in-wordpress-28 
 
 = Is this plugin multi-user? =
 
-Yes, since version 0.5. However, compatibility with [WordPress MU](http://mu.wordpress.org/ "WordPress MU") is not tested yet.
+Yes, since version 0.5.
+
+= Is this plugin compatible with WordPress MU? =
+
+Yes, since version 1.2.
 
 = Why does this plugin require at least PHP version 5.0.0? =
 
@@ -81,6 +85,9 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 1. One-time password login
 
 == Changelog ==
+
+= 1.2 =
+* Update for WordPress MU
 
 = 1.1 =
 * Check for PHP version 5
