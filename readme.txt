@@ -80,6 +80,7 @@ Yes, since version 0.5.
 * Remove leading/trailing spaces user name
 * Show sequence number within challenge bold and somewhat larger
 * Added input field to choose number of passwords
+* Focus on pass-phrase field
 * Minor code improvements, mostly comments
 
 = 0.5 =
