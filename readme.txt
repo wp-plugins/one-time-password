@@ -6,7 +6,7 @@ Requires at least: 2.8
 Tested up to: 2.8.2
 Stable tag: 1.1
 
-One-time password system to protect your weblog in less trustworthy environments, like internet cafés.
+One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
 == Description ==
 
