@@ -64,7 +64,7 @@ See [this article](http://willnorris.com/2009/03/authentication-in-wordpress-28 
 
 = Is this plugin multi-user? =
 
-Yes, since version 0.5.
+Yes, since version 0.5. However, compatibility with [WordPress MU](http://mu.wordpress.org/ "WordPress MU") is not tested yet.
 
 = Why does this plugin require at least PHP version 5.0.0? =
 
