@@ -3,7 +3,7 @@
 Plugin Name: One-Time Password
 Plugin URI: http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/
 Description: One-Time Password System conforming to <a href="http://tools.ietf.org/html/rfc2289">RFC 2289</a> to protect your weblog in less trustworthy environments, like internet cafés.
-Version: 1.0
+Version: 1.1
 Author: Marcel Bokhorst
 Author URI: http://blog.bokhorst.biz/
 */
@@ -40,6 +40,12 @@ Author URI: http://blog.bokhorst.biz/
 
 #error_reporting(E_ALL);
 
+// Check PHP version
+if (version_compare(PHP_VERSION, '5.0.0', '<')) {
+	die('One-Time Password requires at least PHP 5.0.0');
+}
+
+// Include OTP class
 require_once('include/class.otp.php');
 
 // Get challenge
@@ -564,8 +570,8 @@ function otp_admin_notices() {
 		if ($otp_row == null || $otp_row->sequence <= 0) {
 			// Render notice
 			$url = admin_url('options-general.php?page=one-time-password/otp.php');
-			echo '<div id="otp_notice"><p>' . __('One-Time Password list', 'one-time-password');
-			echo ' <a href="' . $url . '">' . __('should be generated', 'one-time-password') . '</a></p></div>';
+			echo '<div id="otp_notice" class="error fade"><p><strong>' . __('One-Time Password list', 'one-time-password');
+			echo ' <a href="' . $url . '">' . __('should be generated', 'one-time-password') . '</a></strong></p></div>';
 		}
 	}
 }
