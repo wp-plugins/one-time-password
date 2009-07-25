@@ -143,10 +143,12 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 1. Use the sequence number in the challenge to look up a one-time password on your printed list
 1. Enter either the hex or words representation of the looked-up one-time password
 
-You can always login with your main WordPress password too.
+The [screens shots](http://wordpress.org/extend/plugins/one-time-password/screenshots/ "One-Time Password screenshots") show how to look-up a one-time password.
 
-Instead of using a printed one-time password list you could use a one-time password generator on your mobile phone, 
-see the [Faq](http://wordpress.org/extend/plugins/one-time-password/faq/ "Faq") for some links.
+Note that:
+
+* You can always login with your main WordPress password too
+* You can use a one-time password generator on your mobile phone, see the [Faq](http://wordpress.org/extend/plugins/one-time-password/faq/ "Faq") for some links.
 
 == Acknowledgments ==
 
