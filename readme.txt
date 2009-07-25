@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin
 Requires at least: 2.8
 Tested up to: 2.8.2
-Stable tag: 1.0
+Stable tag: 1.1
 
 One-time password system to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -16,6 +16,8 @@ See [Other Notes](http://wordpress.org/extend/plugins/one-time-password/other_no
 
 If you find this plugin useful, please vote for it on the
 [WordPress Competition Blog](http://weblogtoolscollection.com/pluginblog/2009/07/22/wordpress-plugin-one-time-password/ "WordPress Competition Blog").
+
+**This plugin requires at least PHP 5.0.0**
 
 == Installation ==
 
@@ -74,6 +76,10 @@ Yes, since version 0.5.
 1. One-time password login
 
 == Changelog ==
+
+= 1.1 =
+* Check for PHP version 5
+* Admin notice uses standard style now
 
 = 1.0 =
 * Only load styles and scripts when necessary
