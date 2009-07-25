@@ -12,9 +12,9 @@ One-time password system conform RFC 2289 to protect your weblog in less trustwo
 
 This simple to use plugin enables you to login to your WordPress weblog using passwords which are valid for one session only. One-time passwords prevent stealing of your main WordPress password in less trustworthy environments, like internet cafés, for example by keyloggers. For each login you can choose between using your main password or a one-time password. The one-time password system conforms to [RFC 2289](http://tools.ietf.org/html/rfc2289 "RFC 2289") of the [Internet Engineering Task Force](http://www.ietf.org/ "IETF") (IETF).
 
-**This plugin requires at least PHP 5.0.0**
-
 See [Other Notes](http://wordpress.org/extend/plugins/one-time-password/other_notes/ "Other Notes") for usage instructions.
+
+**This plugin requires at least PHP 5.0.0**
 
 If you find this plugin useful, please vote for it on the
 [WordPress Competition Blog](http://weblogtoolscollection.com/pluginblog/2009/07/22/wordpress-plugin-one-time-password/ "WordPress Competition Blog").
@@ -65,6 +65,11 @@ See [this article](http://willnorris.com/2009/03/authentication-in-wordpress-28 
 = Is this plugin multi-user? =
 
 Yes, since version 0.5.
+
+= Why does this plugin require at least PHP version 5.0.0? =
+
+Because the [PHP One-Time Passwords class](http://sourceforge.net/projects/php-otp/ "PHP One-Time Passwords class") requires it 
+and because the try-catch construction is used as a fail-safe for the login screen.
 
 = Where can I ask questions, report bugs and request features? =
 
