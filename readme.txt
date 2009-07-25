@@ -57,7 +57,7 @@ No.
 
 Simply enter the password of your choice into the WordPress password box.
 
-= Why is this plugin not compatible with WordPress version 2.7 or lower? =
+= Why does this plugin require at least WordPress version 2.8? =
 
 Because the new *authenticate* filter is used. 
 See [this article](http://willnorris.com/2009/03/authentication-in-wordpress-28 "Authentication in WordPress 2.8") for more details. 
@@ -73,7 +73,7 @@ and because the try-catch construction is used as a fail-safe for the login scre
 
 = Where can I ask questions, report bugs and request features? =
 
-[Here](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/#comments "Marcel's weblog")
+You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/ "Marcel's weblog").
 
 == Screenshots ==
 
@@ -143,10 +143,12 @@ and because the try-catch construction is used as a fail-safe for the login scre
 1. Use the sequence number in the challenge to look up a one-time password on your printed list
 1. Enter either the hex or words representation of the looked-up one-time password
 
-You can always login with your main WordPress password too.
+The [screens shots](http://wordpress.org/extend/plugins/one-time-password/screenshots/ "One-Time Password screenshots") show how to look-up a one-time password.
 
-Instead of using a printed one-time password list you could use a one-time password generator on your mobile phone, 
-see the [Faq](http://wordpress.org/extend/plugins/one-time-password/faq/ "Faq") for some links.
+Note that:
+
+* You can always login with your main WordPress password too
+* You can use a one-time password generator on your mobile phone, see the [Faq](http://wordpress.org/extend/plugins/one-time-password/faq/ "Faq") for some links.
 
 == Acknowledgments ==
 
