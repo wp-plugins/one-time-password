@@ -57,7 +57,7 @@ No.
 
 Simply enter the password of your choice into the WordPress password box.
 
-= Why is this plugin not compatible with WordPress version 2.7 or lower? =
+= Why does this plugin require at least WordPress version 2.8? =
 
 Because the new *authenticate* filter is used. 
 See [this article](http://willnorris.com/2009/03/authentication-in-wordpress-28 "Authentication in WordPress 2.8") for more details. 
