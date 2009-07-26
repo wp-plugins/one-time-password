@@ -3,7 +3,7 @@
 Plugin Name: One-Time Password
 Plugin URI: http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/
 Description: One-Time Password System conforming to <a href="http://tools.ietf.org/html/rfc2289">RFC 2289</a> to protect your weblog in less trustworthy environments, like internet cafés.
-Version: 1.2
+Version: 1.3
 Author: Marcel Bokhorst
 Author URI: http://blog.bokhorst.biz/
 */
@@ -49,7 +49,7 @@ if (version_compare(PHP_VERSION, '5.0.0', '<')) {
 require_once('include/class.otp.php');
 
 // Get challenge
-if (isset($_GET['action']) && $_GET['action'] == 'challenge') {
+if (isset($_GET['otp_action']) && $_GET['otp_action'] == 'challenge') {
 	@header('Content-Type: text/html; charset=' . get_option('blog_charset'));
 	try {
 		// Get data
@@ -71,7 +71,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'challenge') {
 }
 
 // Get seed
-if (isset($_GET['action']) && $_GET['action'] == 'seed') {
+if (isset($_GET['otp_action']) && $_GET['otp_action'] == 'seed') {
 	@header('Content-Type: text/html; charset=' . get_option('blog_charset'));
 	$otp_class = new otp();
 	echo $otp_class->generateSeed();
@@ -192,7 +192,7 @@ function otp_login_form() {
 				$.ajax({
 					url: '',
 					type: 'GET',
-					data: {action: 'challenge', otp_user: $('#user_login').val()},
+					data: {otp_action: 'challenge', otp_user: $('#user_login').val()},
 					dataType: 'text',
 					cache: false,
 					success: function(result) {
@@ -285,7 +285,7 @@ function otp_administration() {
 	// Render generate form
 ?>
 	<h3><?php _e('Generate One-Time Password list', 'one-time-password') ?></h3>
-	<form method="post" action="<?php echo remove_query_arg('updated', add_query_arg('action', 'generate')); ?>">
+	<form method="post" action="<?php echo remove_query_arg('updated', add_query_arg('otp_action', 'generate')); ?>">
 
 	<?php wp_nonce_field('otp-generate'); ?>
 
@@ -331,7 +331,7 @@ function otp_administration() {
 <?php
 	
 	// Handle generate action
-	if ($_REQUEST['action'] == 'generate') {
+	if ($_REQUEST['otp_action'] == 'generate') {
 		// Security check
 		check_admin_referer('otp-generate');
 
@@ -435,7 +435,7 @@ function otp_administration() {
 	}
 
 	// Handle revoke action
-	if ($_REQUEST['action'] == 'revoke') {
+	if ($_REQUEST['otp_action'] == 'revoke') {
 		// Security check
 		check_admin_referer('otp-revoke');
 
@@ -457,7 +457,7 @@ function otp_administration() {
 		// Render revoke form
 ?>
 		<h3><?php _e('Revoke One-Time Password list', 'one-time-password') ?></h3>
-		<form method="post" action="<?php echo remove_query_arg('updated', add_query_arg('action', 'revoke')); ?>">
+		<form method="post" action="<?php echo remove_query_arg('updated', add_query_arg('otp_action', 'revoke')); ?>">
 
 		<?php wp_nonce_field('otp-revoke'); ?>
 
@@ -489,7 +489,7 @@ function otp_administration() {
 	}
 
 	// Check revoke
-	if ($_REQUEST['action'] == 'revoke')
+	if ($_REQUEST['otp_action'] == 'revoke')
 		if (!$_POST['otp_revoke'])
 			echo '<span class="otp_message">' . __('Select "I am sure" to revoke', 'one-time-password') . '</span><br />';
 
@@ -498,9 +498,9 @@ function otp_administration() {
 		$otp_cleanup = get_option('otp_cleanup') ? "checked" : "unchecked";
 ?>
 		<h3><?php _e('Settings One-Time Password', 'one-time-password') ?></h3>
-		<form method="post" action="<?php echo add_query_arg('action', 'settings', admin_url('options.php')); ?>">
+		<form method="post" action="<?php echo add_query_arg('otp_action', 'settings', admin_url('options.php')); ?>">
 		<?php wp_nonce_field('update-options', '_wpnonce', false); ?>
-		<input type="hidden" name="_wp_http_referer" value="/wp-admin/options-general.php?page=one-time-password%2Fotp.php&amp;action=settings" />
+		<input type="hidden" name="_wp_http_referer" value="/wp-admin/options-general.php?page=one-time-password%2Fotp.php&amp;otp_action=settings" />
 
 		<table class="form-table">
 
@@ -533,7 +533,7 @@ function otp_administration() {
 				$.ajax({
 					url: '<?php echo $plugin_url . '/opt.php';  ?>',
 					type: 'GET',
-					data: {action: 'seed'},
+					data: {otp_action: 'seed'},
 					dataType: 'text',
 					cache: false,
 					success: function(result) {
