@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin
 Requires at least: 2.8
 Tested up to: 2.8.2
-Stable tag: 1.2
+Stable tag: 1.3
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -66,7 +66,7 @@ See [this article](http://willnorris.com/2009/03/authentication-in-wordpress-28 
 
 Yes, since version 0.5.
 
-= Is this plugin compatible with WordPress MU? =
+= Will this plugin work with WordPress MU? =
 
 Yes, since version 1.2.
 
@@ -85,6 +85,9 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 1. One-time password login
 
 == Changelog ==
+
+= 1.3 =
+* Renamed query arg 'action' to 'otp_action' for better compatibility
 
 = 1.2 =
 * Update for WordPress MU
@@ -155,7 +158,7 @@ The [screens shots](http://wordpress.org/extend/plugins/one-time-password/screen
 Note that:
 
 * You can always login with your main WordPress password too
-* You can use a one-time password generator on your mobile phone, see the [Faq](http://wordpress.org/extend/plugins/one-time-password/faq/ "Faq") for some links.
+* You can use a one-time password generator on your mobile phone, see the [Faq](http://wordpress.org/extend/plugins/one-time-password/faq/ "Faq") for some links
 
 == Acknowledgments ==
 
