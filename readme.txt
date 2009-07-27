@@ -21,7 +21,7 @@ If you find this plugin useful, please vote for it on the
 
 == Installation ==
 
-*Using the WordPress dashboard*
+*Using the dashboard*
 
 1. Login to your weblog
 1. Goto Plugins
@@ -49,9 +49,10 @@ No, if you plan to use a printed one-time password list only.
 
 Yes, if you plan to use a one-time password generator, 
 either [on your iPhone](http://www.apptism.com/apps/otp-generator "iPhone OTP Generator") (not tried)
-or on mobile phones that support ([JavaME](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "JavaME")), for example
+or on mobile phones that support [JavaME](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "JavaME"), 
+for example by using
 [j2me-otp](http://tanso.net/j2me-otp/ "j2me-otp") (tried with success) or
-[OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen")
+[OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen").
 
 = Are pass-phrases to generate one-time password lists stored? =
 
@@ -99,9 +100,9 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 
 == Screenshots ==
 
-1. The login screen displaying a challenge
+1. The login screen displaying a [RFC 2289](http://tools.ietf.org/html/rfc2289 "RFC 2289") challenge
 1. The one-time password list with the requested password
-1. The [OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen") application on a phone that supports [JavaME](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "JavaME") (optional)
+1. The [OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen") application on a phone that supports [JavaME](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "JavaME") (this is optional)
 
 == Changelog ==
 
