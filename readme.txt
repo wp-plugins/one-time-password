@@ -52,7 +52,7 @@ either [on your iPhone](http://www.apptism.com/apps/otp-generator "iPhone OTP Ge
 or on mobile phones that support [JavaME](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "JavaME"), 
 for example by using
 [j2me-otp](http://tanso.net/j2me-otp/ "j2me-otp") (tried with success) or
-[OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen").
+[OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen") (not tried).
 
 = Are pass-phrases to generate one-time password lists stored? =
 
