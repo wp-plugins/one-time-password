@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin
 Requires at least: 2.8
 Tested up to: 2.8.2
-Stable tag: 1.3
+Stable tag: 1.4
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -14,7 +14,7 @@ This simple to use plugin enables you to login to your WordPress weblog using pa
 
 See [Other Notes](http://wordpress.org/extend/plugins/one-time-password/other_notes/ "Other Notes") for usage instructions.
 
-**This plugin requires at least PHP 5.0.0**
+**This plugin requires at least PHP 5.0.0 and WordPress 2.8.**
 
 If you find this plugin useful, please vote for it on the
 [WordPress Competition Blog](http://weblogtoolscollection.com/pluginblog/2009/07/22/wordpress-plugin-one-time-password/ "WordPress Competition Blog").
@@ -44,6 +44,12 @@ or [on mobile phones that supports Java](http://tanso.net/j2me-otp/ "j2me-otp") 
 = Are pass-phrases to generate one-time password lists stored? =
 
 No.
+
+= What should I do when I loose my one-time password list? =
+
+Revoke it as soon as possible. 
+Regenerating a new one-time password list will revoke the existing list automatically.
+Do not generate a new one-time password list with the same pass-phrase, seed and algorithm.
 
 = Can I generate a one-time password list again? =
 
@@ -85,6 +91,15 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 1. One-time password login
 
 == Changelog ==
+
+= 1.4 =
+* Defined constants
+* Fixed odd number of passwords
+* Update translations
+* Check WordPress version on activate
+* Removed hard coded paths for better compatibility
+* Updated faq: what-if one-time password list lost
+* Updated usage instructions: do not print one-time password list with url
 
 = 1.3 =
 * Renamed query arg 'action' to 'otp_action' for better compatibility
@@ -144,6 +159,10 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 1. Enter and confirm a pass-phrase
 1. Click the Generate button
 1. Print the generated one-time password list
+
+**For security reasons do not print the one-time password list with the address of your weblog in the header.**
+
+FireFox and Internet Explorer: change this with the menu File / Page Setup.
 
 *Login*
 
