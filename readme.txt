@@ -48,7 +48,7 @@ No.
 = What should I do when I loose my one-time password list? =
 
 Revoke it as soon as possible. 
-Regenerating a new one-time password list will revoke the existing list automatically.
+Generating a new one-time password list will revoke the existing list automatically.
 Do not generate a new one-time password list with the same pass-phrase, seed and algorithm.
 
 = Can I generate a one-time password list again? =
