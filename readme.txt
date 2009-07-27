@@ -160,7 +160,7 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 1. Click the Generate button
 1. Print the generated one-time password list
 
-**For security reasons do not print the one-time password list with the address of your weblog in the header.**
+**For security reasons do not print the one-time password list with the url of your weblog in the header.**
 
 FireFox and Internet Explorer: change this with the menu File / Page Setup.
 
