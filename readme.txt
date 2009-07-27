@@ -49,7 +49,7 @@ No, if you plan to use a printed one-time password list only.
 
 Yes, if you plan to use a one-time password generator, 
 either [on your iPhone](http://www.apptism.com/apps/otp-generator "iPhone OTP Generator") (not tried)
-or on mobile phones that support Java ([J2ME](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "J2ME")), for example
+or on mobile phones that support ([JavaME](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "JavaME")), for example
 [j2me-otp](http://tanso.net/j2me-otp/ "j2me-otp") (tried with success) or
 [OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen")
 
@@ -100,8 +100,8 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 == Screenshots ==
 
 1. The login screen displaying a challenge
-1. The One-time password list with the requested password
-1. The [OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen") application on a phone that supports [Java](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "J2ME") (optional)
+1. The one-time password list with the requested password
+1. The [OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen") application on a phone that supports [JavaME](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "JavaME") (optional)
 
 == Changelog ==
 
