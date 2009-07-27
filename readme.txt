@@ -1,5 +1,5 @@
 ﻿=== One-Time Password ===
-Contributors: Marcel Bokhorst
+Contributors: [Marcel Bokhorst](http://blog.bokhorst.biz/about/ "Marcel Bokhorst")
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB7DGNA3MJ&lc=US&item_name=One%2dTime%20Password%20WordPress%20Plugin&item_number=Marcel%20Bokhorst&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: login, password, security, admin
 Requires at least: 2.8
@@ -21,11 +21,21 @@ If you find this plugin useful, please vote for it on the
 
 == Installation ==
 
+*Using the WordPress dashboard*
+
+1. Login to your weblog
+1. Goto Plugins
+1. Select Add New
+1. Search for One-Time Password
+1. Select Install
+1. Select Install Now
+1. Select Activate Plugin
+
+*Manual*
+
 1. Download and unzip the plugin
 1. Upload the entire one-time-password/ directory to the /wp-content/plugins/ directory
 1. Activate the plugin through the Plugins menu in WordPress
-
-Or use the WordPress Plugin Add New menu.
 
 == Frequently Asked Questions ==
 
@@ -38,8 +48,10 @@ No, but it could be.
 No, if you plan to use a printed one-time password list only.
 
 Yes, if you plan to use a one-time password generator, 
-for example [on your iPhone](http://www.apptism.com/apps/otp-generator "iPhone OTP Generator") (not tried)
-or [on mobile phones that supports Java](http://tanso.net/j2me-otp/ "j2me-otp") (tried with success).
+either [on your iPhone](http://www.apptism.com/apps/otp-generator "iPhone OTP Generator") (not tried)
+or on mobile phones that support Java ([J2ME](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "J2ME")), for example
+[j2me-otp](http://tanso.net/j2me-otp/ "j2me-otp") (tried with success) or
+[OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen")
 
 = Are pass-phrases to generate one-time password lists stored? =
 
@@ -49,7 +61,7 @@ No.
 
 Revoke it as soon as possible. 
 Generating a new one-time password list will revoke the existing list automatically.
-Do not generate a new one-time password list with the same pass-phrase, seed and algorithm.
+Do not generate a new one-time password list with the same pass-phrase, seed and algorithm (at least one should be different).
 
 = Can I generate a one-time password list again? =
 
@@ -87,8 +99,9 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 
 == Screenshots ==
 
-1. One-time password list
-1. One-time password login
+1. The login screen displaying a challenge
+1. The One-time password list with the requested password
+1. The [OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen") application on a phone that supports [Java](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "J2ME") (optional)
 
 == Changelog ==
 
@@ -98,8 +111,8 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 * Update translations
 * Check WordPress version on activate
 * Removed hard coded paths for better compatibility
-* Updated faq: what-if one-time password list lost
-* Updated usage instructions: do not print one-time password list with url
+* Updated the [faq](http://wordpress.org/extend/plugins/one-time-password/faq/ "Faq"): what-if one-time password list lost
+* Updated the [usage instructions](http://wordpress.org/extend/plugins/one-time-password/other_notes/ "Other Notes"): do not print one-time password list with url
 
 = 1.3 =
 * Renamed query arg 'action' to 'otp_action' for better compatibility
@@ -137,7 +150,7 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 * Added algorithm, sequence, registered and last login to revoke form
 * Added Flemish translation (be_NL)
 * Changed background admin notice to orange-red
-* Improved formatting of admin menu
+* Improved formatting of the administration menu
 * Added setting to delete data (database and options) on deactivation
 
 = 0.3 =
@@ -162,7 +175,7 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 
 **For security reasons do not print the one-time password list with the url of your weblog in the header.**
 
-FireFox and Internet Explorer: change this with the menu File / Page Setup.
+FireFox and Internet Explorer: you can change this using File / Page Setup.
 
 *Login*
 
