@@ -53,7 +53,7 @@ Author URI: http://blog.bokhorst.biz/
 	- modular (more helpers methods)
 	- update translations
 
-	- test IE
+	- test IE -> ajax (seed, default)
 	- check errors $wpdb->get_var
 	- compatibility Semisecure Login Reimagined
 	- check post values as query string?
