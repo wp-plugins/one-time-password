@@ -50,24 +50,17 @@ Author URI: http://blog.bokhorst.biz/
 
 /*
 	ToDo:
-	- modular (more helpers methods)
-	- update translations
-
 	- test IE -> ajax (seed, default)
-	- check errors $wpdb->get_var
-	- compatibility Semisecure Login Reimagined
-	- check post values as query string?
-	- query var with certain value (instead of generic wildcard)
-	- alternative for wp_die?
-	- https & otp?
-	- test openid compatibility (admin otp)
-	- JavaScript file(s)
-	- parameterize/localize JavaScript (document.getElementById("myscript").src)
 
-	Docs:
+	- More modular (more helpers methods)
+	- Query var with certain value (instead of generic wildcard)
+	- JavaScript file(s)
+	- Parameterize/localize JavaScript (document.getElementById("myscript").src)
+
+	Support:
 	- What-if admin lockout
 	- F5 in strict mode
-	- page loading in strict mode
+	- Page loading in strict mode
 */
 
 #error_reporting(E_ALL);
