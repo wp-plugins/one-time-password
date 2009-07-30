@@ -479,12 +479,12 @@ if (!class_exists('WPOneTimePassword')) {
 			<div class="wrap">
 
 			<div id="otp_resources">
-			<h3><?php _e('Resources'); ?></h3>
+			<h3><?php _e('Resources', c_otp_text_domain); ?></h3>
 			<ul>
-			<li><a href="http://wordpress.org/extend/plugins/one-time-password/other_notes/" target="_blank"><?php _e('Usage instructions'); ?></a></li>
-			<li><a href="http://wordpress.org/extend/plugins/one-time-password/faq/" target="_blank"><?php _e('Frequently asked questions'); ?></a></li>
-			<li><a href="http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/" target="_blank"><?php _e('Support page'); ?></a></li>
-			<li><a href="http://blog.bokhorst.biz/about/" target="_blank"><?php _e('About the author'); ?></a></li>
+			<li><a href="http://wordpress.org/extend/plugins/one-time-password/other_notes/" target="_blank"><?php _e('Usage instructions', c_otp_text_domain); ?></a></li>
+			<li><a href="http://wordpress.org/extend/plugins/one-time-password/faq/" target="_blank"><?php _e('Frequently asked questions', c_otp_text_domain); ?></a></li>
+			<li><a href="http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/" target="_blank"><?php _e('Support page', c_otp_text_domain); ?></a></li>
+			<li><a href="http://blog.bokhorst.biz/about/" target="_blank"><?php _e('About the author', c_otp_text_domain); ?></a></li>
 			</ul>
 			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 			<input type="hidden" name="cmd" value="_s-xclick">
@@ -542,7 +542,7 @@ if (!class_exists('WPOneTimePassword')) {
 
 			</table>
 
-			<p><strong><?php _e('Generate a One-Time Password list in a trustworthy environment only') ?></strong></p>
+			<p><strong><?php _e('Generate a One-Time Password list in a trustworthy environment only', c_otp_text_domain) ?></strong></p>
 			<p><em><?php _e('The current One-Time Password list will be revoked automatically', c_otp_text_domain) ?></em></p>
 			<p class="submit"><input type="submit" class="button-primary" value="<?php _e('Generate', c_otp_text_domain) ?>" /></p>
 			</form>
