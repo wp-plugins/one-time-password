@@ -12,7 +12,7 @@ One-time password system conform RFC 2289 to protect your weblog in less trustwo
 
 This simple to use plugin enables you to login to your WordPress weblog using passwords which are valid for one session only. One-time passwords prevent stealing of your main WordPress password in less trustworthy environments, like internet cafés, for example by keyloggers. For each login you can choose between using your main password or a one-time password. The one-time password system conforms to [RFC 2289](http://tools.ietf.org/html/rfc2289 "RFC 2289") of the [Internet Engineering Task Force](http://www.ietf.org/ "IETF") (IETF).
 
-Version 2.0 of the plugin has a new option to protect the use of administrative functions, like modifying the WordPress settings, by one-time passwords. 
+Version 2.0 of the plugin has a new option to protect the use of administrative actions, like modifying the WordPress settings, by one-time passwords. 
 It is possible to define exceptions, like viewing the post list.
 
 See [Other Notes](http://wordpress.org/extend/plugins/one-time-password/other_notes/ "Other Notes") for usage instructions.
@@ -123,7 +123,7 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 
 = 2.0 =
 * Added resources info panel
-* **Added protection for admin functions with one-time passwords**
+* **Added protection for admin actions with one-time passwords**
 * Added checks for prerequisites (required WordPress functions)
 * Updated documentation
 * Created class 
@@ -222,7 +222,7 @@ Note that:
 
 * You can always login with your main WordPress password too
 * You can use a one-time password generator on your mobile phone, see the [Faq](http://wordpress.org/extend/plugins/one-time-password/faq/ "Faq") for some links
-* You can enable protection of all administrative (dashboard) functions by one-time passwords
+* You can enable protection of all administrative (dashboard) actions by one-time passwords
 
 == Acknowledgments ==
 
