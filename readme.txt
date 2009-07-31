@@ -236,6 +236,7 @@ Note that:
 * Updating your WordPress user profile requires another click on the Update Profile button (cause unknown)
 * Page refreshes of protected administrative actions will be disapproved (more a feature)
 * No authorization is asked if an administrative page has not finished loading. However, the server will still check and disapprove the authorization.
+* Visiting the weblog itself while a protected session is active results in disapproving authorization
 
 == Acknowledgments ==
 
