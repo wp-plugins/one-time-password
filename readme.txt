@@ -1,5 +1,5 @@
 ﻿=== One-Time Password ===
-Contributors: [Marcel Bokhorst](http://blog.bokhorst.biz/about/ "Marcel Bokhorst")
+Contributors: Marcel Bokhorst
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB7DGNA3MJ&lc=US&item_name=One%2dTime%20Password%20WordPress%20Plugin&item_number=Marcel%20Bokhorst&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: login, password, security, admin
 Requires at least: 2.8
@@ -23,8 +23,8 @@ Because of the usage of the [jQuery JavaScript library](http://jquery.com/ "jQue
 
 Please report any issue you have with this plugin on the [support page](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/ "Marcel's weblog"), so I can at least try to fix it.
 
-If you find this plugin useful, please vote for it on the
-[WordPress Competition Blog](http://weblogtoolscollection.com/pluginblog/2009/07/22/wordpress-plugin-one-time-password/ "WordPress Competition Blog").
+**If you find this plugin useful, please vote for it on the
+[WordPress Competition Blog](http://weblogtoolscollection.com/pluginblog/2009/07/22/wordpress-plugin-one-time-password/ "WordPress Competition Blog").**
 
 == Installation ==
 
