@@ -78,6 +78,7 @@
 
 #otp_count {
 	width: 50px;
+	text-align: right;
 }
 
 .otp_hint {
