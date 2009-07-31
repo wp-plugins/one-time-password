@@ -74,7 +74,7 @@ Do not generate a new one-time password list with the same pass-phrase, seed and
 
 Yes, if you remember the pass-phrase, seed and algorithm, but the one-time password sequence will be reset.
 
-= Are one-time password words case sensitive? =
+= Are one-time passwords case sensitive? =
 
 No.
 
