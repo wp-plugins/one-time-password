@@ -201,7 +201,7 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 1. Go to One-Time Password Settings
 1. Enter and confirm a pass-phrase
 1. Click the Generate button
-1. Print the generated one-time password list
+1. Print the generated one-time password list (the button is below the list)
 
 **For security reasons generate a one-time password list in a trustworthy environment only.**
 
