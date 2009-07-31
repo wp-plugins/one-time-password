@@ -227,7 +227,10 @@ Note that:
 
 == Known Problems ==
 
-* Updating your WordPress user profile requires another click on the Update Profile button
+* Updating your WordPress user profile requires another click on the Update Profile button (cause unknown)
+* Page refreshes of protected administrative actions will be disapproved (more a feature)
+* No authorization is asked if an administrative page has not finished loading. However, the server will still check and disapprove the authorization.
+* Reinitialize of a one-time password list not possible yet
 
 == Acknowledgments ==
 
