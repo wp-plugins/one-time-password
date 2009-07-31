@@ -1,6 +1,11 @@
 <?php
 
-// Include otp library
+/*
+	Support class One-Time Password WordPress Plugin 
+	by Marcel Bokhorst
+*/
+
+// Include OTP library
 require_once('include/class.otp.php');
 
 // Define constants
