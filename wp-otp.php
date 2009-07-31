@@ -48,21 +48,6 @@ Author URI: http://blog.bokhorst.biz/
 	All licenses are GPL compatible (see http://www.gnu.org/philosophy/license-list.html#GPLCompatibleLicenses)
 */
 
-/*
-	ToDo:
-	- test IE -> ajax (seed, default)
-
-	- More modular (more helpers methods)
-	- Query var with certain value (instead of generic wildcard)
-	- JavaScript file(s)
-	- Parameterize/localize JavaScript (document.getElementById("myscript").src)
-
-	Support:
-	- What-if admin lockout
-	- F5 in strict mode
-	- Page loading in strict mode
-*/
-
 #error_reporting(E_ALL);
 
 // Include otp class

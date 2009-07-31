@@ -12,16 +12,16 @@ One-time password system conform RFC 2289 to protect your weblog in less trustwo
 
 This simple to use plugin enables you to login to your WordPress weblog using passwords which are valid for one session only. One-time passwords prevent stealing of your main WordPress password in less trustworthy environments, like internet cafés, for example by keyloggers. For each login you can choose between using your main password or a one-time password. The one-time password system conforms to [RFC 2289](http://tools.ietf.org/html/rfc2289 "RFC 2289") of the [Internet Engineering Task Force](http://www.ietf.org/ "IETF") (IETF).
 
-Version 2.0 of the plugin has a new option to protect the use of administrative actions, like modifying the WordPress settings, by one-time passwords. 
-It is possible to define exceptions, like viewing the post list.
+*Version 2.0 of this plugin has a new option to protect administrative actions by one-time passwords. This option is disabled by default. It is possible to define exceptions. The default exceptions are viewing the dashboard, adding a post (but not saving it) and logging out.*
 
 See [Other Notes](http://wordpress.org/extend/plugins/one-time-password/other_notes/ "Other Notes") for usage instructions.
 
 **This plugin requires at least PHP 5.0.0 and WordPress 2.8.**
 
 This plugin has been tested with FireFox 3.0/3.5 and Internet Explorer 8. 
-Because of the usage of the [jQuery JavaScript library](http://jquery.com/ "jQuery") compatibility with other internet browsers is expected.
-Reports about compatibility are welcome on the [support page](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/ "Marcel's weblog").
+Because of the usage of the [jQuery JavaScript library](http://jquery.com/ "jQuery") compatibility with other internet browsers can be expected.
+
+Please report any issue you have with this plugin on the [support page](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/ "Marcel's weblog"), so I can at least try to fix it.
 
 If you find this plugin useful, please vote for it on the
 [WordPress Competition Blog](http://weblogtoolscollection.com/pluginblog/2009/07/22/wordpress-plugin-one-time-password/ "WordPress Competition Blog").
@@ -64,7 +64,7 @@ or on mobile phones that support ([JavaME](http://en.wikipedia.org/wiki/Java_Pla
 
 No.
 
-= What should I do when I loose my one-time password list? =
+= What should I do when I have lost my one-time password list? =
 
 Revoke it as soon as possible. 
 Generating a new one-time password list will revoke the existing list automatically.
@@ -97,8 +97,8 @@ Yes, since version 1.2.
 
 = Why does this plugin require at least PHP version 5.0.0? =
 
-Because the [PHP One-Time Passwords class](http://sourceforge.net/projects/php-otp/ "PHP One-Time Passwords class") requires it 
-and because the try-catch construction is used as a fail-safe for the login screen.
+Because this is a requirement of the [PHP One-Time Passwords class](http://sourceforge.net/projects/php-otp/ "PHP One-Time Passwords class") and
+because the try-catch construction is used as a fail-safe for the login screen.
 
 = Who can modify the one-time password options? =
 
@@ -117,7 +117,7 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 1. The login screen displaying a challenge
 1. The one-time password list with the requested password
 1. The [OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen") application on a phone that supports [JavaME](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "JavaME") (optional)
-1. The authorize popup for an administrative function
+1. The authorization window for an administrative action
 
 == Changelog ==
 
@@ -125,13 +125,14 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 * Added resources info panel
 * **Added protection for admin actions with one-time passwords**
 * Added checks for prerequisites (required WordPress functions)
+* Updated Dutch/Flemish translations
 * Updated documentation
-* Created class 
+* Created class for better compatibility
 * Added helper methods
 * Moved to old-style JavaScript comments
-* Made JavaScript compliant with XHTML (added CDATA)
-* Displaying notices om admin menu too
-* Using new-style query arg 'option_page=options'
+* Made JavaScript compliant with [XHTML](http://en.wikipedia.org/wiki/XHTML "XHTML")
+* Displaying notices on the admin menu too
+* Using new-style 'option_page=options'
 * Moved rendering of admin notices to 'admin_footer'
 
 = 1.4 =
@@ -221,8 +222,12 @@ The [screens shots](http://wordpress.org/extend/plugins/one-time-password/screen
 Note that:
 
 * You can always login with your main WordPress password too
-* You can use a one-time password generator on your mobile phone, see the [Faq](http://wordpress.org/extend/plugins/one-time-password/faq/ "Faq") for some links
-* You can enable protection of all administrative (dashboard) actions by one-time passwords
+* You could use a one-time password generator on your mobile phone, see the [Faq](http://wordpress.org/extend/plugins/one-time-password/faq/ "Faq") for some links
+* You could enable protection of all WordPress administrative actions by one-time passwords
+
+== Known Problems ==
+
+* Updating your WordPress user profile requires another click on the Update Profile button
 
 == Acknowledgments ==
 
@@ -232,12 +237,16 @@ This plugin uses:
 by *Tomas Mrozek* and published under the GNU Lesser General Public License version 3. 
 The *readme.txt* file of this class contains useful information, for example a list of applications to compute one-time passwords.
 
-* [jqPrint](http://plugins.jquery.com/project/jqPrint "jqPrint") jQuery plugin
-by *tanathos* and published under both the GNU General Public License and MIT License.
+* [jQuery JavaScript Library](http://jquery.com/ "jQuery") published under both the GNU General Public License and MIT License
 
-* [jQuery URL Utils](http://benalman.com/projects/jquery-url-utils-plugin/ "jQuery URL Utils") plugin 
-by *Ben Alman* and published under the MIT License.
+* [jqPrint](http://plugins.jquery.com/project/jqPrint "jQuery jqPrint") jQuery plugin
+by *tanathos* and published under both the GNU General Public License and MIT License
 
-* [SimpleModal](http://www.ericmmartin.com/projects/simplemodal/ "SimpleModal") jQuery plugin
-by *Eric Martin* and publised both under the GNU General Public License and the MIT License.
+* [URL Utils](http://benalman.com/projects/jquery-url-utils-plugin/ "jQuery URL Utils") jQuery plugin 
+by *Ben Alman* and published under the MIT License
+
+* [SimpleModal](http://www.ericmmartin.com/projects/simplemodal/ "jQuery SimpleModal") jQuery plugin
+by *Eric Martin* and published both under the GNU General Public License and the MIT License
+
+All licenses are [GPL-Compatible Free Software Licenses](http://www.gnu.org/philosophy/license-list.html#GPLCompatibleLicenses "GPL compatible").
 
