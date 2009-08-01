@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin
 Requires at least: 2.8
 Tested up to: 2.8.2
-Stable tag: 2.2
+Stable tag: 2.3
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -120,6 +120,9 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 1. The authorization window for an administrative action (optional)
 
 == Changelog ==
+
+= 2.3 =
+* Added 'session_start' to class constructor
 
 = 2.2 =
 * Updated Czech translation by Tomas Mrozek

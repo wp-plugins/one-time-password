@@ -57,6 +57,8 @@ if (!class_exists('WPOneTimePassword')) {
 			// 20 wp_authenticate_username_password
 			// 30 wp_authenticate_cookie
 			add_filter('wp_redirect', array(&$this, 'otp_redirect'));
+
+			session_start();
 		}
 
 		// Handle plugin activation
