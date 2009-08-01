@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin
 Requires at least: 2.8
 Tested up to: 2.8.2
-Stable tag: 2.1
+Stable tag: 2.3
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -12,7 +12,7 @@ One-time password system conform RFC 2289 to protect your weblog in less trustwo
 
 This simple to use plugin enables you to login to your WordPress weblog using passwords which are valid for one session only. One-time passwords prevent stealing of your main WordPress password in less trustworthy environments, like internet cafés, for example by keyloggers. For each login you can choose between using your main password or a one-time password. The one-time password system conforms to [RFC 2289](http://tools.ietf.org/html/rfc2289 "RFC 2289") of the [Internet Engineering Task Force](http://www.ietf.org/ "IETF") (IETF).
 
-*Version 2.0 of this plugin has a new option to protect administrative actions by one-time passwords. This option is disabled by default and only available when you logged-in with a one-time password. It is possible to define exceptions. The default exceptions are viewing the dashboard, adding a post (but not saving it) and logging out.*
+*Version 2 of this plugin has a new option to protect administrative actions by one-time passwords. This option is disabled by default and only available when you logged-in with a one-time password. It is possible to define exceptions. The default exceptions are viewing the dashboard, adding a post (but not saving it) and logging out.*
 
 See [Other Notes](http://wordpress.org/extend/plugins/one-time-password/other_notes/ "Other Notes") for usage instructions.
 
@@ -117,12 +117,22 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 1. The login screen displaying a challenge
 1. The one-time password list with the requested password
 1. The [OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen") application on a phone that supports [JavaME](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "JavaME") (optional)
-1. The authorization window for an administrative action
+1. The authorization window for an administrative action (optional)
 
 == Changelog ==
 
+= 2.3 =
+* Added 'session_start' to class constructor
+
+= 2.2 =
+* Updated Czech translation by Tomas Mrozek
+* Checking of password validity less strict
+* Displaying 'wait' when getting new seed / default protect exceptions
+* Improved formatting of admin panel
+* Modified class constructor to get callers file name
+
 = 2.1 =
-* Added option to initialize one-time password list with one-time password
+* Added an option to initialize one-time password list with one-time password
 * When one-time passwords were exhausted a protected session was no longer protected
 * Added Czech translation by Tomas Mrozek
 
