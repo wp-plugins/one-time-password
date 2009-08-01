@@ -3,7 +3,7 @@
 Plugin Name: One-Time Password
 Plugin URI: http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/
 Description: One-Time Password System conforming to <a href="http://tools.ietf.org/html/rfc2289">RFC 2289</a> to protect your weblog in less trustworthy environments, like internet cafés.
-Version: 2.1
+Version: 2.2
 Author: Marcel Bokhorst
 Author URI: http://blog.bokhorst.biz/
 */
@@ -61,7 +61,7 @@ WPOneTimePassword::otp_check_ajax();
 
 // Start plugin
 global $wp_one_time_password;
-$one_time_password = new WPOneTimePassword(__FILE__);
+$one_time_password = new WPOneTimePassword();
 
 // That's it!
 

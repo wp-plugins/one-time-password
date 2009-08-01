@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin
 Requires at least: 2.8
 Tested up to: 2.8.2
-Stable tag: 2.1
+Stable tag: 2.2
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -121,8 +121,15 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 
 == Changelog ==
 
+= 2.2 =
+* Updated Czech translation by Tomas Mrozek
+* Checking of password validity less strict
+* Displaying 'wait' when getting new seed / default protect exceptions
+* Improved formatting of admin panel
+* Modified class constructor to get callers file name
+
 = 2.1 =
-* Added option to initialize one-time password list with one-time password
+* Added an option to initialize one-time password list with one-time password
 * When one-time passwords were exhausted a protected session was no longer protected
 * Added Czech translation by Tomas Mrozek
 
@@ -236,7 +243,6 @@ Note that:
 * Updating your WordPress user profile requires another click on the Update Profile button (cause unknown)
 * Page refreshes of protected administrative actions will be disapproved (more a feature)
 * No authorization is asked if an administrative page has not finished loading. However, the server will still check and disapprove the authorization.
-* Visiting the weblog itself while a protected session is active results in disapproving authorization
 
 == Acknowledgments ==
 
