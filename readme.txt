@@ -1,10 +1,10 @@
 ﻿=== One-Time Password ===
 Contributors: Marcel Bokhorst
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB7DGNA3MJ&lc=US&item_name=One%2dTime%20Password%20WordPress%20Plugin&item_number=Marcel%20Bokhorst&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
-Tags: login, password, security, admin, authentication, ajax
+Tags: login, password, security, admin, authentication
 Requires at least: 2.8
 Tested up to: 2.8.2
-Stable tag: 2.3
+Stable tag: 2.4
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -124,6 +124,11 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 1. The authorization window for an administrative action (optional)
 
 == Changelog ==
+
+= 2.4 =
+* Protected session ends with a logout now
+* Splitted the large 'otp_administration' function
+* Made location of .css file relative
 
 = 2.3 =
 * Added 'session_start' to class constructor
