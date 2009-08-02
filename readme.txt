@@ -24,7 +24,7 @@ Because of the usage of the [jQuery JavaScript library](http://jquery.com/ "jQue
 Please report any issue you have with this plugin on the [support page](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/ "Marcel's weblog"), so I can at least try to fix it.
 
 **If you find this plugin useful, please vote for it on the
-[WordPress Competition Blog](http://weblogtoolscollection.com/pluginblog/2009/07/22/wordpress-plugin-one-time-password/ "WordPress Competition Blog").**
+[WordPress Competition Blog](http://weblogtoolscollection.com/pluginblog/2009/07/22/wordpress-plugin-one-time-password/ "WordPress Competition Blog").** It is just one click, no login required.
 
 == Installation ==
 
