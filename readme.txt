@@ -58,7 +58,11 @@ Yes, if you plan to use a one-time password generator,
 either [on your iPhone](http://www.apptism.com/apps/otp-generator "iPhone OTP Generator") (not tried)
 or on mobile phones that support [JavaME](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "JavaME"), for example
 [j2me-otp](http://tanso.net/j2me-otp/ "j2me-otp") (tried with success) or
-[OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen")
+[OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen").
+
+If you are using a one-time password generator, you can safely generate a new password list using a one-time password 
+by entering this password in the pass-phrase field and by checking *Pass-phrase is a One-Time Password*.
+The sequence number should be entered into the *Count/sequence* field. In this case no password list will be displayed.
 
 = Are pass-phrases to generate one-time password lists stored? =
 
