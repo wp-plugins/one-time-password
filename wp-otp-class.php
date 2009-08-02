@@ -46,6 +46,7 @@ if (!class_exists('WPOneTimePassword')) {
 			add_action('init', array(&$this, 'otp_init'));
 			add_action('login_head', array(&$this, 'otp_login_head'));
 			add_action('login_form', array(&$this, 'otp_login_form'));
+			add_action('wp_logout', array(&$this, 'otp_wp_logout'));
 			if (is_admin()) {
 				add_action('admin_menu', array(&$this, 'otp_admin_menu'));
 				add_action('admin_head', array(&$this, 'otp_admin_head'));
@@ -195,7 +196,7 @@ if (!class_exists('WPOneTimePassword')) {
 
 				// Enqueue style sheet
 				$plugin_url = WP_PLUGIN_URL . '/' . basename(dirname($this->main_file));
-				wp_register_style('otp_style', $plugin_url .  '/wp-otp.css');
+				wp_register_style('otp_style', $plugin_url .  '/' . WPOneTimePassword::change_extension(basename($this->main_file), '.css'));
 				wp_enqueue_style('otp_style');
 
 				// Enqueue scripts
@@ -270,8 +271,7 @@ if (!class_exists('WPOneTimePassword')) {
 		}
 
 		// Modify admin header
-		function otp_admin_head()
-		{
+		function otp_admin_head() {
 			// Output form & jQuery if admin protection
 			if (WPOneTimePassword::otp_is_otp_session()) {
 				$otp_user = WPOneTimePassword::otp_get_current_user();
@@ -450,13 +450,18 @@ if (!class_exists('WPOneTimePassword')) {
 				$otp_user = $wpdb->escape(trim($_POST['log']));
 				$otp_pwd = $_POST['pwd'];
 				$otp_auth = WPOneTimePassword::otp_check_otp($otp_user, $otp_pwd);
-				$_SESSION[c_otp_session] = ($otp_auth != null);
+				if ($otp_auth != null)
+					$_SESSION[c_otp_session] = true;
 				return $otp_auth;
 			}
 			// Fail-safe
 			catch (Exception $e) {
 				return null;
 			}
+		}
+
+		function otp_wp_logout() {
+			$_SESSION[c_otp_session] = false;
 		}
 
 		// Register options page
@@ -477,82 +482,17 @@ if (!class_exists('WPOneTimePassword')) {
 			// Get current user
 			$otp_user = WPOneTimePassword::otp_get_current_user();
 
+			echo '<div class="wrap">';
+
 			// Render Info panel
-?>
-			<div class="wrap">
+			WPOneTimePassword::otp_render_info_panel();
 
-			<div id="otp_resources">
-			<h3><?php _e('Resources', c_otp_text_domain); ?></h3>
-			<ul>
-			<li><a href="http://wordpress.org/extend/plugins/one-time-password/other_notes/" target="_blank"><?php _e('Usage instructions', c_otp_text_domain); ?></a></li>
-			<li><a href="http://wordpress.org/extend/plugins/one-time-password/faq/" target="_blank"><?php _e('Frequently asked questions', c_otp_text_domain); ?></a></li>
-			<li><a href="http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/" target="_blank"><?php _e('Support page', c_otp_text_domain); ?></a></li>
-			<li><a href="http://blog.bokhorst.biz/about/" target="_blank"><?php _e('About the author', c_otp_text_domain); ?></a></li>
-			</ul>
-			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-			<input type="hidden" name="cmd" value="_s-xclick">
-			<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----	">
-			<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-			</form>
-			</div>
-
-			<div id="otp_admin">
-<?php
 			// Render title
+			echo '<div id="otp_admin">';
 			echo '<h2>' . __('One-Time Password Administration', c_otp_text_domain) . '</h2>';
 
 			// Render generate form
-?>
-			<hr />
-			<h3><?php _e('Generate One-Time Password list', c_otp_text_domain) ?></h3>
-			<form method="post" action="<?php echo remove_query_arg('updated', add_query_arg(c_otp_action_arg, c_otp_action_generate)); ?>">
-
-			<?php wp_nonce_field('otp-generate'); ?>
-
-			<table class="form-table">
-
-			<tr><th scope="row"><?php _e('Pass-phrase:', c_otp_text_domain) ?></th>
-			<td><input type="password" name="otp_pwd" />
-			<span class="otp_hint"><?php _e('At least 10 characters', c_otp_text_domain) ?></span></td></tr>
-
-			<tr><th scope="row"><?php _e('Confirm pass-phrase:', c_otp_text_domain) ?></th>
-			<td><input type="password" name="otp_pwd_verify" /></td></tr>
-
-			<tr><th scope="row"><?php _e('Pass-phrase is a One-Time Password:', c_otp_text_domain) ?></th>
-			<td><input type="checkbox" name="otp_initialize"</td></tr>
-
-			<tr><th scope="row"><?php _e('Count/sequence:', c_otp_text_domain) ?></th>
-			<td><input type="text" name="otp_count" value="50" id="otp_count" /></td></tr>
-
-			<tr><th scope="row"><?php _e('Seed:', c_otp_text_domain) ?></th>
-			<td><input type="text" name="otp_seed" id="otp_seed" value="<?php echo $otp_class->generateSeed(); ?>" />
-			<span class="otp_hint"><?php _e('Only alphanumeric characters', c_otp_text_domain) ?></span></td></tr>
-
-			<tr><th scope="row" />
-			<td><a id="otp_seed_new" href="#"><?php _e('New', c_otp_text_domain) ?></a></td></tr>
-
-			<tr><th scope="row"><?php _e('Algorithm:', c_otp_text_domain) ?></th>
-			<td><select name="otp_algorithm">
-<?php
-			// List available algorithms
-			$aa = $otp_class->getAvailableAlgorithms();
-			for ($i = 0; $i < count($aa); $i++) {
-				$sel = '';
-				// Select md5 by default
-				if ($aa[$i] == 'md5')
-					$sel = ' selected="selected"';
-				echo '<option value="' . $aa[$i] . '"' . $sel . '>' . $aa[$i] .'</option>';
-			}
-?>
-			</select></td></tr>
-
-			</table>
-
-			<p><strong><?php _e('Generate a One-Time Password list in a trustworthy environment only', c_otp_text_domain) ?></strong></p>
-			<p><em><?php _e('The current One-Time Password list will be revoked automatically', c_otp_text_domain) ?></em></p>
-			<p class="submit"><input type="submit" class="button-primary" value="<?php _e('Generate', c_otp_text_domain) ?>" /></p>
-			</form>
-<?php
+			WPOneTimePassword::otp_render_generate_form();
 
 			// Handle generate action
 			if (isset($_REQUEST[c_otp_action_arg]) && $_REQUEST[c_otp_action_arg] == c_otp_action_generate) {
@@ -633,55 +573,8 @@ if (!class_exists('WPOneTimePassword')) {
 						$wpdb->print_error();
 
 					// Render password list / print form
-					if (!$_POST['otp_initialize']) {
-						$otp_time = $wpdb->get_var("SELECT generated FROM " . $otp_table . " WHERE user='" . $otp_user . "'");
-?>
-						<hr />
-						<h3><?php _e('One-Time Password list', c_otp_text_domain) ?></h3>
-						<form id="otp_form_print" method="post" action="#">
-						<div id="otp_table">
-
-						<table class="otp_legend">
-						<tr><th scope="row"><?php _e('User:', c_otp_text_domain) ?></th><td><?php echo $otp_user; ?></td></tr>
-						<tr><th scope="row"><?php _e('Seed:', c_otp_text_domain) ?></th><td><?php echo $otp_seed; ?></td></tr>
-						<tr><th scope="row"><?php _e('Algorithm:', c_otp_text_domain) ?></th><td><?php echo $otp_algorithm; ?></td></tr>
-						<tr><th scope="row"><?php _e('Generated:', c_otp_text_domain) ?></th><td><?php echo $otp_time; ?></td></tr>
-						</table>
-
-						<table id="otp_list">
-						<th><?php _e('Seq', c_otp_text_domain) ?></th>
-						<th><?php _e('Hex', c_otp_text_domain) ?></th>
-						<th><?php _e('Words', c_otp_text_domain) ?></th>
-						<th><?php _e('Seq', c_otp_text_domain) ?></th>
-						<th><?php _e('Hex', c_otp_text_domain) ?></th>
-						<th><?php _e('Words', c_otp_text_domain) ?></th>
-<?php
-						// Print passwords
-						$h = round($otp_count / 2.0);
-						for ($i = 1; $i <= $h; $i++) {
-							echo '<tr><td>' . $otp_list[$i]['sequence'] . '</td>';
-							echo '<td>' . $otp_list[$i]['hex_otp'] . '</td>';
-							echo '<td>' . $otp_list[$i]['words_otp'] . '</td>';
-
-							if ($i + $h < count($otp_list)) {
-								echo '<td>' . $otp_list[$i + $h]['sequence'] . '</td>';
-								echo '<td>' . $otp_list[$i + $h]['hex_otp'] . '</td>';
-								echo '<td>' . $otp_list[$i + $h]['words_otp'] . '</td></tr>';
-							}
-							else {
-								echo '<td>&nbsp;</td>';
-								echo '<td>&nbsp;</td>';
-								echo '<td>&nbsp;</td></tr>';
-							}
-						}
-?>
-						</table>
-
-						</div>
-						<p class="submit"><input type="submit" class="button-primary" value="<?php _e('Print', c_otp_text_domain) ?>" /></p>
-						</form>
-<?php
-					}
+					if (!$_POST['otp_initialize'])
+						WPOneTimePassword::otp_render_password_list($otp_user, $otp_list);
 				}
 			}
 
@@ -702,10 +595,104 @@ if (!class_exists('WPOneTimePassword')) {
 				}
 			}
 
+			// Render revoke form
+			WPOneTimePassword::otp_render_revoke_form($otp_user);
+
+			// Check revoke parameters
+			if (isset($_REQUEST[c_otp_action_arg]) && $_REQUEST[c_otp_action_arg] == c_otp_action_revoke)
+				if (!$_POST['otp_revoke'])
+					echo '<span class="otp_message">' . __('Select "I am sure" to revoke', c_otp_text_domain) . '</span><br />';
+
+			// Render settings form
+			WPOneTimePassword::otp_render_settings_form();
+
+			// Output footer
+			echo '</div></div>';
+
+			// Output admin jQuery
+			WPOneTimePassword::otp_output_admin_query();
+		}
+
+		function otp_render_info_panel() {
+?>
+			<div id="otp_resources">
+			<h3><?php _e('Resources', c_otp_text_domain); ?></h3>
+			<ul>
+			<li><a href="http://wordpress.org/extend/plugins/one-time-password/other_notes/" target="_blank"><?php _e('Usage instructions', c_otp_text_domain); ?></a></li>
+			<li><a href="http://wordpress.org/extend/plugins/one-time-password/faq/" target="_blank"><?php _e('Frequently asked questions', c_otp_text_domain); ?></a></li>
+			<li><a href="http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/" target="_blank"><?php _e('Support page', c_otp_text_domain); ?></a></li>
+			<li><a href="http://blog.bokhorst.biz/about/" target="_blank"><?php _e('About the author', c_otp_text_domain); ?></a></li>
+			</ul>
+			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+			<input type="hidden" name="cmd" value="_s-xclick">
+			<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----	">
+			<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+			</form>
+			</div>
+<?php
+		}
+
+		function otp_render_generate_form() {
+			$otp_class = new otp();
+?>
+			<hr />
+			<h3><?php _e('Generate One-Time Password list', c_otp_text_domain) ?></h3>
+			<form method="post" action="<?php echo remove_query_arg('updated', add_query_arg(c_otp_action_arg, c_otp_action_generate)); ?>">
+
+			<?php wp_nonce_field('otp-generate'); ?>
+
+			<table class="form-table">
+
+			<tr><th scope="row"><?php _e('Pass-phrase:', c_otp_text_domain) ?></th>
+			<td><input type="password" name="otp_pwd" />
+			<span class="otp_hint"><?php _e('At least 10 characters', c_otp_text_domain) ?></span></td></tr>
+
+			<tr><th scope="row"><?php _e('Confirm pass-phrase:', c_otp_text_domain) ?></th>
+			<td><input type="password" name="otp_pwd_verify" /></td></tr>
+
+			<tr><th scope="row"><?php _e('Pass-phrase is a One-Time Password:', c_otp_text_domain) ?></th>
+			<td><input type="checkbox" name="otp_initialize"</td></tr>
+
+			<tr><th scope="row"><?php _e('Count/sequence:', c_otp_text_domain) ?></th>
+			<td><input type="text" name="otp_count" value="50" id="otp_count" /></td></tr>
+
+			<tr><th scope="row"><?php _e('Seed:', c_otp_text_domain) ?></th>
+			<td><input type="text" name="otp_seed" id="otp_seed" value="<?php echo $otp_class->generateSeed(); ?>" />
+			<span class="otp_hint"><?php _e('Only alphanumeric characters', c_otp_text_domain) ?></span></td></tr>
+
+			<tr><th scope="row" />
+			<td><a id="otp_seed_new" href="#"><?php _e('New', c_otp_text_domain) ?></a></td></tr>
+
+			<tr><th scope="row"><?php _e('Algorithm:', c_otp_text_domain) ?></th>
+			<td><select name="otp_algorithm">
+<?php
+			// List available algorithms
+			$aa = $otp_class->getAvailableAlgorithms();
+			for ($i = 0; $i < count($aa); $i++) {
+				$sel = '';
+				// Select md5 by default
+				if ($aa[$i] == 'md5')
+					$sel = ' selected="selected"';
+				echo '<option value="' . $aa[$i] . '"' . $sel . '>' . $aa[$i] .'</option>';
+			}
+?>
+			</select></td></tr>
+
+			</table>
+
+			<p><strong><?php _e('Generate a One-Time Password list in a trustworthy environment only', c_otp_text_domain) ?></strong></p>
+			<p><em><?php _e('The current One-Time Password list will be revoked automatically', c_otp_text_domain) ?></em></p>
+			<p class="submit"><input type="submit" class="button-primary" value="<?php _e('Generate', c_otp_text_domain) ?>" /></p>
+			</form>
+<?php
+		}
+
+		function otp_render_revoke_form($otp_user) {
 			// Check for existing data
+			global $wpdb;
+			$otp_table = $wpdb->prefix . c_otp_table_name;
 			$otp_row = $wpdb->get_row("SELECT seed, algorithm, sequence, generated, last_login FROM " . $otp_table . " WHERE user='" . $otp_user . "'");
 			if ($otp_row != null) {
-				// Render revoke form
 ?>
 				<hr />
 				<h3><?php _e('Revoke One-Time Password list', c_otp_text_domain) ?></h3>
@@ -739,13 +726,64 @@ if (!class_exists('WPOneTimePassword')) {
 				</form>
 <?php
 			}
+		}
 
-			// Check revoke parameters
-			if (isset($_REQUEST[c_otp_action_arg]) && $_REQUEST[c_otp_action_arg] == c_otp_action_revoke)
-				if (!$_POST['otp_revoke'])
-					echo '<span class="otp_message">' . __('Select "I am sure" to revoke', c_otp_text_domain) . '</span><br />';
+		function otp_render_password_list($otp_user, $otp_list) {
+			global $wpdb;
+			$otp_table = $wpdb->prefix . c_otp_table_name;
+			$sql = "SELECT seed, algorithm, generated FROM " . $otp_table . " WHERE user='" . $otp_user . "'";
+			$otp_row = $wpdb->get_row($sql);
+			if ($otp_row != null) {
+?>
+				<hr />
+				<h3><?php _e('One-Time Password list', c_otp_text_domain) ?></h3>
+				<form id="otp_form_print" method="post" action="#">
+				<div id="otp_table">
 
-			// Render settings form
+				<table class="otp_legend">
+				<tr><th scope="row"><?php _e('User:', c_otp_text_domain) ?></th><td><?php echo $otp_user; ?></td></tr>
+				<tr><th scope="row"><?php _e('Seed:', c_otp_text_domain) ?></th><td><?php echo $otp_row->seed; ?></td></tr>
+				<tr><th scope="row"><?php _e('Algorithm:', c_otp_text_domain) ?></th><td><?php echo $otp_row->algorithm; ?></td></tr>
+				<tr><th scope="row"><?php _e('Generated:', c_otp_text_domain) ?></th><td><?php echo $otp_row->generated; ?></td></tr>
+				</table>
+
+				<table id="otp_list">
+				<th><?php _e('Seq', c_otp_text_domain) ?></th>
+				<th><?php _e('Hex', c_otp_text_domain) ?></th>
+				<th><?php _e('Words', c_otp_text_domain) ?></th>
+				<th><?php _e('Seq', c_otp_text_domain) ?></th>
+				<th><?php _e('Hex', c_otp_text_domain) ?></th>
+				<th><?php _e('Words', c_otp_text_domain) ?></th>
+	<?php
+				// Print passwords
+				$h = round((count($otp_list) - 1) / 2.0);
+				for ($i = 1; $i <= $h; $i++) {
+					echo '<tr><td>' . $otp_list[$i]['sequence'] . '</td>';
+					echo '<td>' . $otp_list[$i]['hex_otp'] . '</td>';
+					echo '<td>' . $otp_list[$i]['words_otp'] . '</td>';
+
+					if ($i + $h < count($otp_list)) {
+						echo '<td>' . $otp_list[$i + $h]['sequence'] . '</td>';
+						echo '<td>' . $otp_list[$i + $h]['hex_otp'] . '</td>';
+						echo '<td>' . $otp_list[$i + $h]['words_otp'] . '</td></tr>';
+					}
+					else {
+						echo '<td>&nbsp;</td>';
+						echo '<td>&nbsp;</td>';
+						echo '<td>&nbsp;</td></tr>';
+					}
+				}
+	?>
+				</table>
+
+				</div>
+				<p class="submit"><input type="submit" class="button-primary" value="<?php _e('Print', c_otp_text_domain) ?>" /></p>
+				</form>
+<?php
+			}
+		}
+
+		function otp_render_settings_form() {
 			if (current_user_can('manage_options')) {
 				$otp_strict = get_option(c_otp_option_strict) ? "checked" : "unchecked";
 				$otp_cleanup = get_option(c_otp_option_cleanup) ? "checked" : "unchecked";
@@ -784,11 +822,9 @@ if (!class_exists('WPOneTimePassword')) {
 				<hr />
 <?php
 			}
+		}
 
-			// Output footer
-			echo '</div></div>';
-
-			// Output admin jQuery
+		function otp_output_admin_query() {
 ?>
 			<script type="text/javascript">
 			//* <![CDATA[ */
@@ -977,6 +1013,11 @@ if (!class_exists('WPOneTimePassword')) {
 			// Fallback to other handlers
 			return null;
 		}
+
+		function change_extension($filename, $new_extension) {
+			return preg_replace('/\..+$/', $new_extension, $filename);
+		}
+
 	}
 }
 

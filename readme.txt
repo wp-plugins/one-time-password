@@ -1,10 +1,10 @@
 ﻿=== One-Time Password ===
 Contributors: Marcel Bokhorst
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB7DGNA3MJ&lc=US&item_name=One%2dTime%20Password%20WordPress%20Plugin&item_number=Marcel%20Bokhorst&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
-Tags: login, password, security, admin, authentication, ajax
+Tags: login, password, security, admin, authentication
 Requires at least: 2.8
 Tested up to: 2.8.2
-Stable tag: 2.3
+Stable tag: 2.4
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -58,7 +58,11 @@ Yes, if you plan to use a one-time password generator,
 either [on your iPhone](http://www.apptism.com/apps/otp-generator "iPhone OTP Generator") (not tried)
 or on mobile phones that support [JavaME](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "JavaME"), for example
 [j2me-otp](http://tanso.net/j2me-otp/ "j2me-otp") (tried with success) or
-[OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen")
+[OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen") (not tried).
+
+If you are using a one-time password generator, you can safely generate a new password list using a one-time password 
+by entering this password in the pass-phrase field and by checking *Pass-phrase is a One-Time Password*.
+The sequence number should be entered into the *Count/sequence* field. In this case no password list will be displayed.
 
 = Are pass-phrases to generate one-time password lists stored? =
 
@@ -120,6 +124,11 @@ You can write a comment on the [plugin homepage](http://blog.bokhorst.biz/2200/c
 1. The authorization window for an administrative action (optional)
 
 == Changelog ==
+
+= 2.4 =
+* Protected session ends with a logout now
+* Splitted the large 'otp_administration' function
+* Made location of .css file relative
 
 = 2.3 =
 * Added 'session_start' to class constructor
