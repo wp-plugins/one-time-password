@@ -163,7 +163,7 @@ if (!class_exists('WPOneTimePassword')) {
 					$otp_pwd = $_REQUEST[c_otp_qa_authorization];
 					if (WPOneTimePassword::otp_check_otp($otp_user, $otp_pwd) == null) {
 						// Not authorized
-						$msg = '<div id="otp_unauthorized"><span>' . __('Authorization failed') . '</span>';
+						$msg = '<strong>' . __('Authorization failed') . '</strong>';
 						$msg .= '<br /><br />Uri: ' . $uri;
 						$msg .= '<br />User: ' . $otp_user;
 						$msg .= '<br />Password: ' . $otp_pwd;
@@ -451,8 +451,7 @@ if (!class_exists('WPOneTimePassword')) {
 		function otp_authenticate($user) {
 			try {
 				// Get data
-				global $wpdb;
-				$otp_user = $wpdb->escape(trim($_POST['log']));
+				$otp_user = sanitize_user($_POST['log']);
 				$otp_pwd = $_POST['pwd'];
 				$otp_auth = WPOneTimePassword::otp_check_otp($otp_user, $otp_pwd);
 				if ($otp_auth != null)
@@ -526,10 +525,10 @@ if (!class_exists('WPOneTimePassword')) {
 				if ($otp_pwd != $otp_verify)
 					$otp_msg[] = __('Pass-phrases do not match', c_otp_text_domain);
 				// Check seed
-				if (!$otp_class->isValidSeed($otp_seed) || $otp_seed != $wpdb->escape($otp_seed))
+				if (!$otp_class->isValidSeed($otp_seed))
 					$otp_msg[] = __('Invalid seed', c_otp_text_domain);
 				if ($_POST['otp_initialize']) {
-					$old_seed = $wpdb->get_var("SELECT seed FROM " . $otp_table . " WHERE user='" . $otp_user . "'");
+					$old_seed = $wpdb->get_var("SELECT seed FROM " . $otp_table . " WHERE user='" . $wpdb->escape($otp_user) . "'");
 					if ($otp_seed == $old_seed)
 						$otp_msg[] = __('Invalid seed', c_otp_text_domain);
 				}
@@ -540,12 +539,7 @@ if (!class_exists('WPOneTimePassword')) {
 				if ($otp_count <= 0 || $otp_count > 1000)
 					$otp_msg[] = __('Invalid count', c_otp_text_domain);
 
-				if (count($otp_msg)) {
-					// Display errors
-					foreach ($otp_msg as $msg)
-						echo '<span class="otp_admin_error">' . $msg . '</span><br />';
-				}
-				else {
+				if (count($otp_msg) == 0) {
 					// Initialize password list
 					if ($_POST['otp_initialize']) {
 						$otp_seq = $otp_data['next_sequence'];
@@ -559,18 +553,18 @@ if (!class_exists('WPOneTimePassword')) {
 					}
 
 					// Delete old data
-					$sql = "DELETE FROM " . $otp_table . " WHERE user='" . $otp_user . "'";
+					$sql = "DELETE FROM " . $otp_table . " WHERE user='" . $wpdb->escape($otp_user) . "'";
 					if ($wpdb->query($sql) === false)
 						$wpdb->print_error();
 
 					// Store new data
 					$sql = "INSERT INTO " . $otp_table .
 						" (user, seed, algorithm, sequence, hash, generated) VALUES (" .
-						"'" . $otp_user . "', " .
-						"'" . $otp_seed . "', " .
-						"'" . $otp_algorithm . "', " .
-						$otp_seq . ", " .
-						"'" . $otp_hash . "',  " .
+						"'" . $wpdb->escape($otp_user) . "', " .
+						"'" . $wpdb->escape($otp_seed) . "', " .
+						"'" . $wpdb->escape($otp_algorithm) . "', " .
+						intval($otp_seq) . ", " .
+						"'" . $wpdb->escape($otp_hash) . "',  " .
 						"now());";
 					if ($wpdb->query($sql) === false)
 						$wpdb->print_error();
@@ -584,6 +578,12 @@ if (!class_exists('WPOneTimePassword')) {
 			// Render generate form
 			WPOneTimePassword::otp_render_generate_form();
 
+			if (count($otp_msg)) {
+				// Display errors
+				foreach ($otp_msg as $msg)
+					echo '<span class="otp_admin_error">' . $msg . '</span><br />';
+			}
+
 			// Handle revoke action
 			if (isset($_REQUEST[c_otp_action_arg]) && $_REQUEST[c_otp_action_arg] == c_otp_action_revoke) {
 				// Security check
@@ -595,7 +595,7 @@ if (!class_exists('WPOneTimePassword')) {
 				// Revoke
 				if ($otp_revoke) {
 					// Delete data
-					$sql = "DELETE FROM " . $otp_table . " WHERE user='" . $otp_user . "'";
+					$sql = "DELETE FROM " . $otp_table . " WHERE user='" . $wpdb->escape($otp_user) . "'";
 					if ($wpdb->query($sql) === false)
 						$wpdb->print_error();
 				}
@@ -697,7 +697,7 @@ if (!class_exists('WPOneTimePassword')) {
 			// Check for existing data
 			global $wpdb;
 			$otp_table = $wpdb->prefix . c_otp_table_name;
-			$otp_row = $wpdb->get_row("SELECT seed, algorithm, sequence, generated, last_login FROM " . $otp_table . " WHERE user='" . $otp_user . "'");
+			$otp_row = $wpdb->get_row("SELECT seed, algorithm, sequence, generated, last_login FROM " . $otp_table . " WHERE user='" . $wpdb->escape($otp_user) . "'");
 			if ($otp_row != null) {
 ?>
 				<hr />
@@ -737,7 +737,7 @@ if (!class_exists('WPOneTimePassword')) {
 		function otp_render_password_list($otp_user, $otp_list) {
 			global $wpdb;
 			$otp_table = $wpdb->prefix . c_otp_table_name;
-			$sql = "SELECT seed, algorithm, generated FROM " . $otp_table . " WHERE user='" . $otp_user . "'";
+			$sql = "SELECT seed, algorithm, generated FROM " . $otp_table . " WHERE user='" . $wpdb->escape($otp_user) . "'";
 			$otp_row = $wpdb->get_row($sql);
 			if ($otp_row != null) {
 ?>
@@ -888,9 +888,8 @@ if (!class_exists('WPOneTimePassword')) {
 			if (isset($_GET[c_otp_action_arg])) {
 				// Get challenge
 				if($_GET[c_otp_action_arg] == c_otp_action_challenge) {
-					global $wpdb;
 					@header('Content-Type: text/html; charset=' . get_option('blog_charset'));
-					$otp_user = $wpdb->escape(trim($_GET[c_otp_user_arg]));
+					$otp_user = sanitize_user($_GET[c_otp_user_arg]);
 					echo WPOneTimePassword::otp_get_challenge($otp_user);
 					exit();
 				}
@@ -943,30 +942,29 @@ if (!class_exists('WPOneTimePassword')) {
 		// Helper get allow defaults
 		function otp_get_allow_default() {
 			$allow = array();
-			$allow[] = '/';									// Main
-			$allow[] = '/wp-admin/';						// Dashboard
-			$allow[] = '/wp-admin/index.php';				// Dashboard
-			$allow[] = '/wp-admin/post-new.php';			// New post
-			$allow[] = '/wp-admin/admin-ajax.php';			// Ajax
+			$allow[] = '/';					// Main
+			$allow[] = '/wp-admin/';			// Dashboard
+			$allow[] = '/wp-admin/index.php';		// Dashboard
+			$allow[] = '/wp-admin/post-new.php';		// New post
+			$allow[] = '/wp-admin/admin-ajax.php';		// Ajax
 			$allow[] = '/wp-admin/index-extra.php?jax=*';	// RSS feeds
-			$allow[] = '/wp-login.php';						// Login
+			$allow[] = '/wp-login.php';			// Login
 			$allow[] = '/wp-login.php?action=*&_wpnonce=*';	// Logout
 			return implode("\n", $allow);
 		}
 
 		// Helper get current user
 		function otp_get_current_user() {
-			global $wpdb;
 			global $current_user;
 			get_currentuserinfo();
-			return $wpdb->escape($current_user->user_login);
+			return sanitize_user($current_user->user_login);
 		}
 
 		// Helper check if otp is enabled
 		function otp_has_valid_list($otp_user) {
 			global $wpdb;
 			$otp_table = $wpdb->prefix . c_otp_table_name;
-			$otp_row = $wpdb->get_row("SELECT sequence FROM " . $otp_table . " WHERE user='" . $otp_user . "'");
+			$otp_row = $wpdb->get_row("SELECT sequence FROM " . $otp_table . " WHERE user='" . $wpdb->escape($otp_user) . "'");
 			return ($otp_row != null && $otp_row->sequence > 0);
 		}
 
@@ -980,7 +978,7 @@ if (!class_exists('WPOneTimePassword')) {
 			// Get data
 			global $wpdb;
 			$otp_table = $wpdb->prefix . c_otp_table_name;
-			$otp_row = $wpdb->get_row("SELECT seed, algorithm, sequence FROM " . $otp_table . " WHERE user='" . $otp_user . "'");
+			$otp_row = $wpdb->get_row("SELECT seed, algorithm, sequence FROM " . $otp_table . " WHERE user='" . $wpdb->escape($otp_user) . "'");
 
 			// Create challenge
 			if ($otp_row != null && $otp_row->sequence >= 0) {
@@ -995,7 +993,7 @@ if (!class_exists('WPOneTimePassword')) {
 		function otp_check_otp($otp_user, $otp_pwd) {
 			global $wpdb;
 			$otp_table = $wpdb->prefix . c_otp_table_name;
-			$otp_row = $wpdb->get_row('SELECT seed, algorithm, sequence, hash FROM ' . $otp_table . " WHERE user='" . $otp_user . "'");
+			$otp_row = $wpdb->get_row('SELECT seed, algorithm, sequence, hash FROM ' . $otp_table . " WHERE user='" . $wpdb->escape($otp_user) . "'");
 
 			// Check data
 			if ($otp_row != null && $otp_row->sequence >= 0) {

@@ -4,7 +4,7 @@
  * (a PHP implementation of the one-time password system as specified in RFC 2289)
  *
  * @package		php-otp
- * @version		1.0.2
+ * @version		1.0.3
  * @author		Tomas Mrozek <mail@cascaval.com>
  * @copyright	Copyright (C) 2009 Tomas Mrozek
  * @license		LGPLv3 (lgpl.txt)
@@ -14,24 +14,24 @@
 
 class otp {
 	/**
-	 * @var	array		array of hash algorithms available
+	 * @var	array			array of hash algorithms available
 	 */
-	private	$availableAlgorithms = array();
+	protected	$availableAlgorithms = array();
 
 	/**
-	 * @var	string	default hash algorithm to be used
+	 * @var	string		default hash algorithm to be used
 	 */
-	private $defaultAlgorithm = 'md5';
+	protected $defaultAlgorithm = 'md5';
 
 	/**
-	 * @var	integer	default number of sequences to be produced during generation of one-time passwords
+	 * @var	integer		default number of sequences to be produced during generation of one-time passwords
 	 */
-	private $defaultSequenceCount = 100;
+	protected $defaultSequenceCount = 100;
 
 	/**
-	 * @var	array		dictionary to be used for creating of six-word representation of one-time passwords
+	 * @var	array			dictionary to be used for creating of six-word representation of one-time passwords
 	 */
-	private $dictionary = array();
+	protected $dictionary = array();
 
 
 	/**
@@ -90,7 +90,7 @@ class otp {
 	 *
 	 * @param		string		a six-word or hexadecimal representation of an otp
 	 * @param		string		new seed that the user used for generation of the otp
-	 * @param		string		old seed that the user was using
+	 * @param		array			a list of old seeds that the user has used before
 	 * @param		integer		sequence number
 	 * @param		string		hash algorithm
 	 * @return	array			an array containing the one-time password forms and other data:
@@ -99,8 +99,12 @@ class otp {
 	 *										'algorithm' => algorithm used (it's just a backward reference)
 	 *										'previous_hex_otp' => hexadecimal form of the previous sequence (= $sequenceCount) one-time password
 	 */
-	public function reinitializeOtp($userInput = false, $newSeed = false, $oldSeed = false, $sequenceCount = false, $algorithm = false) {
-		if(strcasecmp($newSeed, $oldSeed) === 0) return false;
+	public function reinitializeOtp($userInput = false, $newSeed = false, $oldSeeds = false, $sequenceCount = false, $algorithm = false) {
+		if(is_string($oldSeeds)) $oldSeeds = array($oldSeeds);
+		if(!is_array($oldSeeds)) return false;
+
+		// Check that the new seed hasn't been used before
+		if($this->isValidSeed($newSeed) === false || in_array($newSeed, $oldSeeds)) return false;
 
 		return $this->initializeOtp($userInput, $newSeed, $sequenceCount, $algorithm);
 	}
@@ -135,7 +139,7 @@ class otp {
 		$masterHexOtp = $this->reformatHexOtp($masterHexOtp);
 
 		// Test the user input as a six-word one-time password
-		if($output['result'] == false && $this->isWordsOtp($userInput) === true) {
+		if($output['result'] === false && $this->isWordsOtp($userInput) === true) {
 			$otp = $this->convertOtp($userInput, 'words', 'bin');
 			if($masterHexOtpType == 'previous') $otp = $this->binaryOtp($otp, $algorithm);
 			$hexOtp = $this->convertOtp($otp, 'bin', 'hex');
@@ -144,7 +148,7 @@ class otp {
 			if(strcasecmp($hexOtp, $masterHexOtp) === 0) {
 				$output['result'] = true;
 				$output['otp'] = array(
-					'next_sequence' => ($sequence - 1),
+					'next_sequence' => ($sequence > 0 ? ($sequence - 1) : false),
 					'algorithm' => $algorithm,
 					'previous_hex_otp' => $this->convertOtp($userInput, 'words', 'hex'),
 				);
@@ -152,7 +156,7 @@ class otp {
 		}
 
 		// Test the user input as a hexadecimal one-time password
-		if($output['result'] == false && $this->isHexOtp($userInput) === true) {
+		if($output['result'] === false && $this->isHexOtp($userInput) === true) {
 			$otp = $this->convertOtp($userInput, 'hex', 'bin');
 			if($masterHexOtpType == 'previous') $otp = $this->binaryOtp($otp, $algorithm);
 			$hexOtp = $this->convertOtp($otp, 'bin', 'hex');
@@ -161,7 +165,7 @@ class otp {
 			if(strcasecmp($hexOtp, $masterHexOtp) === 0) {
 				$output['result'] = true;
 				$output['otp'] = array(
-					'next_sequence' => ($sequence - 1),
+					'next_sequence' => ($sequence > 0 ? ($sequence - 1) : false),
 					'algorithm' => $algorithm,
 					'previous_hex_otp' => $this->reformatHexOtp($userInput),
 				);
@@ -173,7 +177,7 @@ class otp {
 
 
 	/**
-	 * Generates a one-time password
+	 * Generates an one-time password
 	 *
 	 * @param		string		secret pass-phrase provided by user
 	 * @param		string		seed that will be concatenated with the secret pass-phrase
@@ -405,7 +409,7 @@ class otp {
 					$hexString .= $partHex;
 				}
 
-				// Convert hexadecimal string to the binary one-time password
+				// Convert a hexadecimal string to the binary one-time password
 				$otp = pack('H*', $hexString);
 			break;
 
@@ -768,7 +772,7 @@ class otp {
 			}
 			
 			// Although very unlikely, it might happen that a good seed is not found in
-			// 1000 tries - in that case return false
+			// 1000 tries - in that case return FALSE
 			$x++;
 			if($x > 1000) return false;
 		}

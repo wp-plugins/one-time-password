@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin, authentication
 Requires at least: 2.8
 Tested up to: 2.8.2
-Stable tag: 2.5
+Stable tag: 2.5.1
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -128,6 +128,15 @@ You can write a comment on the [support homepage](http://blog.bokhorst.biz/2200/
 1. The authorize window for an administrative action (optional)
 
 == Changelog ==
+
+= 2.5.1 =
+* Restored hard-coded style of unauthorized message
+* Moved generate error message back to correct place
+* Included minified versions of the URL Utils and SimpleModal jQuery plugins
+* Upgraded SimpleModal jQuery plugin to version 1.3
+* Upgraded PHP One-Time Passwords class to version 1.0.3
+* Using *$wpdb->escape* in SQL statements only to prevent mistakes
+* Calling *sanitize_user* for user names
 
 = 2.5 =
 * Better options for custom styling, see [faq](http://wordpress.org/extend/plugins/one-time-password/faq/ "Faq") for details
@@ -284,3 +293,4 @@ by *Ben Alman* and published under the MIT License
 by *Eric Martin* and published both under the GNU General Public License and the MIT License
 
 All licenses are [GPL-Compatible Free Software Licenses](http://www.gnu.org/philosophy/license-list.html#GPLCompatibleLicenses "GPL compatible").
+
