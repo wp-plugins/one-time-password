@@ -105,10 +105,6 @@
 	padding: 10px;
 }
 
-#otp_unauthorized span {
-	font-weight: bold;
-}
-
 /* Resources info panel */
 #otp_resources_panel {
 	float: right;
