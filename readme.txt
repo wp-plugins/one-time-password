@@ -1,4 +1,4 @@
-ï»¿=== One-Time Password ===
+=== One-Time Password ===
 Contributors: Marcel Bokhorst
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB7DGNA3MJ&lc=US&item_name=One%2dTime%20Password%20WordPress%20Plugin&item_number=Marcel%20Bokhorst&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: login, password, security, admin, authentication
@@ -6,11 +6,11 @@ Requires at least: 2.8
 Tested up to: 2.8.2
 Stable tag: 2.5.1
 
-One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafÃ©s.
+One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
 == Description ==
 
-This simple to use plugin enables you to login to your WordPress weblog using passwords which are valid for one session only. One-time passwords prevent stealing of your main WordPress password in less trustworthy environments, like internet cafÃ©s, for example by keyloggers. The one-time password system conforms to [RFC 2289](http://tools.ietf.org/html/rfc2289 "RFC 2289") of the [Internet Engineering Task Force](http://www.ietf.org/ "IETF") (IETF).
+This simple to use plugin enables you to login to your WordPress weblog using passwords which are valid for one session only. One-time passwords prevent stealing of your main WordPress password in less trustworthy environments, like internet cafés, for example by keyloggers. The one-time password system conforms to [RFC 2289](http://tools.ietf.org/html/rfc2289 "RFC 2289") of the [Internet Engineering Task Force](http://www.ietf.org/ "IETF") (IETF).
 
 *Version 2 of this plugin has a new option to protect administrative actions by one-time passwords. This option is disabled by default and only available when you logged-in with a one-time password. It is possible to define exceptions. The default exceptions are viewing the dashboard, adding a post (but not saving it) and logging out.*
 
@@ -56,7 +56,7 @@ No, if you plan to use a printed one-time password list only.
 
 Yes, if you plan to use a one-time password generator, 
 either [on your iPhone](http://www.apptism.com/apps/otp-generator "iPhone OTP Generator") (not tried)
-or on mobile phones that support [JavaME](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "JavaME"), for example
+or on mobile phones that support [JavaME](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "JavaME"), for example using
 [j2me-otp](http://tanso.net/j2me-otp/ "j2me-otp") (tried with success) or
 [OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen") (not tried).
 
