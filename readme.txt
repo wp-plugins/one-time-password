@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin, authentication
 Requires at least: 2.8
 Tested up to: 2.8.3
-Stable tag: 2.5.1
+Stable tag: 2.5.2
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -129,9 +129,12 @@ You can write a comment on the [support homepage](http://blog.bokhorst.biz/2200/
 
 == Changelog ==
 
+= 2.5.2 =
+* Added Chinese (zh_CN) and Taiwanese (zh_TW) translation by *Vikingzheng*
+
 = 2.5.1 =
 * Restored hard-coded style of unauthorized message
-* Moved generate error message back to correct place
+* Moved generate error messages back to correct place
 * Included minified versions of the URL Utils and SimpleModal jQuery plugins
 * Upgraded SimpleModal jQuery plugin to version 1.3
 * Upgraded PHP One-Time Passwords class to version 1.0.3
@@ -143,29 +146,29 @@ You can write a comment on the [support homepage](http://blog.bokhorst.biz/2200/
 * Moved password list to the top for clarity
 
 = 2.4 =
-* Protected session ends with logout now
-* Splitted the large 'otp_administration' function
+* Ending protected session with logout
+* Splitted the large *otp_administration* function
 * Made location of .css file relative
 
 = 2.3 =
-* Added 'session_start' to class constructor
+* Added *session_start* to class constructor
 
 = 2.2 =
-* Updated Czech translation by Tomas Mrozek
+* Updated Czech translation by *Tomas Mrozek*
 * Checking of password validity less strict
-* Displaying 'wait' when getting new seed / default protect exceptions
+* Displaying *wait* when getting new seed / default protect exceptions
 * Improved formatting of admin panel
 * Modified class constructor to get callers file name
 
 = 2.1 =
-* Added an option to initialize one-time password list with one-time password
-* When one-time passwords were exhausted a protected session was no longer protected
-* Added Czech translation by Tomas Mrozek
+* **Added an option to initialize a one-time password list with a one-time password**
+* Continuing session protecting after exhausting one-time passwords
+* Added Czech translation by *Tomas Mrozek*
 
 = 2.0 =
 * Added resources info panel
 * **Added protection for admin actions with one-time passwords**
-* Added checks for prerequisites (required WordPress functions)
+* Added checks for required WordPress functions
 * Updated Dutch/Flemish translations
 * Updated documentation
 * Created class for better compatibility
@@ -173,53 +176,53 @@ You can write a comment on the [support homepage](http://blog.bokhorst.biz/2200/
 * Moved to old-style JavaScript comments
 * Made JavaScript compliant with [XHTML](http://en.wikipedia.org/wiki/XHTML "XHTML")
 * Displaying notices on the admin menu too
-* Using new-style 'option_page=options'
-* Moved rendering of admin notices to 'admin_footer'
-* Removing 'otp_authorization' query arg from url
+* Using new-style *option_page=options*
+* Moved rendering of admin notices to *admin_footer*
+* Removing *otp_authorization* query arg from url
 
 = 1.4 =
 * Defined constants
 * Fixed odd number of passwords
-* Update translations
-* Check WordPress version on activate
+* Updated translations
+* Checking WordPress version on activate
 * Removed hard coded paths for better compatibility
 * Updated the [faq](http://wordpress.org/extend/plugins/one-time-password/faq/ "Faq"): what-if one-time password list lost
 * Updated the [usage instructions](http://wordpress.org/extend/plugins/one-time-password/other_notes/ "Other Notes"): do not print one-time password list with url
 
 = 1.3 =
-* Renamed query arg 'action' to 'otp_action' for better compatibility
+* Renamed query arg *action* to *otp_action* for better compatibility
 
 = 1.2 =
 * Update for WordPress MU
 
 = 1.1 =
-* Check for PHP version 5
-* Admin notice uses standard style now
+* Checking for PHP version 5
+* Using standard WordPress style for admin notices
 
 = 1.0 =
-* Only load styles and scripts when necessary
-* Remove leading/trailing spaces user name
-* Show sequence number within challenge bold and somewhat larger
+* Loading styles and scripts when necessary only
+* Removing leading/trailing spaces of user name
+* Showing sequence number within challenge bold and somewhat larger
 * Added input field to choose number of passwords
-* Focus on pass-phrase field
+* Setting default focus on pass-phrase field
 * Minor code improvements, mostly comments
 
 = 0.5 =
-* Added text domain to 'Save' text
+* Added text domain to *Save* text
 * Changed default algorithm to md5
 * Added user name and generated time to printable one-time password table
-* Settings only accessible to users with role 'manage_options' (administrators)
+* Settings only accessible to users with role *manage_options* (administrators)
 * Modified user level of administration menu to zero
 * Ajax responses with explicit character set UTF-8
 * Updated documentation
 
 = 0.4 =
-* Register last login time
-* Renamed time column to generated
-* Catch exceptions in 'wp_authenticate' filter
-* Added ajax 'New' seed link
-* Added query arg 'action=challenge'
-* Added algorithm, sequence, registered and last login to revoke form
+* Registering last login time
+* Renamed database column *Time* to *Generated*
+* Catching exceptions in *wp_authenticate* filter
+* Added ajax *New* seed link
+* Added query arg *action=challenge*
+* Added *Algorithm*, *Sequence*, *Registered* and *Last login* to revoke form
 * Added Flemish translation (be_NL)
 * Changed background admin notice to orange-red
 * Improved formatting of the administration menu
@@ -230,7 +233,7 @@ You can write a comment on the [support homepage](http://blog.bokhorst.biz/2200/
 * Added Dutch translation
 
 = 0.2 =
-* Show admin notice if one-time password list should be generated
+* Showing admin notice if one-time password list should be generated
 * Improved documentation
 
 = 0.1 =
