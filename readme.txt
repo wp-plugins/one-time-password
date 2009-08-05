@@ -130,7 +130,7 @@ You can write a comment on the [support homepage](http://blog.bokhorst.biz/2200/
 == Changelog ==
 
 = 2.5.2 =
-* Added Chinese (zh_CN) and Taiwanese (zh_TW) translations by *Vikingzheng*
+* Added Chinese and Taiwanese translations (zh_CN/TW) by *Vikingzheng*
 * Updated documentation
 
 = 2.5.1 =
