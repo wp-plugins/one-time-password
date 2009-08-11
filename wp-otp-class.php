@@ -16,16 +16,26 @@ define('c_otp_action_allow', 'allow');
 define('c_otp_action_generate', 'generate');
 define('c_otp_action_revoke', 'revoke');
 define('c_otp_action_settings', 'settings');
+
 define('c_otp_user_arg', 'otp_user');
 define('c_otp_table_name', 'otp');
+
 define('c_otp_option_dbver', 'otp_dbver');
 define('c_otp_option_strict', 'otp_strict');
 define('c_otp_option_allow', 'otp_allow');
 define('c_otp_option_cleanup', 'otp_cleanup');
+
 define('c_otp_text_domain', 'one-time-password');
 define('c_otp_session', 'otp_session');
 define('c_otp_redirect', 'otp_redirect');
 define('c_otp_qa_authorization', 'otp_authorization');
+
+define('c_otp_meta_seed', 'otp_meta_seed');
+define('c_otp_meta_algorithm', 'otp_meta_algorithm');
+define('c_otp_meta_sequence', 'otp_meta_sequence');
+define('c_otp_meta_hash', 'otp_meta_hash');
+define('c_otp_meta_generated', 'otp_meta_generated');
+define('c_otp_meta_last_login', 'otp_meta_last_login');
 
 // Define class
 if (!class_exists('WPOneTimePassword')) {
@@ -66,29 +76,11 @@ if (!class_exists('WPOneTimePassword')) {
 		// Handle plugin activation
 		function otp_activate() {
 			global $wpdb;
-
-			// Check if table exists
+			$dbver = get_option(c_otp_option_dbver);
 			$otp_table = $wpdb->prefix . c_otp_table_name;
-			if ($wpdb->get_var("SHOW TABLES LIKE '" . $otp_table . "'") != $otp_table) {
-				// Create table
-				$sql = "CREATE TABLE " . $otp_table . " (
-					user VARCHAR(60) NOT NULL,
-					seed VARCHAR(60) NOT NULL,
-					algorithm VARCHAR(60) NOT NULL,
-					sequence INT(11) NOT NULL,
-					hash VARCHAR(60) NOT NULL,
-					generated DATETIME NOT NULL,
-					last_login DATETIME NULL,
-					UNIQUE KEY user (user));";
-				if ($wpdb->query($sql) === false)
-					$wpdb->print_error();
-
-				// Store database version
-				update_option(c_otp_option_dbver, 1);
-			}
 
 			// Update old table definition
-			else if (get_option(c_otp_option_dbver) < 1) {
+			if ($dbver && $dbver < 1) {
 				$sql = "ALTER TABLE " . $otp_table . " CHANGE COLUMN time generated DATETIME NOT NULL;";
 				if ($wpdb->query($sql) === false)
 					$wpdb->print_error();
@@ -97,24 +89,47 @@ if (!class_exists('WPOneTimePassword')) {
 					$wpdb->print_error();
 			}
 
+			// Convert data from table to user meta data
+			if ($dbver && $dbver < 2) {
+				$rows = $wpdb->get_results("SELECT * FROM " . $otp_table);
+				foreach ($rows as $row) {
+					$user = new WP_User($row->user);
+					update_usermeta($user->ID, c_otp_meta_seed, $row->seed);
+					update_usermeta($user->ID, c_otp_meta_algorithm, $row->algorithm);
+					update_usermeta($user->ID, c_otp_meta_sequence, $row->sequence + 1);
+					update_usermeta($user->ID, c_otp_meta_hash, $row->hash);
+					update_usermeta($user->ID, c_otp_meta_generated, $row->generated);
+					update_usermeta($user->ID, c_otp_meta_last_login, $row->last_login);
+				}
+
+				$sql = "DROP TABLE " . $wpdb->prefix . c_otp_table_name;
+				if ($wpdb->query($sql) === false)
+					$wpdb->print_error();
+
+				// Store database version
+				update_option(c_otp_option_dbver, 2);
+			}
+
 			// Create default allowed list
 			if (!get_option(c_otp_option_allow))
-				add_option(c_otp_option_allow, WPOneTimePassword::otp_get_allow_default());
+				add_option(c_otp_option_allow, $this->otp_get_allow_default());
 		}
 
 		// Handle plugin deactivation
 		function otp_deactivate() {
 			// Cleanup if requested
 			if (get_option(c_otp_option_cleanup)) {
-				// Check if table exists
+				// Delete data
 				global $wpdb;
-				$otp_table = $wpdb->prefix . c_otp_table_name;
-				if ($wpdb->get_var("SHOW TABLES LIKE '" . $otp_table . "'") == $otp_table) {
-					// Delete table
-					$sql = "DROP TABLE " . $otp_table . ";";
-					if ($wpdb->query($sql) === false)
-						$wpdb->print_error();
-				}
+				$sql = "DELETE FROM " . $wpdb->usermeta;
+				$sql .= " WHERE meta_key='" . c_otp_meta_seed . "'";
+				$sql .= " OR meta_key='" . c_otp_meta_algorithm . "'";
+				$sql .= " OR meta_key='" . c_otp_meta_sequence . "'";
+				$sql .= " OR meta_key='" . c_otp_meta_hash . "'";
+				$sql .= " OR meta_key='" . c_otp_meta_generated . "'";
+				$sql .= " OR meta_key='" . c_otp_meta_last_login . "'";
+				if ($wpdb->query($sql) === false)
+					$wpdb->print_error();
 
 				// Delete options
 				delete_option(c_otp_option_dbver);
@@ -137,7 +152,7 @@ if (!class_exists('WPOneTimePassword')) {
 			if (isset($_SESSION[c_otp_redirect]))
 				unset($_SESSION[c_otp_redirect]);
 			// Check if admin protection
-			else if (WPOneTimePassword::otp_is_otp_session()) {
+			else if ($this->otp_is_otp_session()) {
 				// Get uri to check
 				$uri = $_SERVER['REQUEST_URI'];
 				$question = strpos($uri, '?');
@@ -158,16 +173,19 @@ if (!class_exists('WPOneTimePassword')) {
 
 				// Check if allowed
 				if(!in_array($uri, $allow)) {
+					// Get current user
+					global $current_user;
+					get_currentuserinfo();
+
 					// Check password
-					$otp_user = WPOneTimePassword::otp_get_current_user();
-					$otp_pwd = $_REQUEST[c_otp_qa_authorization];
-					if (WPOneTimePassword::otp_check_otp($otp_user, $otp_pwd) == null) {
+					$pwd = $_REQUEST[c_otp_qa_authorization];
+					if ($this->otp_check_otp($current_user, $pwd) == null) {
 						// Not authorized
 						$msg = '<strong>' . __('Authorization failed') . '</strong>';
 						$msg .= '<br /><br />Uri: ' . $uri;
-						$msg .= '<br />User: ' . $otp_user;
-						$msg .= '<br />Password: ' . $otp_pwd;
-						$msg .= '<br />Challenge: ' . WPOneTimePassword::otp_get_challenge($otp_user);
+						$msg .= '<br />User: ' . $current_user->user_login;
+						$msg .= '<br />Password: ' . $pwd;
+						$msg .= '<br />Challenge: ' . $this->otp_get_challenge($current_user);
 						$msg .= '<br /><br /><a href="javascript:history.go(-1)">' . __('Go back') . '</a>';
 						wp_die($msg);
 					}
@@ -196,7 +214,7 @@ if (!class_exists('WPOneTimePassword')) {
 				load_plugin_textdomain(c_otp_text_domain, false, basename(dirname($this->main_file)));
 
 				// Enqueue style sheet
-				$css_name = WPOneTimePassword::otp_change_extension(basename($this->main_file), '.css');
+				$css_name = $this->otp_change_extension(basename($this->main_file), '.css');
 				if (file_exists(TEMPLATEPATH . '/' . $css_name))
 					$css_url = get_bloginfo('template_directory') . '/' . $css_name;
 				else
@@ -278,8 +296,9 @@ if (!class_exists('WPOneTimePassword')) {
 		// Modify admin header
 		function otp_admin_head() {
 			// Output form & jQuery if admin protection
-			if (WPOneTimePassword::otp_is_otp_session()) {
-				$otp_user = WPOneTimePassword::otp_get_current_user();
+			if ($this->otp_is_otp_session()) {
+				global $current_user;
+				get_currentuserinfo();
 ?>
 				<div id="otp_auth_window">
 				<a href="#" title="Close" class="modalCloseX simplemodal-close">x</a>
@@ -395,7 +414,7 @@ if (!class_exists('WPOneTimePassword')) {
 								type: 'GET',
 								data: {
 									<?php echo c_otp_action_arg; ?>: '<?php echo c_otp_action_challenge; ?>',
-									<?php echo c_otp_user_arg; ?>: '<?php echo $otp_user; ?>'
+									<?php echo c_otp_user_arg; ?>: '<?php echo $current_user->user_login; ?>'
 								},
 								dataType: 'text',
 								cache: false,
@@ -422,17 +441,20 @@ if (!class_exists('WPOneTimePassword')) {
 
 		// Modify admin footer
 		function otp_admin_footer() {
-			$otp_user = WPOneTimePassword::otp_get_current_user();
+			// Get current user
+			global $current_user;
+			get_currentuserinfo();
 
 			// Display if list should be generated
-			if (!WPOneTimePassword::otp_has_valid_list($otp_user)) {
+			$sequence = get_usermeta($current_user->ID, c_otp_meta_sequence);
+			if ($sequence <= 0) {
 				$url = admin_url('options-general.php?page=' . plugin_basename($this->main_file));
 				echo '<div class="error fade otp_admin_notice"><p>' . __('One-Time Password list', c_otp_text_domain);
 				echo ' <a href="' . $url . '">' . __('should be generated', c_otp_text_domain) . '</a></p></div>';
 			}
 
 			// Display if otp enabled
-			if (WPOneTimePassword::otp_is_otp_session()) {
+			if ($this->otp_is_otp_session()) {
 ?>
 				<div class="error fade otp_admin_notice">
 				<p><?php _e('Protected One-Time Password session', c_otp_text_domain); ?></p>
@@ -451,9 +473,9 @@ if (!class_exists('WPOneTimePassword')) {
 		function otp_authenticate($user) {
 			try {
 				// Get data
-				$otp_user = sanitize_user($_POST['log']);
-				$otp_pwd = $_POST['pwd'];
-				$otp_auth = WPOneTimePassword::otp_check_otp($otp_user, $otp_pwd);
+				$user = new WP_User(sanitize_user($_POST['log']));
+				$pwd = $_POST['pwd'];
+				$otp_auth = $this->otp_check_otp($user, $pwd);
 				if ($otp_auth != null)
 					$_SESSION[c_otp_session] = true;
 				return $otp_auth;
@@ -472,25 +494,27 @@ if (!class_exists('WPOneTimePassword')) {
 		// Register options page
 		function otp_admin_menu() {
 			if (function_exists('add_options_page'))
-				add_options_page(__('One-Time Password Administration', c_otp_text_domain), __('One-Time Password', c_otp_text_domain), 0, $this->main_file, array(&$this, 'otp_administration'));
+				add_options_page(
+					__('One-Time Password Administration', c_otp_text_domain),
+					__('One-Time Password', c_otp_text_domain),
+					0,
+					$this->main_file,
+					array(&$this, 'otp_administration'));
 		}
 
 		// Handle option page
 		function otp_administration() {
-			// Reference database
-			global $wpdb;
-			$otp_table = $wpdb->prefix . c_otp_table_name;
-
 			// Instantiate OTP
 			$otp_class = new otp();
 
 			// Get current user
-			$otp_user = WPOneTimePassword::otp_get_current_user();
+			global $current_user;
+			get_currentuserinfo();
 
 			echo '<div class="wrap">';
 
 			// Render Info panel
-			WPOneTimePassword::otp_render_info_panel();
+			$this->otp_render_info_panel();
 
 			// Render title
 			echo '<div id="otp_admin_panel">';
@@ -528,8 +552,8 @@ if (!class_exists('WPOneTimePassword')) {
 				if (!$otp_class->isValidSeed($otp_seed))
 					$otp_msg[] = __('Invalid seed', c_otp_text_domain);
 				if ($_POST['otp_initialize']) {
-					$old_seed = $wpdb->get_var("SELECT seed FROM " . $otp_table . " WHERE user='" . $wpdb->escape($otp_user) . "'");
-					if ($otp_seed == $old_seed)
+					$old_seed = get_usermeta($current_user->ID, c_otp_meta_seed);
+					if ($old_seed && $otp_seed == $old_seed)
 						$otp_msg[] = __('Invalid seed', c_otp_text_domain);
 				}
 				// Check algorithm
@@ -552,31 +576,22 @@ if (!class_exists('WPOneTimePassword')) {
 						$otp_hash = $otp_list[0]['hex_otp'];
 					}
 
-					// Delete old data
-					$sql = "DELETE FROM " . $otp_table . " WHERE user='" . $wpdb->escape($otp_user) . "'";
-					if ($wpdb->query($sql) === false)
-						$wpdb->print_error();
-
-					// Store new data
-					$sql = "INSERT INTO " . $otp_table .
-						" (user, seed, algorithm, sequence, hash, generated) VALUES (" .
-						"'" . $wpdb->escape($otp_user) . "', " .
-						"'" . $wpdb->escape($otp_seed) . "', " .
-						"'" . $wpdb->escape($otp_algorithm) . "', " .
-						intval($otp_seq) . ", " .
-						"'" . $wpdb->escape($otp_hash) . "',  " .
-						"now());";
-					if ($wpdb->query($sql) === false)
-						$wpdb->print_error();
+					// Store data
+					update_usermeta($current_user->ID, c_otp_meta_seed, $otp_seed);
+					update_usermeta($current_user->ID, c_otp_meta_algorithm, $otp_algorithm);
+					update_usermeta($current_user->ID, c_otp_meta_sequence, $otp_seq + 1);
+					update_usermeta($current_user->ID, c_otp_meta_hash, $otp_hash);
+					update_usermeta($current_user->ID, c_otp_meta_generated, date('r'));
+					delete_usermeta($current_user->ID, c_otp_meta_last_login);
 
 					// Render password list / print form
 					if (!$_POST['otp_initialize'])
-						WPOneTimePassword::otp_render_password_list($otp_user, $otp_list);
+						$this->otp_render_password_list($current_user, $otp_list);
 				}
 			}
 
 			// Render generate form
-			WPOneTimePassword::otp_render_generate_form();
+			$this->otp_render_generate_form();
 
 			if (count($otp_msg)) {
 				// Display errors
@@ -595,14 +610,17 @@ if (!class_exists('WPOneTimePassword')) {
 				// Revoke
 				if ($otp_revoke) {
 					// Delete data
-					$sql = "DELETE FROM " . $otp_table . " WHERE user='" . $wpdb->escape($otp_user) . "'";
-					if ($wpdb->query($sql) === false)
-						$wpdb->print_error();
+					delete_usermeta($current_user->ID, c_otp_meta_seed);
+					delete_usermeta($current_user->ID, c_otp_meta_algorithm);
+					delete_usermeta($current_user->ID, c_otp_meta_sequence);
+					delete_usermeta($current_user->ID, c_otp_meta_hash);
+					delete_usermeta($current_user->ID, c_otp_meta_generated);
+					delete_usermeta($current_user->ID, c_otp_meta_last_login);
 				}
 			}
 
 			// Render revoke form
-			WPOneTimePassword::otp_render_revoke_form($otp_user);
+			$this->otp_render_revoke_form($current_user);
 
 			// Check revoke parameters
 			if (isset($_REQUEST[c_otp_action_arg]) && $_REQUEST[c_otp_action_arg] == c_otp_action_revoke)
@@ -610,13 +628,13 @@ if (!class_exists('WPOneTimePassword')) {
 					echo '<span class="otp_admin_error">' . __('Select "I am sure" to revoke', c_otp_text_domain) . '</span><br />';
 
 			// Render settings form
-			WPOneTimePassword::otp_render_settings_form();
+			$this->otp_render_settings_form();
 
 			// Output footer
 			echo '</div></div>';
 
 			// Output admin jQuery
-			WPOneTimePassword::otp_output_admin_query();
+			$this->otp_output_admin_query();
 		}
 
 		function otp_render_info_panel() {
@@ -693,12 +711,17 @@ if (!class_exists('WPOneTimePassword')) {
 <?php
 		}
 
-		function otp_render_revoke_form($otp_user) {
+		function otp_render_revoke_form($user) {
 			// Check for existing data
-			global $wpdb;
-			$otp_table = $wpdb->prefix . c_otp_table_name;
-			$otp_row = $wpdb->get_row("SELECT seed, algorithm, sequence, generated, last_login FROM " . $otp_table . " WHERE user='" . $wpdb->escape($otp_user) . "'");
-			if ($otp_row != null) {
+			$sequence = get_usermeta($user->ID, c_otp_meta_sequence);
+			if ($sequence > 0) {
+				// get data
+				$sequence--;
+				$seed = get_usermeta($user->ID, c_otp_meta_seed);
+				$algorithm = get_usermeta($user->ID, c_otp_meta_algorithm);
+				$hash = get_usermeta($user->ID, c_otp_meta_hash);
+				$generated = get_usermeta($user->ID, c_otp_meta_generated);
+				$last_login = get_usermeta($user->ID, c_otp_meta_last_login);
 ?>
 				<hr />
 				<h3><?php _e('Revoke One-Time Password list', c_otp_text_domain) ?></h3>
@@ -709,19 +732,19 @@ if (!class_exists('WPOneTimePassword')) {
 				<table class="form-table">
 
 				<tr><th scope="row"><?php _e('Seed:', c_otp_text_domain) ?></th>
-				<td><?php echo $otp_row->seed; ?></td></tr>
+				<td><?php echo $seed; ?></td></tr>
 
 				<tr><th scope="row"><?php _e('Algorithm:', c_otp_text_domain) ?></th>
-				<td><?php echo $otp_row->algorithm; ?></td></tr>
+				<td><?php echo $algorithm; ?></td></tr>
 
 				<tr><th scope="row"><?php _e('Sequence:', c_otp_text_domain) ?></th>
-				<td><?php echo $otp_row->sequence; ?></td></tr>
+				<td><?php echo $sequence; ?></td></tr>
 
 				<tr><th scope="row"><?php _e('Generated:', c_otp_text_domain) ?></th>
-				<td><?php echo $otp_row->generated; ?></td></tr>
+				<td><?php echo $generated; ?></td></tr>
 
 				<tr><th scope="row"><?php _e('Last login:', c_otp_text_domain) ?></th>
-				<td><?php echo $otp_row->last_login; ?></td></tr>
+				<td><?php echo $last_login; ?></td></tr>
 
 				<tr><th scope="row"><?php _e('I am sure:', c_otp_text_domain) ?></th>
 				<td><input type="checkbox" name="otp_revoke" /></td></tr>
@@ -734,12 +757,15 @@ if (!class_exists('WPOneTimePassword')) {
 			}
 		}
 
-		function otp_render_password_list($otp_user, $otp_list) {
-			global $wpdb;
-			$otp_table = $wpdb->prefix . c_otp_table_name;
-			$sql = "SELECT seed, algorithm, generated FROM " . $otp_table . " WHERE user='" . $wpdb->escape($otp_user) . "'";
-			$otp_row = $wpdb->get_row($sql);
-			if ($otp_row != null) {
+		function otp_render_password_list($user, $otp_list) {
+			// Check for existing data
+			$sequence = get_usermeta($user->ID, c_otp_meta_sequence);
+			if ($sequence > 0) {
+				// get data
+				$sequence--;
+				$seed = get_usermeta($user->ID, c_otp_meta_seed);
+				$algorithm = get_usermeta($user->ID, c_otp_meta_algorithm);
+				$generated = get_usermeta($user->ID, c_otp_meta_generated);
 ?>
 				<hr />
 				<h3><?php _e('One-Time Password list', c_otp_text_domain) ?></h3>
@@ -747,10 +773,10 @@ if (!class_exists('WPOneTimePassword')) {
 				<div id="otp_list_area">
 
 				<table id="otp_list_header">
-				<tr><th scope="row"><?php _e('User:', c_otp_text_domain) ?></th><td><?php echo $otp_user; ?></td></tr>
-				<tr><th scope="row"><?php _e('Seed:', c_otp_text_domain) ?></th><td><?php echo $otp_row->seed; ?></td></tr>
-				<tr><th scope="row"><?php _e('Algorithm:', c_otp_text_domain) ?></th><td><?php echo $otp_row->algorithm; ?></td></tr>
-				<tr><th scope="row"><?php _e('Generated:', c_otp_text_domain) ?></th><td><?php echo $otp_row->generated; ?></td></tr>
+				<tr><th scope="row"><?php _e('User:', c_otp_text_domain) ?></th><td><?php echo $user->user_login; ?></td></tr>
+				<tr><th scope="row"><?php _e('Seed:', c_otp_text_domain) ?></th><td><?php echo $seed; ?></td></tr>
+				<tr><th scope="row"><?php _e('Algorithm:', c_otp_text_domain) ?></th><td><?php echo $algorithm; ?></td></tr>
+				<tr><th scope="row"><?php _e('Generated:', c_otp_text_domain) ?></th><td><?php echo $generated; ?></td></tr>
 				</table>
 
 				<table id="otp_list_body">
@@ -790,8 +816,8 @@ if (!class_exists('WPOneTimePassword')) {
 
 		function otp_render_settings_form() {
 			if (current_user_can('manage_options')) {
-				$otp_strict = get_option(c_otp_option_strict) ? "checked" : "unchecked";
-				$otp_cleanup = get_option(c_otp_option_cleanup) ? "checked" : "unchecked";
+				$otp_strict = get_option(c_otp_option_strict) ? 'checked' : 'unchecked';
+				$otp_cleanup = get_option(c_otp_option_cleanup) ? 'checked' : 'unchecked';
 
 				$referer = admin_url('options-general.php?page=' . plugin_basename($this->main_file));
 				$referer = add_query_arg(c_otp_action_arg, c_otp_action_settings);
@@ -889,8 +915,11 @@ if (!class_exists('WPOneTimePassword')) {
 				// Get challenge
 				if($_GET[c_otp_action_arg] == c_otp_action_challenge) {
 					@header('Content-Type: text/html; charset=' . get_option('blog_charset'));
-					$otp_user = sanitize_user($_GET[c_otp_user_arg]);
-					echo WPOneTimePassword::otp_get_challenge($otp_user);
+					$user_name = sanitize_user($_GET[c_otp_user_arg]);
+					global $wpdb;
+					$sql = "SELECT * FROM " . $wpdb->users . " WHERE user_login='" . $user_name . "'";
+					$user = $wpdb->get_row($wpdb->prepare($sql));
+					echo ($user == null ? '' : WPOneTimePassword::otp_get_challenge($user));
 					exit();
 				}
 
@@ -953,63 +982,53 @@ if (!class_exists('WPOneTimePassword')) {
 			return implode("\n", $allow);
 		}
 
-		// Helper get current user
-		function otp_get_current_user() {
-			global $current_user;
-			get_currentuserinfo();
-			return sanitize_user($current_user->user_login);
-		}
-
-		// Helper check if otp is enabled
-		function otp_has_valid_list($otp_user) {
-			global $wpdb;
-			$otp_table = $wpdb->prefix . c_otp_table_name;
-			$otp_row = $wpdb->get_row("SELECT sequence FROM " . $otp_table . " WHERE user='" . $wpdb->escape($otp_user) . "'");
-			return ($otp_row != null && $otp_row->sequence > 0);
-		}
-
 		// Helper check if otp session
 		function otp_is_otp_session() {
 			return (get_option(c_otp_option_strict) && isset($_SESSION[c_otp_session]) && $_SESSION[c_otp_session] == true);
 		}
 
 		// Helper get challenge
-		function otp_get_challenge($otp_user) {
-			// Get data
-			global $wpdb;
-			$otp_table = $wpdb->prefix . c_otp_table_name;
-			$otp_row = $wpdb->get_row("SELECT seed, algorithm, sequence FROM " . $otp_table . " WHERE user='" . $wpdb->escape($otp_user) . "'");
+		function otp_get_challenge($user) {
+			// Get/check sequence
+			$sequence = get_usermeta($user->ID, c_otp_meta_sequence);
+			if ($sequence > 0) {
+				// Get data
+				$sequence--;
+				$seed = get_usermeta($user->ID, c_otp_meta_seed);
+				$algorithm = get_usermeta($user->ID, c_otp_meta_algorithm);
 
-			// Create challenge
-			if ($otp_row != null && $otp_row->sequence >= 0) {
+				// Create challenge
 				$otp_class = new otp();
-				return $otp_class->createChallenge($otp_row->seed, $otp_row->sequence, $otp_row->algorithm);
+				return $otp_class->createChallenge($seed, $sequence, $algorithm);
 			}
 			else
 				return '';
 		}
 
 		// Helper check otp
-		function otp_check_otp($otp_user, $otp_pwd) {
-			global $wpdb;
-			$otp_table = $wpdb->prefix . c_otp_table_name;
-			$otp_row = $wpdb->get_row('SELECT seed, algorithm, sequence, hash FROM ' . $otp_table . " WHERE user='" . $wpdb->escape($otp_user) . "'");
+		function otp_check_otp($user, $pwd) {
+			// Get/check current sequence
+			$sequence = get_usermeta($user->ID, c_otp_meta_sequence);
+			if ($sequence > 0) {
+				// Get data
+				$sequence--;
+				$seed = get_usermeta($user->ID, c_otp_meta_seed);
+				$algorithm = get_usermeta($user->ID, c_otp_meta_algorithm);
+				$hash = get_usermeta($user->ID, c_otp_meta_hash);
 
-			// Check data
-			if ($otp_row != null && $otp_row->sequence >= 0) {
 				// Check password
 				$otp_class = new otp();
-				$otp_data = $otp_class->initializeOtp($otp_row->hash, $otp_row->seed, $otp_row->sequence, $otp_row->algorithm);
-				$otp_auth = $otp_class->authAgainstHexOtp($otp_pwd, $otp_data['previous_hex_otp'], 'previous', $otp_row->sequence, $otp_row->algorithm);
+				$otp_data = $otp_class->initializeOtp($hash, $seed, $sequence, $algorithm);
+				$otp_auth = $otp_class->authAgainstHexOtp($pwd, $otp_data['previous_hex_otp'], 'previous', $sequence, $algorithm);
 				if ($otp_auth['result']) {
 					// Update data
-					$next_seq = $otp_row->sequence - 1;
-					$query = "UPDATE " . $otp_table . " SET sequence=" . $next_seq . ", hash='" . $otp_auth['otp']['previous_hex_otp'] . "', last_login=now();";
-					if ($wpdb->query($query) === false)
-						$wpdb->print_error();
+					$next_seq = $sequence - 1;
+					update_usermeta($user->ID, c_otp_meta_sequence, $next_seq + 1);
+					update_usermeta($user->ID, c_otp_meta_hash, $otp_auth['otp']['previous_hex_otp']);
+					update_usermeta($user->ID, c_otp_meta_last_login, date('r'));
 
 					// Athenticate user
-					return new WP_User($otp_user);
+					return $user;
 				}
 			}
 

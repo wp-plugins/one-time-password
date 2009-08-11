@@ -3,9 +3,9 @@
 Plugin Name: One-Time Password
 Plugin URI: http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/
 Description: One-Time Password System conforming to <a href="http://tools.ietf.org/html/rfc2289">RFC 2289</a> to protect your weblog in less trustworthy environments, like internet cafés.
-Version: 2.5.2
+Version: 2.6
 Author: Marcel Bokhorst
-Author URI: http://blog.bokhorst.biz/
+Author URI: http://blog.bokhorst.biz/about/
 */
 
 /*
@@ -32,6 +32,9 @@ Author URI: http://blog.bokhorst.biz/
 	PHP One-Time Passwords class by Tomas Mrozek
 	See http://sourceforge.net/projects/php-otp/ for details
 	This class is publised under the GNU Lesser General Public License version 3 or later
+
+	jQuery JavaScript Library
+	This library is published under both the GNU General Public License and MIT License
 
 	jqPrint by tanathos
 	See http://plugins.jquery.com/project/jqPrint
