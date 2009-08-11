@@ -1,10 +1,10 @@
-=== One-Time Password ===
+﻿=== One-Time Password ===
 Contributors: Marcel Bokhorst
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB7DGNA3MJ&lc=US&item_name=One%2dTime%20Password%20WordPress%20Plugin&item_number=Marcel%20Bokhorst&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: login, password, security, admin, authentication, wpmu, access
 Requires at least: 2.8
 Tested up to: 2.8.3
-Stable tag: 2.5.2
+Stable tag: 2.6
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -18,7 +18,7 @@ See [Other Notes](http://wordpress.org/extend/plugins/one-time-password/other_no
 
 **This plugin requires at least PHP 5.0.0 and WordPress 2.8.**
 
-This plugin has been tested with FireFox 3.0/3.5 and Internet Explorer 8. 
+This plugin has been tested with FireFox 3.0/3.5 and Internet Explorer 8.
 Because of the usage of the [jQuery JavaScript library](http://jquery.com/ "jQuery") compatibility with other internet browsers can be expected.
 
 Please report any issue you have with this plugin on the [support page](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/ "Marcel's weblog"), so I can at least try to fix it.
@@ -31,7 +31,7 @@ Please report any issue you have with this plugin on the [support page](http://b
 *Using the WordPress dashboard*
 
 1. Login to your weblog
-1. Goto Plugins
+1. Go to Plugins
 1. Select Add New
 1. Search for One-Time Password
 1. Select Install
@@ -54,13 +54,13 @@ No, but it could be.
 
 No, if you plan to use a printed one-time password list only.
 
-Yes, if you plan to use a one-time password generator, 
+Yes, if you plan to use a one-time password generator,
 either [on your iPhone](http://www.apptism.com/apps/otp-generator "iPhone OTP Generator") (not tried)
 or on mobile phones that support [JavaME](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "JavaME"), for example using
 [j2me-otp](http://tanso.net/j2me-otp/ "j2me-otp") (tried with success) or
 [OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen") (not tried).
 
-If you are using a one-time password generator, you can safely generate a new password list using a one-time password 
+If you are using a one-time password generator, you can safely generate a new password list using a one-time password
 by entering this password in the pass-phrase field and by checking *Pass-phrase is a One-Time Password*.
 The sequence number should be entered into the *Count/sequence* field. In this case no password list will be displayed.
 
@@ -92,8 +92,8 @@ Simply enter the password of your choice into the WordPress password box.
 
 = Why does this plugin require at least WordPress version 2.8? =
 
-Because the new *authenticate* filter is used. 
-See [this article](http://willnorris.com/2009/03/authentication-in-wordpress-28 "Authentication in WordPress 2.8") for more details. 
+Because the new *authenticate* filter is used.
+See [this article](http://willnorris.com/2009/03/authentication-in-wordpress-28 "Authentication in WordPress 2.8") for more details.
 
 = Is this plugin multi-user? =
 
@@ -110,7 +110,7 @@ because the *try-catch* construction is used as a fail-safe for the login screen
 
 = Who can modify the one-time password options? =
 
-Users with *manage_options* capability, normally only administrators.
+Users with *manage\_options* capability, normally only administrators.
 
 = What is the scope of the one-time password options? =
 
@@ -118,7 +118,7 @@ Site wide.
 
 = Where can I ask questions, report bugs and request features? =
 
-You can write a comment on the [support homepage](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/ "Marcel's weblog").
+You can write a comment on the [support page](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/ "Marcel's weblog").
 
 == Screenshots ==
 
@@ -129,8 +129,12 @@ You can write a comment on the [support homepage](http://blog.bokhorst.biz/2200/
 
 == Changelog ==
 
+= 2.6 =
+* Using class pointer in stead of static references
+* Replaced database table by user meta data
+
 = 2.5.2 =
-* Added Chinese and Taiwanese translations (zh_CN/TW) by *Vikingzheng*
+* Added Chinese and Taiwanese translations (zh\_CN/TW) by *Vikingzheng*
 * Updated documentation
 
 = 2.5.1 =
@@ -140,7 +144,7 @@ You can write a comment on the [support homepage](http://blog.bokhorst.biz/2200/
 * Upgraded SimpleModal jQuery plugin to version 1.3
 * Upgraded PHP One-Time Passwords class to version 1.0.3
 * Using *$wpdb->escape* in SQL statements only to prevent mistakes
-* Calling *sanitize_user* for user names
+* Calling *sanitize\_user* for user names
 
 = 2.5 =
 * Better options for custom styling, see [faq](http://wordpress.org/extend/plugins/one-time-password/faq/ "Faq") for details
@@ -148,11 +152,11 @@ You can write a comment on the [support homepage](http://blog.bokhorst.biz/2200/
 
 = 2.4 =
 * Ending protected session with logout
-* Splitted the large *otp_administration* function
+* Splitted the large *otp\_administration* function
 * Made location of .css file relative
 
 = 2.3 =
-* Added *session_start* to class constructor
+* Added *session\_start* to class constructor
 
 = 2.2 =
 * Updated Czech translation by *Tomas Mrozek*
@@ -177,9 +181,9 @@ You can write a comment on the [support homepage](http://blog.bokhorst.biz/2200/
 * Moved to old-style JavaScript comments
 * Made JavaScript compliant with [XHTML](http://en.wikipedia.org/wiki/XHTML "XHTML")
 * Displaying notices on the admin menu too
-* Using new-style *option_page=options*
-* Moved rendering of admin notices to *admin_footer*
-* Removing *otp_authorization* query arg from url
+* Using new-style *option\_page=options*
+* Moved rendering of admin notices to *admin\_footer*
+* Removing *otp\_authorization* query arg from url
 
 = 1.4 =
 * Defined constants
@@ -191,7 +195,7 @@ You can write a comment on the [support homepage](http://blog.bokhorst.biz/2200/
 * Updated the [usage instructions](http://wordpress.org/extend/plugins/one-time-password/other_notes/ "Other Notes"): do not print one-time password list with url
 
 = 1.3 =
-* Renamed query arg *action* to *otp_action* for better compatibility
+* Renamed query arg *action* to *otp\_action* for better compatibility
 
 = 1.2 =
 * Update for WordPress MU
@@ -212,7 +216,7 @@ You can write a comment on the [support homepage](http://blog.bokhorst.biz/2200/
 * Added text domain to *Save* text
 * Changed default algorithm to md5
 * Added user name and generated time to printable one-time password table
-* Settings only accessible to users with role *manage_options* (administrators)
+* Settings only accessible to users with role *manage\_options* (administrators)
 * Modified user level of administration menu to zero
 * Ajax responses with explicit character set UTF-8
 * Updated documentation
@@ -220,11 +224,11 @@ You can write a comment on the [support homepage](http://blog.bokhorst.biz/2200/
 = 0.4 =
 * Registering last login time
 * Renamed database column *Time* to *Generated*
-* Catching exceptions in *wp_authenticate* filter
+* Catching exceptions in *wp\_authenticate* filter
 * Added ajax *New* seed link
 * Added query arg *action=challenge*
 * Added *Algorithm*, *Sequence*, *Registered* and *Last login* to revoke form
-* Added Flemish translation (be_NL)
+* Added Flemish translation (be\_NL)
 * Changed background admin notice to orange-red
 * Improved formatting of the administration menu
 * Added setting to delete data (database and options) on deactivation
@@ -282,7 +286,7 @@ Note that:
 This plugin uses:
 
 * [PHP One-Time Passwords class](http://sourceforge.net/projects/php-otp/ "PHP One-Time Passwords class")
-by *Tomas Mrozek* and published under the GNU Lesser General Public License version 3. 
+by *Tomas Mrozek* and published under the GNU Lesser General Public License version 3.
 The *readme.txt* file of this class contains useful information, for example a list of applications to compute one-time passwords.
 
 * [jQuery JavaScript Library](http://jquery.com/ "jQuery") published under both the GNU General Public License and MIT License
@@ -290,7 +294,7 @@ The *readme.txt* file of this class contains useful information, for example a l
 * [jqPrint](http://plugins.jquery.com/project/jqPrint "jQuery jqPrint") jQuery plugin
 by *tanathos* and published under both the GNU General Public License and MIT License
 
-* [URL Utils](http://benalman.com/projects/jquery-url-utils-plugin/ "jQuery URL Utils") jQuery plugin 
+* [URL Utils](http://benalman.com/projects/jquery-url-utils-plugin/ "jQuery URL Utils") jQuery plugin
 by *Ben Alman* and published under the MIT License
 
 * [SimpleModal](http://www.ericmmartin.com/projects/simplemodal/ "jQuery SimpleModal") jQuery plugin
