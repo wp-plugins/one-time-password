@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin, authentication, wpmu, access
 Requires at least: 2.8
 Tested up to: 2.8.4
-Stable tag: 2.6.1
+Stable tag: 2.6.2
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -129,8 +129,11 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 
 == Changelog ==
 
+= 2.6.2 =
+* Updated German translation
+
 = 2.6.1 =
-* Added German translation (de\_DE) by *Heiko*
+* Added German translation (de\_DE) by *Heiko Bartsch \[mai 'kju:t̬i\]*
 
 = 2.6 =
 * Using class pointer in stead of static references
