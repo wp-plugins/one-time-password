@@ -26,6 +26,8 @@ Please report any issue you have with this plugin on the [support page](http://b
 **If you find this plugin useful, please vote for it on the
 [WordPress Competition Blog](http://weblogtoolscollection.com/pluginblog/2009/07/22/wordpress-plugin-one-time-password/ "WordPress Competition Blog").** It is just one click, no login required.
 
+See my [other plugins](http://wordpress.org/extend/plugins/profile/m66b "Marcel Bokhorst").
+
 == Installation ==
 
 *Using the WordPress dashboard*
