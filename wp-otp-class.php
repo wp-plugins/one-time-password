@@ -2,7 +2,7 @@
 
 /*
 	Support class One-Time Password WordPress Plugin
-	by Marcel Bokhorst
+	Copyright (c) 2009 by Marcel Bokhorst
 */
 
 // Include OTP library
@@ -190,7 +190,7 @@ if (!class_exists('WPOneTimePassword')) {
 						wp_die($msg);
 					}
 					// Authorized, redirect to cleaned uri
-					else if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+					else if (strtolower($_SERVER['REQUEST_METHOD']) == 'get') {
 						$uri = $_SERVER['REQUEST_URI'];
 						$question = strpos($uri, '?');
 						if ($question !== false)
@@ -209,7 +209,7 @@ if (!class_exists('WPOneTimePassword')) {
 			}
 
 			// Only load styles and scripts when necessary
-			if (is_admin() || strpos($_SERVER['REQUEST_URI'], 'wp-login.php') !== false) {
+			if (is_admin() || strpos(strtolower($_SERVER['REQUEST_URI']), 'wp-login.php') !== false) {
 				// I18n
 				load_plugin_textdomain(c_otp_text_domain, false, basename(dirname($this->main_file)));
 
@@ -816,8 +816,8 @@ if (!class_exists('WPOneTimePassword')) {
 
 		function otp_render_settings_form() {
 			if (current_user_can('manage_options')) {
-				$otp_strict = get_option(c_otp_option_strict) ? 'checked' : 'unchecked';
-				$otp_cleanup = get_option(c_otp_option_cleanup) ? 'checked' : 'unchecked';
+				$otp_strict = get_option(c_otp_option_strict) ? 'checked="checked"' : '';
+				$otp_cleanup = get_option(c_otp_option_cleanup) ? 'checked="checked"' : '';
 
 				$referer = admin_url('options-general.php?page=' . plugin_basename($this->main_file));
 				$referer = add_query_arg(c_otp_action_arg, c_otp_action_settings);
@@ -971,13 +971,13 @@ if (!class_exists('WPOneTimePassword')) {
 		// Helper get allow defaults
 		function otp_get_allow_default() {
 			$allow = array();
-			$allow[] = '/';					// Main
-			$allow[] = '/wp-admin/';			// Dashboard
-			$allow[] = '/wp-admin/index.php';		// Dashboard
-			$allow[] = '/wp-admin/post-new.php';		// New post
-			$allow[] = '/wp-admin/admin-ajax.php';		// Ajax
+			$allow[] = '/';									// Main
+			$allow[] = '/wp-admin/';						// Dashboard
+			$allow[] = '/wp-admin/index.php';				// Dashboard
+			$allow[] = '/wp-admin/post-new.php';			// New post
+			$allow[] = '/wp-admin/admin-ajax.php';			// Ajax
 			$allow[] = '/wp-admin/index-extra.php?jax=*';	// RSS feeds
-			$allow[] = '/wp-login.php';			// Login
+			$allow[] = '/wp-login.php';						// Login
 			$allow[] = '/wp-login.php?action=*&_wpnonce=*';	// Logout
 			return implode("\n", $allow);
 		}
