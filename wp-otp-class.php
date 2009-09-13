@@ -53,7 +53,7 @@ if (!class_exists('WPOneTimePassword')) {
 			register_deactivation_hook($this->main_file, array(&$this, 'otp_deactivate'));
 
 			// Register actions
-			add_action('init', array(&$this, 'otp_init'));
+			add_action('init', array(&$this, 'otp_init'), 0);
 			add_action('login_head', array(&$this, 'otp_login_head'));
 			add_action('login_form', array(&$this, 'otp_login_form'));
 			add_action('wp_logout', array(&$this, 'otp_wp_logout'));
@@ -148,11 +148,19 @@ if (!class_exists('WPOneTimePassword')) {
 
 		// Handle initialize
 		function otp_init() {
+			// Disable http:BLL if login or otp session
+			if ($this->otp_is_login() || $this->otp_is_otp_session())
+				remove_action('init', 'httpbl_check_visitor', 1);
+
+			// Disable username/password login if http:BL threat
+			if ($this->otp_httpbl_notice())
+				remove_filter('authenticate', 'wp_authenticate_username_password', 20);
+
 			// Check if redirect
 			if (isset($_SESSION[c_otp_redirect]))
 				unset($_SESSION[c_otp_redirect]);
 			// Check if admin protection
-			else if ($this->otp_is_otp_session()) {
+			else if ($this->otp_is_otp_strict_session()) {
 				// Get uri to check
 				$uri = $_SERVER['REQUEST_URI'];
 				$question = strpos($uri, '?');
@@ -166,13 +174,14 @@ if (!class_exists('WPOneTimePassword')) {
 						$first = false;
 					}
 				}
+
 				// Get allowed list
 				$allow = explode("\n", get_option(c_otp_option_allow));
 				for ($i = 0; $i < count($allow); $i++)
 					$allow[$i] = trim($allow[$i]);
 
 				// Check if allowed
-				if(!in_array($uri, $allow)) {
+				if (!in_array($uri, $allow)) {
 					// Get current user
 					global $current_user;
 					get_currentuserinfo();
@@ -209,7 +218,7 @@ if (!class_exists('WPOneTimePassword')) {
 			}
 
 			// Only load styles and scripts when necessary
-			if (is_admin() || strpos(strtolower($_SERVER['REQUEST_URI']), 'wp-login.php') !== false) {
+			if (is_admin() || $this->otp_is_login()) {
 				// I18n
 				load_plugin_textdomain(c_otp_text_domain, false, basename(dirname($this->main_file)));
 
@@ -231,6 +240,10 @@ if (!class_exists('WPOneTimePassword')) {
 					wp_enqueue_script('jQuery-Plugin-SimpleModal', $plugin_dir . '/js/jquery.simplemodal.js');
 				}
 			}
+		}
+
+		function otp_is_login() {
+			return (strpos(strtolower($_SERVER['REQUEST_URI']), 'wp-login.php') !== false);
 		}
 
 		// Modify login head
@@ -296,7 +309,7 @@ if (!class_exists('WPOneTimePassword')) {
 		// Modify admin header
 		function otp_admin_head() {
 			// Output form & jQuery if admin protection
-			if ($this->otp_is_otp_session()) {
+			if ($this->otp_is_otp_strict_session()) {
 				global $current_user;
 				get_currentuserinfo();
 ?>
@@ -454,7 +467,7 @@ if (!class_exists('WPOneTimePassword')) {
 			}
 
 			// Display if otp enabled
-			if ($this->otp_is_otp_session()) {
+			if ($this->otp_is_otp_strict_session()) {
 ?>
 				<div class="error fade otp_admin_notice">
 				<p><?php _e('Protected One-Time Password session', c_otp_text_domain); ?></p>
@@ -467,6 +480,11 @@ if (!class_exists('WPOneTimePassword')) {
 				</script>
 <?php
 			}
+
+			// Display http:BL threat notice
+			$httpbl = $this->otp_httpbl_notice();
+			if ($httpbl)
+				echo '<div class="error fade"><p>' . $httpbl . '</p></div>';
 		}
 
 		// Authenticate using OTP
@@ -476,7 +494,13 @@ if (!class_exists('WPOneTimePassword')) {
 				$user = new WP_User(sanitize_user($_POST['log']));
 				$pwd = $_POST['pwd'];
 				$otp_auth = $this->otp_check_otp($user, $pwd);
-				if ($otp_auth != null)
+				if ($otp_auth == null) {
+					// Check if http:BL threat
+					$httpbl = $this->otp_httpbl_notice();
+					if ($httpbl)
+						return new WP_Error('otp-mandatory', $httpbl);
+				}
+				else
 					$_SESSION[c_otp_session] = true;
 				return $otp_auth;
 			}
@@ -984,7 +1008,12 @@ if (!class_exists('WPOneTimePassword')) {
 
 		// Helper check if otp session
 		function otp_is_otp_session() {
-			return (get_option(c_otp_option_strict) && isset($_SESSION[c_otp_session]) && $_SESSION[c_otp_session] == true);
+			return (isset($_SESSION[c_otp_session]) && $_SESSION[c_otp_session] == true);
+		}
+
+		// Helper check if otp strict session
+		function otp_is_otp_strict_session() {
+			return (get_option(c_otp_option_strict) && $this->otp_is_otp_session());
 		}
 
 		// Helper get challenge
@@ -1034,6 +1063,35 @@ if (!class_exists('WPOneTimePassword')) {
 
 			// Fallback to other handlers
 			return null;
+		}
+
+		// Helper get http:BL threat message
+		function otp_httpbl_notice() {
+			$key = get_option('httpbl_key');
+			if ($key) {
+				// Build query
+				$addr = $_SERVER['REMOTE_ADDR'];
+				$query = $key . '.' . implode('.', array_reverse(explode('.', $addr))) . '.dnsbl.httpbl.org';
+
+				// Get result
+				$result = explode('.', gethostbyname($query));
+
+				// Check response
+				if ($result[0] == 127) {
+					$text = '<b>http:BL</b>';
+					$text .= ' ' . __('Age:', c_otp_text_domain) . ' ' . $result[1];
+					$text .= ', ' . __('Level:', c_otp_text_domain) . ' ' . $result[2];
+					$text .= ', ' . __('Type:', c_otp_text_domain) . ' ';
+					if ($result[3] & 1)
+						$text .= 'S';
+					if ($result[3] & 2)
+						$text .= 'H';
+					if ($result[3] & 4)
+						$text .= 'C';
+					return $text;
+				}
+			}
+			return false;
 		}
 
 		// Helper change file extension
