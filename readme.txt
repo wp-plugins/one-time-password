@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin, authentication, wpmu, access
 Requires at least: 2.8
 Tested up to: 2.8.4
-Stable tag: 2.7
+Stable tag: 2.7.1
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -131,8 +131,12 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 
 == Changelog ==
 
+= 2.7.1 =
+* Option to enable integration with http:BL
+* Updated Dutch/Flemish translations
+
 = 2.7 =
-* Cooperate with [http:BL plugin](http://wordpress.org/extend/plugins/httpbl/ "http:BL WordPress Plugin"); allow otp login even if threat
+* Integration with [http:BL plugin](http://wordpress.org/extend/plugins/httpbl/ "http:BL WordPress Plugin"); allow otp login even if threat
 
 = 2.6.3 =
 * Checking PHP version before loading classes

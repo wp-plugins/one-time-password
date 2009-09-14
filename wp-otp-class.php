@@ -23,6 +23,7 @@ define('c_otp_table_name', 'otp');
 define('c_otp_option_dbver', 'otp_dbver');
 define('c_otp_option_strict', 'otp_strict');
 define('c_otp_option_allow', 'otp_allow');
+define('c_otp_option_httpbl', 'otp_http');
 define('c_otp_option_cleanup', 'otp_cleanup');
 
 define('c_otp_text_domain', 'one-time-password');
@@ -135,6 +136,7 @@ if (!class_exists('WPOneTimePassword')) {
 				delete_option(c_otp_option_dbver);
 				delete_option(c_otp_option_strict);
 				delete_option(c_otp_option_allow);
+				delete_option(c_otp_option_httpbl);
 				delete_option(c_otp_option_cleanup);
 			}
 			$_SESSION[c_otp_session] = false;
@@ -148,13 +150,16 @@ if (!class_exists('WPOneTimePassword')) {
 
 		// Handle initialize
 		function otp_init() {
-			// Disable http:BLL if login or otp session
-			if ($this->otp_is_login() || $this->otp_is_otp_session())
-				remove_action('init', 'httpbl_check_visitor', 1);
+			// Check for integration with http:BL
+			if (get_option(c_otp_option_httpbl)) {
+				// Disable http:BLL if login or otp session
+				if ($this->otp_is_login() || $this->otp_is_otp_session())
+					remove_action('init', 'httpbl_check_visitor', 1);
 
-			// Disable username/password login if http:BL threat
-			if ($this->otp_httpbl_notice())
-				remove_filter('authenticate', 'wp_authenticate_username_password', 20);
+				// Disable username/password login if http:BL threat
+				if ($this->otp_httpbl_notice())
+					remove_filter('authenticate', 'wp_authenticate_username_password', 20);
+			}
 
 			// Check if redirect
 			if (isset($_SESSION[c_otp_redirect]))
@@ -495,10 +500,12 @@ if (!class_exists('WPOneTimePassword')) {
 				$pwd = $_POST['pwd'];
 				$otp_auth = $this->otp_check_otp($user, $pwd);
 				if ($otp_auth == null) {
-					// Check if http:BL threat
-					$httpbl = $this->otp_httpbl_notice();
-					if ($httpbl)
-						return new WP_Error('otp-mandatory', $httpbl);
+					if (get_option(c_otp_option_httpbl)) {
+						// Check if http:BL threat
+						$httpbl = $this->otp_httpbl_notice();
+						if ($httpbl)
+							return new WP_Error('otp-mandatory', $httpbl);
+					}
 				}
 				else
 					$_SESSION[c_otp_session] = true;
@@ -841,6 +848,7 @@ if (!class_exists('WPOneTimePassword')) {
 		function otp_render_settings_form() {
 			if (current_user_can('manage_options')) {
 				$otp_strict = get_option(c_otp_option_strict) ? 'checked="checked"' : '';
+				$otp_httpbl = get_option(c_otp_option_httpbl) ? 'checked="checked"' : '';
 				$otp_cleanup = get_option(c_otp_option_cleanup) ? 'checked="checked"' : '';
 
 				$referer = admin_url('options-general.php?page=' . plugin_basename($this->main_file));
@@ -864,13 +872,17 @@ if (!class_exists('WPOneTimePassword')) {
 				<tr><th scope="row" />
 				<td><a id="otp_allow_default" href="#"><?php _e('Default', c_otp_text_domain) ?></a></td></tr>
 
+				<tr><th scope="row"><?php _e('Allow & require OTP login when http:BL reports threat:', c_otp_text_domain) ?></th>
+				<td><input type="checkbox" name="<?php echo c_otp_option_httpbl; ?>" <?php echo $otp_httpbl; ?> />
+				<a href="http://www.projecthoneypot.org/" target="_blank" style="margin-left:10px;">Project Honey Pot</a></td></tr>
+
 				<tr><th scope="row"><?php _e('Delete data on deactivation:', c_otp_text_domain) ?></th>
 				<td><input type="checkbox" name="<?php echo c_otp_option_cleanup; ?>" <?php echo $otp_cleanup; ?> /></td></tr>
 
 				</table>
 
 				<input type="hidden" name="action" value="update" />
-				<input type="hidden" name="page_options" value="<?php echo c_otp_option_strict . ',' . c_otp_option_allow . ',' . c_otp_option_cleanup; ?>" />
+				<input type="hidden" name="page_options" value="<?php echo c_otp_option_strict . ',' . c_otp_option_allow . ',' . c_otp_option_httpbl . ',' . c_otp_option_cleanup; ?>" />
 
 				<p class="submit"><input type="submit" class="button-primary" value="<?php _e('Save', c_otp_text_domain) ?>" /></p>
 				</form>
