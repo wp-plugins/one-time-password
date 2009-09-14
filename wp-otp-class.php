@@ -157,7 +157,7 @@ if (!class_exists('WPOneTimePassword')) {
 					remove_action('init', 'httpbl_check_visitor', 1);
 
 				// Disable username/password login if http:BL threat
-				if ($this->otp_httpbl_notice())
+				if ($this->otp_is_login() && $this->otp_httpbl_notice())
 					remove_filter('authenticate', 'wp_authenticate_username_password', 20);
 			}
 
