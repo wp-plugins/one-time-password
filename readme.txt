@@ -118,6 +118,18 @@ Users with *manage\_options* capability, normally only administrators.
 
 Site wide.
 
+= How does the integration with the http:BL plugin work? =
+
+First of all this integration has to be enabled using the settings menu. 
+If enabled, you can navigate to the login url of your blog, even if http:BL would normally block it.
+A warning indication the age, level and threat type is displayed above the login window.
+You can login only using a one-time password, not with your user name and password.
+After logging in, you can navigate to any part of your weblog, until you sign out.
+Note that before logging in only *wp-login.php* is avaiblable and no other addresses like */wp-admin/*.
+
+I recommend installing [Invalidate Logged Out Cookies](http://wordpress.org/extend/plugins/invalidate-logged-out-cookies/) and
+[Semisecure Login Reimagined](http://wordpress.org/extend/plugins/semisecure-login-reimagined/) for more security.
+
 = Where can I ask questions, report bugs and request features? =
 
 You can write a comment on the [support page](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/ "Marcel's weblog").
