@@ -125,7 +125,7 @@ If enabled, you can navigate to the login url of your blog, even if http:BL woul
 A warning indication the age, level and threat type is displayed above the login window.
 You can login only using a one-time password, not with your user name and password.
 After logging in, you can navigate to any part of your weblog, until you sign out.
-Note that before logging in only *wp-login.php* is avaiblable and no other addresses like */wp-admin/*.
+Note that before logging in only *wp-login.php* is available and no other addresses like */wp-admin/*.
 
 I recommend installing [Invalidate Logged Out Cookies](http://wordpress.org/extend/plugins/invalidate-logged-out-cookies/) and
 [Semisecure Login Reimagined](http://wordpress.org/extend/plugins/semisecure-login-reimagined/) for more security.
