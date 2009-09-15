@@ -120,7 +120,8 @@ Site wide.
 
 = How does the integration with the http:BL plugin work? =
 
-First of all this integration has to be enabled using the settings menu. 
+First of all the integration with the [http:BL plugin](http://wordpress.org/extend/plugins/httpbl/) 
+has to be enabled using the settings menu. 
 If enabled, you can navigate to the login url of your blog, even if http:BL would normally block it.
 A warning indication the age, level and threat type is displayed above the login window.
 You can login only using a one-time password, not with your user name and password.
