@@ -128,8 +128,7 @@ You can login only using a one-time password, not with your user name and passwo
 After logging in, you can navigate to any part of your weblog, until you sign out.
 Note that before logging in only *wp-login.php* is available and no other addresses like */wp-admin/*.
 
-I recommend installing [Invalidate Logged Out Cookies](http://wordpress.org/extend/plugins/invalidate-logged-out-cookies/) and
-[Semisecure Login Reimagined](http://wordpress.org/extend/plugins/semisecure-login-reimagined/) for more security.
+I recommend installing [Invalidate Logged Out Cookies](http://wordpress.org/extend/plugins/invalidate-logged-out-cookies/) for more security.
 
 = Where can I ask questions, report bugs and request features? =
 
