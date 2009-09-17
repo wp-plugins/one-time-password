@@ -153,8 +153,10 @@ if (!class_exists('WPOneTimePassword')) {
 			// Check for integration with http:BL
 			if (get_option(c_otp_option_httpbl)) {
 				// Disable http:BLL if login or otp session
-				if ($this->otp_is_login() || $this->otp_is_otp_session())
+				if ($this->otp_is_login() || $this->otp_is_otp_session()) {
 					remove_action('init', 'httpbl_check_visitor', 1);
+					remove_action('init', 'bb2_init', 1);
+				}
 
 				// Disable username/password login if http:BL threat
 				if ($this->otp_is_login() && $this->otp_httpbl_notice())
