@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin, authentication, wpmu, access
 Requires at least: 2.8
 Tested up to: 2.8.4
-Stable tag: 2.7.1
+Stable tag: 2.8
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -130,6 +130,14 @@ Note that before logging in only *wp-login.php* is available and no other addres
 
 I recommend installing [Invalidate Logged Out Cookies](http://wordpress.org/extend/plugins/invalidate-logged-out-cookies/) for more security.
 
+= How does the integration with Bad Behavior work? =
+
+If you enable the option to disable [Bad Behavior](http://wordpress.org/extend/plugins/bad-behavior/ "Bad Behavior") on the login page using the settings menu the Bad Behavior plugin will be disabled.
+To re-enabled the Bad Behavior plugin you have to disable this option first.
+When this option is enabled the one-time password plugin will load the Bad Behavior plugin instead of WordPress, except for the login page and for every other page when you are logged in using a one-time password.
+Unfortunately it is not possible (yet) to display a warning on the login page that Bad Behavior would block access.
+
+
 = Where can I ask questions, report bugs and request features? =
 
 You can write a comment on the [support page](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/ "Marcel's weblog").
@@ -142,6 +150,10 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 1. The authorize window for an administrative action (optional)
 
 == Changelog ==
+
+= 2.8 =
+* Option to disable Bad Behavior for the login page
+* Updated Dutch/Flemish translations
 
 = 2.7.1 =
 * Option to enable integration with http:BL

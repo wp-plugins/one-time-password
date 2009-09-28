@@ -24,6 +24,7 @@ define('c_otp_option_dbver', 'otp_dbver');
 define('c_otp_option_strict', 'otp_strict');
 define('c_otp_option_allow', 'otp_allow');
 define('c_otp_option_httpbl', 'otp_http');
+define('c_otp_option_bb', 'otp_bb');
 define('c_otp_option_cleanup', 'otp_cleanup');
 
 define('c_otp_text_domain', 'one-time-password');
@@ -137,6 +138,7 @@ if (!class_exists('WPOneTimePassword')) {
 				delete_option(c_otp_option_strict);
 				delete_option(c_otp_option_allow);
 				delete_option(c_otp_option_httpbl);
+				delete_option(c_otp_option_bb);
 				delete_option(c_otp_option_cleanup);
 			}
 			$_SESSION[c_otp_session] = false;
@@ -153,14 +155,30 @@ if (!class_exists('WPOneTimePassword')) {
 			// Check for integration with http:BL
 			if (get_option(c_otp_option_httpbl)) {
 				// Disable http:BLL if login or otp session
-				if ($this->otp_is_login() || $this->otp_is_otp_session()) {
+				if ($this->otp_is_login() || $this->otp_is_otp_session())
 					remove_action('init', 'httpbl_check_visitor', 1);
-					remove_action('init', 'bb2_init', 1);
-				}
 
 				// Disable username/password login if http:BL threat
 				if ($this->otp_is_login() && $this->otp_httpbl_notice())
 					remove_filter('authenticate', 'wp_authenticate_username_password', 20);
+			}
+
+			// Check for integration with bad behavior
+			if (get_option(c_otp_option_bb)) {
+				// Disable Bad Behavior
+				$bb_active = false;
+				$bb_name = 'bad-behavior/bad-behavior-wordpress.php';
+				$plugins = get_option('active_plugins');
+				if (in_array($bb_name, $plugins)) {
+					$bb_active = true;
+					array_splice($plugins, array_search($bb_name, $plugins), 1);
+				}
+				if ($bb_active) // deactive bad behavior
+					update_option('active_plugins', $plugins);
+				else {
+					if (!$this->otp_is_login() && !$this->otp_is_otp_session())
+						include_once(WP_PLUGIN_DIR . '/' . $bb_name);
+				}
 			}
 
 			// Check if redirect
@@ -851,6 +869,7 @@ if (!class_exists('WPOneTimePassword')) {
 			if (current_user_can('manage_options')) {
 				$otp_strict = get_option(c_otp_option_strict) ? 'checked="checked"' : '';
 				$otp_httpbl = get_option(c_otp_option_httpbl) ? 'checked="checked"' : '';
+				$otp_bb = get_option(c_otp_option_bb) ? 'checked="checked"' : '';
 				$otp_cleanup = get_option(c_otp_option_cleanup) ? 'checked="checked"' : '';
 
 				$referer = admin_url('options-general.php?page=' . plugin_basename($this->main_file));
@@ -876,7 +895,11 @@ if (!class_exists('WPOneTimePassword')) {
 
 				<tr><th scope="row"><?php _e('Allow & require OTP login when http:BL reports threat:', c_otp_text_domain) ?></th>
 				<td><input type="checkbox" name="<?php echo c_otp_option_httpbl; ?>" <?php echo $otp_httpbl; ?> />
-				<a href="http://www.projecthoneypot.org/" target="_blank" style="margin-left:10px;">Project Honey Pot</a></td></tr>
+				<a href="http://wordpress.org/extend/plugins/httpbl/" target="_blank" style="margin-left:10px;">http:BL</a></td></tr>
+
+				<tr><th scope="row"><?php _e('Disable Bad Behavior on login page:', c_otp_text_domain) ?></th>
+				<td><input type="checkbox" name="<?php echo c_otp_option_bb; ?>" <?php echo $otp_bb; ?> />
+				<a href="http://wordpress.org/extend/plugins/bad-behavior/" target="_blank" style="margin-left:10px;">Bad Behavior</a></td></tr>
 
 				<tr><th scope="row"><?php _e('Delete data on deactivation:', c_otp_text_domain) ?></th>
 				<td><input type="checkbox" name="<?php echo c_otp_option_cleanup; ?>" <?php echo $otp_cleanup; ?> /></td></tr>
@@ -884,7 +907,7 @@ if (!class_exists('WPOneTimePassword')) {
 				</table>
 
 				<input type="hidden" name="action" value="update" />
-				<input type="hidden" name="page_options" value="<?php echo c_otp_option_strict . ',' . c_otp_option_allow . ',' . c_otp_option_httpbl . ',' . c_otp_option_cleanup; ?>" />
+				<input type="hidden" name="page_options" value="<?php echo c_otp_option_strict . ',' . c_otp_option_allow . ',' . c_otp_option_httpbl . ',' . c_otp_option_bb . ',' . c_otp_option_cleanup; ?>" />
 
 				<p class="submit"><input type="submit" class="button-primary" value="<?php _e('Save', c_otp_text_domain) ?>" /></p>
 				</form>
