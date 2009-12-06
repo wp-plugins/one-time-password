@@ -3,8 +3,8 @@ Contributors: Marcel Bokhorst
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB7DGNA3MJ&lc=US&item_name=One%2dTime%20Password%20WordPress%20Plugin&item_number=Marcel%20Bokhorst&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: login, password, security, admin, authentication, wpmu, access
 Requires at least: 2.8
-Tested up to: 2.8.4
-Stable tag: 2.8
+Tested up to: 2.9-beta-2
+Stable tag: 2.8.1
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -147,6 +147,9 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 1. The authorize window for an administrative action (optional)
 
 == Changelog ==
+
+= 2.8.1 =
+* Participating in the [Sustainable Plugins Sponsorship Network](http://pluginsponsors.com/ "PluginSponsor.com")
 
 = 2.8 =
 * Option to disable Bad Behavior for the login page

@@ -570,7 +570,12 @@ if (!class_exists('WPOneTimePassword')) {
 			// Render title
 			echo '<div id="otp_admin_panel">';
 			echo '<h2>' . __('One-Time Password Administration', c_otp_text_domain) . '</h2>';
-
+?>
+			<script type="text/javascript">
+			var psHost = (("https:" == document.location.protocol) ? "https://" : "http://");
+			document.write(unescape("%3Cscript src='" + psHost + "pluginsponsors.com/direct/spsn/display.php?client=wponetimepassword&spot=' type='text/javascript'%3E%3C/script%3E"));
+			</script>
+<?php
 			// Handle generate action
 			if (isset($_REQUEST[c_otp_action_arg]) && $_REQUEST[c_otp_action_arg] == c_otp_action_generate) {
 				// Security check
