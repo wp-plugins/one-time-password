@@ -154,7 +154,7 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 * Moved Sustainable Plugins Sponsorship Network banner to top
 
 = 2.8.1 =
-* Participating in the [Sustainable Plugins Sponsorship Network](http://pluginsponsors.com/ "PluginSponsor.com")
+* Participating in the [Sustainable Plugins Sponsorship Network](http://pluginsponsors.com/ "PluginSponsors.com")
 
 = 2.8 =
 * Option to disable Bad Behavior for the login page
