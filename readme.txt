@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin, authentication, wpmu, access
 Requires at least: 2.8
 Tested up to: 2.9-beta-2
-Stable tag: 2.8.1
+Stable tag: 2.8.2
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -147,6 +147,11 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 1. The authorize window for an administrative action (optional)
 
 == Changelog ==
+
+= 2.8.2 =
+* Added link to Privacy Policy of Sustainable Plugins Sponsorship Network
+* Added option 'I have donated to this plugin'
+* Moved Sustainable Plugins Sponsorship Network banner to top
 
 = 2.8.1 =
 * Participating in the [Sustainable Plugins Sponsorship Network](http://pluginsponsors.com/ "PluginSponsor.com")
