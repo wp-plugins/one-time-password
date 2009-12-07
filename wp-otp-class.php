@@ -26,6 +26,7 @@ define('c_otp_option_allow', 'otp_allow');
 define('c_otp_option_httpbl', 'otp_http');
 define('c_otp_option_bb', 'otp_bb');
 define('c_otp_option_cleanup', 'otp_cleanup');
+define('c_otp_option_donated', 'otp_donated');
 
 define('c_otp_text_domain', 'one-time-password');
 define('c_otp_session', 'otp_session');
@@ -562,6 +563,8 @@ if (!class_exists('WPOneTimePassword')) {
 			global $current_user;
 			get_currentuserinfo();
 
+			$this->otp_render_pluginsponsor();
+
 			echo '<div class="wrap">';
 
 			// Render Info panel
@@ -686,6 +689,18 @@ if (!class_exists('WPOneTimePassword')) {
 
 			// Output admin jQuery
 			$this->otp_output_admin_query();
+		}
+
+		function otp_render_pluginsponsor() {
+			if (!get_option(c_otp_option_donated)) {
+?>
+				<script type="text/javascript">
+				var psHost = (("https:" == document.location.protocol) ? "https://" : "http://");
+				document.write(unescape("%3Cscript src='" + psHost + "pluginsponsors.com/direct/spsn/display.php?client=wpcligsandtweet&spot=' type='text/javascript'%3E%3C/script%3E"));
+				</script>
+				<a href="http://pluginsponsors.com/privacy.html" target=_blank" style="font-size: 8px;">Privacy in the Sustainable Plugins Sponsorship Network</a>
+<?php
+			}
 		}
 
 		function otp_render_info_panel() {
@@ -871,6 +886,7 @@ if (!class_exists('WPOneTimePassword')) {
 				$otp_httpbl = get_option(c_otp_option_httpbl) ? 'checked="checked"' : '';
 				$otp_bb = get_option(c_otp_option_bb) ? 'checked="checked"' : '';
 				$otp_cleanup = get_option(c_otp_option_cleanup) ? 'checked="checked"' : '';
+				$otp_donated = get_option(c_otp_option_donated) ? 'checked="checked"' : '';
 
 				$referer = admin_url('options-general.php?page=' . plugin_basename($this->main_file));
 				$referer = add_query_arg(c_otp_action_arg, c_otp_action_settings);
@@ -904,10 +920,13 @@ if (!class_exists('WPOneTimePassword')) {
 				<tr><th scope="row"><?php _e('Delete data on deactivation:', c_otp_text_domain) ?></th>
 				<td><input type="checkbox" name="<?php echo c_otp_option_cleanup; ?>" <?php echo $otp_cleanup; ?> /></td></tr>
 
+				<tr><th scope="row"><?php _e('I have donated to this plugin:', c_otp_text_domain) ?></th>
+				<td><input type="checkbox" name="<?php echo c_otp_option_donated; ?>" <?php echo $otp_donated; ?> /></td></tr>
+
 				</table>
 
 				<input type="hidden" name="action" value="update" />
-				<input type="hidden" name="page_options" value="<?php echo c_otp_option_strict . ',' . c_otp_option_allow . ',' . c_otp_option_httpbl . ',' . c_otp_option_bb . ',' . c_otp_option_cleanup; ?>" />
+				<input type="hidden" name="page_options" value="<?php echo c_otp_option_strict . ',' . c_otp_option_allow . ',' . c_otp_option_httpbl . ',' . c_otp_option_bb . ',' . c_otp_option_cleanup . ',' . c_otp_option_donated ; ?>" />
 
 				<p class="submit"><input type="submit" class="button-primary" value="<?php _e('Save', c_otp_text_domain) ?>" /></p>
 				</form>
