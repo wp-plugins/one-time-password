@@ -276,6 +276,7 @@ if (!class_exists('WPOneTimePassword')) {
 		function otp_login_head() {
 			// Print styles and scripts not called on login page
 			wp_print_styles();
+			wp_deregister_script('gdsr_script');
 			wp_print_scripts();
 		}
 
