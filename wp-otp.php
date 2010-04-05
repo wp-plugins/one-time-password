@@ -3,7 +3,7 @@
 Plugin Name: One-Time Password
 Plugin URI: http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/
 Description: One-Time Password System conforming to <a href="http://tools.ietf.org/html/rfc2289">RFC 2289</a> to protect your weblog in less trustworthy environments, like internet cafés.
-Version: 2.8.3
+Version: 2.8.4
 Author: Marcel Bokhorst
 Author URI: http://blog.bokhorst.biz/about/
 */
@@ -48,7 +48,7 @@ Author URI: http://blog.bokhorst.biz/about/
 	See http://www.ericmmartin.com/projects/simplemodal/
 	This jQuery plugin is publised both under the GNU General Public License and the MIT License
 
-	All licenses are GPL compatible (see http://www.gnu.org/philosophy/license-list.html#GPLCompatibleLicenses)
+	All licenses are GPL compatible (see http://www.gnu.org/licenses/license-list.html#GPLCompatibleLicenses)
 */
 
 #error_reporting(E_ALL);

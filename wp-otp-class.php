@@ -44,7 +44,7 @@ define('c_otp_meta_last_login', 'otp_meta_last_login');
 if (!class_exists('WPOneTimePassword')) {
 	class WPOneTimePassword {
 		// Class variables
-		private $main_file = null;
+		var $main_file = null;
 
 		// Constructor
 		function WPOneTimePassword() {
