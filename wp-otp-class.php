@@ -73,7 +73,8 @@ if (!class_exists('WPOneTimePassword')) {
 			add_filter('wp_redirect', array(&$this, 'otp_redirect'));
 
 			// Start session to register states
-			session_start();
+			if (!session_id())
+				session_start();
 		}
 
 		// Handle plugin activation
