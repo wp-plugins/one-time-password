@@ -149,7 +149,7 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 == Changelog ==
 
 = 2.8.5 =
-* Starting session if not started already for better compatibility with other plugin
+* Starting session if not started already for better compatibility with other plugins
 
 = 2.8.4 =
 * Belorussian (be\_BY) translation by [Marcis G.](http://pc.de/ "Marcis G.")
