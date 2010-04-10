@@ -18,7 +18,7 @@ See [Other Notes](http://wordpress.org/extend/plugins/one-time-password/other_no
 
 **This plugin requires at least PHP 5.0.0 and WordPress 2.8.**
 
-This plugin has been tested with FireFox 3.0/3.5 and Internet Explorer 8.
+This plugin has been tested with FireFox 3.0/3.5/3.6 and Internet Explorer 8.
 Because of the usage of the [jQuery JavaScript library](http://jquery.com/ "jQuery") compatibility with other internet browsers can be expected.
 
 Please report any issue you have with this plugin on the [support page](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/ "Marcel's weblog"), so I can at least try to fix it. If you rate this plugin low, please [let me know why](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/#respond "Marcel's weblog").
