@@ -1052,15 +1052,22 @@ if (!class_exists('WPOneTimePassword')) {
 
 		// Helper get allow defaults
 		function otp_get_allow_default() {
+			$wpurl = get_bloginfo('wpurl');
+			if (strrpos($wpurl, '/') !== (strlen($wpurl) - 1))
+				$wpurl .= '/';
+			$folder = substr($wpurl, strpos($wpurl, '/', strpos($wpurl, '//') + 2));
+			if (strrpos($folder, '/') !== (strlen($folder) - 1))
+				$folder .= '/';
+
 			$allow = array();
-			$allow[] = '/';									// Main
-			$allow[] = '/wp-admin/';						// Dashboard
-			$allow[] = '/wp-admin/index.php';				// Dashboard
-			$allow[] = '/wp-admin/post-new.php';			// New post
-			$allow[] = '/wp-admin/admin-ajax.php';			// Ajax
-			$allow[] = '/wp-admin/index-extra.php?jax=*';	// RSS feeds
-			$allow[] = '/wp-login.php';						// Login
-			$allow[] = '/wp-login.php?action=*&_wpnonce=*';	// Logout
+			$allow[] = $folder . '';									// Main
+			$allow[] = $folder . 'wp-admin/';							// Dashboard
+			$allow[] = $folder . 'wp-admin/index.php';					// Dashboard
+			$allow[] = $folder . 'wp-admin/post-new.php';				// New post
+			$allow[] = $folder . 'wp-admin/admin-ajax.php';				// Ajax
+			$allow[] = $folder . 'wp-admin/index-extra.php?jax=*';		// RSS feeds
+			$allow[] = $folder . 'wp-login.php';						// Login
+			$allow[] = $folder . 'wp-login.php?action=*&_wpnonce=*';	// Logout
 			return implode("\n", $allow);
 		}
 
