@@ -27,6 +27,7 @@ define('c_otp_option_httpbl', 'otp_http');
 define('c_otp_option_bb', 'otp_bb');
 define('c_otp_option_cleanup', 'otp_cleanup');
 define('c_otp_option_donated', 'otp_donated');
+define('c_otp_option_nopwd', 'otp_nopwd');
 
 define('c_otp_text_domain', 'one-time-password');
 define('c_otp_session', 'otp_session');
@@ -68,8 +69,6 @@ if (!class_exists('WPOneTimePassword')) {
 
 			// Register filters
 			add_filter('authenticate', array(&$this, 'otp_authenticate'), 10);
-			// 20 wp_authenticate_username_password
-			// 30 wp_authenticate_cookie
 			add_filter('wp_redirect', array(&$this, 'otp_redirect'));
 
 			// Start session to register states
@@ -142,6 +141,8 @@ if (!class_exists('WPOneTimePassword')) {
 				delete_option(c_otp_option_httpbl);
 				delete_option(c_otp_option_bb);
 				delete_option(c_otp_option_cleanup);
+				delete_option(c_otp_option_donated);
+				delete_option(c_otp_option_nopwd);
 			}
 			$_SESSION[c_otp_session] = false;
 		}
@@ -154,6 +155,12 @@ if (!class_exists('WPOneTimePassword')) {
 
 		// Handle initialize
 		function otp_init() {
+			// Check if password login allowed
+			if (get_option(c_otp_option_nopwd)) {
+				remove_action('authenticate', 'wp_authenticate_username_password', 20);
+				remove_action('authenticate', 'wp_authenticate_cookie', 30);
+			}
+
 			// Check for integration with http:BL
 			if (get_option(c_otp_option_httpbl)) {
 				// Disable http:BLL if login or otp session
@@ -161,8 +168,10 @@ if (!class_exists('WPOneTimePassword')) {
 					remove_action('init', 'httpbl_check_visitor', 1);
 
 				// Disable username/password login if http:BL threat
-				if ($this->otp_is_login() && $this->otp_httpbl_notice())
+				if ($this->otp_is_login() && $this->otp_httpbl_notice()) {
 					remove_filter('authenticate', 'wp_authenticate_username_password', 20);
+					remove_action('authenticate', 'wp_authenticate_cookie', 30);
+				}
 			}
 
 			// Check for integration with bad behavior
@@ -179,7 +188,8 @@ if (!class_exists('WPOneTimePassword')) {
 					update_option('active_plugins', $plugins);
 				else {
 					if (!$this->otp_is_login() && !$this->otp_is_otp_session())
-						include_once(WP_PLUGIN_DIR . '/' . $bb_name);
+						if (file_exists(WP_PLUGIN_DIR . '/' . $bb_name))
+							include_once(WP_PLUGIN_DIR . '/' . $bb_name);
 				}
 			}
 
@@ -283,6 +293,11 @@ if (!class_exists('WPOneTimePassword')) {
 
 		// Modify login form
 		function otp_login_form() {
+			if (get_option(c_otp_option_httpbl)) {
+				$httpbl = $this->otp_httpbl_notice();
+				if ($httpbl)
+					echo '<p><span>' . $httpbl . '</span></p>';
+			}
 ?>
 			<script type="text/javascript">
 			/* <![CDATA[ */
@@ -522,15 +537,7 @@ if (!class_exists('WPOneTimePassword')) {
 				$user = new WP_User(sanitize_user($_POST['log']));
 				$pwd = $_POST['pwd'];
 				$otp_auth = $this->otp_check_otp($user, $pwd);
-				if ($otp_auth == null) {
-					if (get_option(c_otp_option_httpbl)) {
-						// Check if http:BL threat
-						$httpbl = $this->otp_httpbl_notice();
-						if ($httpbl)
-							return new WP_Error('otp-mandatory', $httpbl);
-					}
-				}
-				else
+				if ($otp_auth != null)
 					$_SESSION[c_otp_session] = true;
 				return $otp_auth;
 			}
@@ -889,6 +896,7 @@ if (!class_exists('WPOneTimePassword')) {
 				$otp_bb = get_option(c_otp_option_bb) ? 'checked="checked"' : '';
 				$otp_cleanup = get_option(c_otp_option_cleanup) ? 'checked="checked"' : '';
 				$otp_donated = get_option(c_otp_option_donated) ? 'checked="checked"' : '';
+				$otp_nopwd = get_option(c_otp_option_nopwd) ? 'checked="checked"' : '';
 
 				$referer = admin_url('options-general.php?page=' . plugin_basename($this->main_file));
 				$referer = add_query_arg(c_otp_action_arg, c_otp_action_settings);
@@ -911,6 +919,12 @@ if (!class_exists('WPOneTimePassword')) {
 				<tr><th scope="row" />
 				<td><a id="otp_allow_default" href="#"><?php _e('Default', c_otp_text_domain) ?></a></td></tr>
 
+				<tr><th scope="row"><?php _e('Disable normal login:', c_otp_text_domain) ?></th>
+				<td><input type="checkbox" name="<?php echo c_otp_option_nopwd; ?>" <?php echo $otp_nopwd; ?> />
+				<span" style="font-weight:bold;margin-left:10px;">
+				<?php _e('You can login with One-Time Passwords ONLY if you check this option!', c_otp_text_domain) ?>
+				</span></td></tr>
+
 				<tr><th scope="row"><?php _e('Allow & require OTP login when http:BL reports threat:', c_otp_text_domain) ?></th>
 				<td><input type="checkbox" name="<?php echo c_otp_option_httpbl; ?>" <?php echo $otp_httpbl; ?> />
 				<a href="http://wordpress.org/extend/plugins/httpbl/" target="_blank" style="margin-left:10px;">http:BL</a></td></tr>
@@ -928,7 +942,7 @@ if (!class_exists('WPOneTimePassword')) {
 				</table>
 
 				<input type="hidden" name="action" value="update" />
-				<input type="hidden" name="page_options" value="<?php echo c_otp_option_strict . ',' . c_otp_option_allow . ',' . c_otp_option_httpbl . ',' . c_otp_option_bb . ',' . c_otp_option_cleanup . ',' . c_otp_option_donated ; ?>" />
+				<input type="hidden" name="page_options" value="<?php echo c_otp_option_strict . ',' . c_otp_option_allow . ',' . c_otp_option_httpbl . ',' . c_otp_option_bb . ',' . c_otp_option_cleanup . ',' . c_otp_option_donated . ',' . c_otp_option_nopwd; ?>" />
 
 				<p class="submit"><input type="submit" class="button-primary" value="<?php _e('Save', c_otp_text_domain) ?>" /></p>
 				</form>
