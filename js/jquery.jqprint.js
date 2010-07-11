@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// eros@recoding.it
+// Eros Fratini - eros@recoding.it
 // jqprint 0.3
 //
 // - 19/06/2009 - some new implementations, added Opera support
@@ -7,6 +7,8 @@
 //
 // Printing plug-in for jQuery, evolution of jPrintArea: http://plugins.jquery.com/project/jPrintArea
 // requires jQuery 1.3.x
+//
+// Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 //------------------------------------------------------------------------
 
 (function($) {
