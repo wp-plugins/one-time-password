@@ -554,6 +554,15 @@ if (!class_exists('WPOneTimePassword')) {
 
 		// Register options page
 		function otp_admin_menu() {
+			if (function_exists('add_management_page')) {
+				add_management_page(
+					__('One-Time Password', c_otp_text_domain),
+					__('One-Time Password', c_otp_text_domain),
+					'edit_users',
+					'otp-management',
+					array(&$this, 'otp_management'));
+			}
+
 			if (function_exists('add_options_page'))
 				add_options_page(
 					__('One-Time Password Administration', c_otp_text_domain),
@@ -561,6 +570,137 @@ if (!class_exists('WPOneTimePassword')) {
 					0,
 					$this->main_file,
 					array(&$this, 'otp_administration'));
+		}
+
+		// Handle tool page
+		function otp_management() {
+			$otp_class = new otp();
+			$do = (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST' && isset($_POST['users']));
+			if ($do) {
+				check_admin_referer('otp-generate-bulk');
+				$otp_algorithm = $_POST['otp_algorithm'];
+			}
+?>
+			<h2><?php _e('Generate One-Time Password list', c_otp_text_domain) ?></h2>
+			<form action="#" method="post">
+			<?php wp_nonce_field('otp-generate-bulk'); ?>
+			<table class="widefat fixed" cellspacing="0">
+			<thead>
+			<tr class="thead">
+				<th scope="col" id="cb" class="manage-column column-cb check-column"><input type="checkbox" /></th>
+				<th scope="col" id="username" class="manage-column column-username"><?php _e('Username', c_otp_text_domain) ?></th>
+				<th scope="col" id="name" class="manage-column column-name"><?php _e('Name', c_otp_text_domain) ?></th>
+				<th scope="col" id="email" class="manage-column column-email"><?php _e('E-mail', c_otp_text_domain) ?></th>
+<?php
+				if ($do) {
+					echo '<th scope="col" id="name" class="manage-column">' . __('Password', c_otp_text_domain) . '</th>';
+					echo '<th scope="col" id="name" class="manage-column">' . __('Seed', c_otp_text_domain) . '</th>';
+					echo '<th scope="col" id="name" class="manage-column">OTP-1</th>';
+					echo '<th scope="col" id="name" class="manage-column">OTP-0</th>';
+				}
+?>
+			</tr>
+			</thead>
+			<tfoot>
+			<tr class="thead">
+				<th scope="col"  class="manage-column column-cb check-column"><input type="checkbox" /></th>
+				<th scope="col"  class="manage-column column-username"><?php _e('Username', c_otp_text_domain) ?></th>
+				<th scope="col"  class="manage-column column-name"><?php _e('Name', c_otp_text_domain) ?></th>
+				<th scope="col"  class="manage-column column-email"><?php _e('E-mail', c_otp_text_domain) ?></th>
+<?php
+				if ($do) {
+					echo '<th scope="col" id="name" class="manage-column">' . __('Password', c_otp_text_domain) . '</th>';
+					echo '<th scope="col" id="name" class="manage-column">' . __('Seed', c_otp_text_domain) . '</th>';
+					echo '<th scope="col" id="name" class="manage-column">OTP-1</th>';
+					echo '<th scope="col" id="name" class="manage-column">OTP-0</th>';
+				}
+?>
+			</tr>
+			</tfoot>
+
+			<tbody id="users" class="list:user user-list">
+<?php
+			global $wpdb;
+			$users = $wpdb->get_col($wpdb->prepare("SELECT ID FROM $wpdb->users ORDER BY user_login ASC"));
+			for ($i = 0 ; $i < count($users); $i++) {
+				$user = get_userdata($users[$i]);
+				echo '<tr';
+				if ($i % 2 == 0)
+					echo ' class="alternate"';
+				echo '>';
+				echo '<th scope="row" class="check-column">';
+				echo '<input type="checkbox" name="users[]" value="' . $user->ID . '" /></th>';
+				echo '<td class="username column-username"><strong>' . $user->user_login . '</strong></td>';
+				echo '<td class="name column-name">' . $user->first_name . ' ' . $user->last_name . '</td>';
+				echo '<td class="email column-email"><a href="mailto:' . $user->user_email .'">' . $user->user_email . '</a></td>';
+				if ($do && in_array($user->ID, $_POST['users'])) {
+					$otp_pwd = WPOneTimePassword::otp_generate_pwd();
+					$otp_seed = $otp_class->generateSeed();
+					$otp_count = 2;
+					$otp_list = $otp_class->generateOtpList($otp_pwd, $otp_seed, null, $otp_count + 1, $otp_algorithm);
+					$otp_seq = $otp_list[1]['sequence'];
+					$otp_hash = $otp_list[0]['hex_otp'];
+
+					// Store data
+					update_usermeta($user->ID, c_otp_meta_seed, $otp_seed);
+					update_usermeta($user->ID, c_otp_meta_algorithm, $otp_algorithm);
+					update_usermeta($user->ID, c_otp_meta_sequence, $otp_seq + 1);
+					update_usermeta($user->ID, c_otp_meta_hash, $otp_hash);
+					update_usermeta($user->ID, c_otp_meta_generated, date('r'));
+					delete_usermeta($user->ID, c_otp_meta_last_login);
+
+					echo '<td>' . $otp_pwd . '</td>';
+					echo '<td>' . $otp_seed . '</td>';
+					echo '<td>' . $otp_list[1]['hex_otp'] . '<br />' . $otp_list[1]['words_otp'] . '</td>';
+					echo '<td>' . $otp_list[2]['hex_otp'] . '<br />' . $otp_list[2]['words_otp'] . '</td>';
+				}
+				else
+					echo '<td></td><td></td><td></td><td></td>';
+				echo '</tr>';
+			}
+?>
+			</tbody>
+			</table>
+
+			<table class="form-table">
+			<tr><th scope="row"><?php _e('Algorithm:', c_otp_text_domain) ?></th>
+			<td><select name="otp_algorithm">
+<?php
+			// List available algorithms
+			$aa = $otp_class->getAvailableAlgorithms();
+			for ($i = 0; $i < count($aa); $i++) {
+				$sel = '';
+				// Select md5 by default
+				if ($aa[$i] == 'md5')
+					$sel = ' selected="selected"';
+				echo '<option value="' . $aa[$i] . '"' . $sel . '>' . $aa[$i] .'</option>';
+			}
+?>
+			</select></td></tr>
+			</table>
+
+			<div class="tablenav">
+			<div class="alignleft actions">
+			<input type="submit" value="<?php _e('Generate', c_otp_text_domain) ?>" name="otp-bulk" id="otp-bulk" class="button-secondary action" />
+			</div>
+			<br class="clear" />
+			</div>
+			</form>
+<?php
+		}
+
+		function otp_generate_pwd($length = 10) {
+			list($usec, $sec) = explode(' ', microtime());
+			srand((float) $sec + ((float) $usec * 100000));
+			$validchars = "0123456789abcdfghjkmnpqrstvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			$password = "";
+			$c = 0;
+			while ($c < $length) {
+				$char = substr($validchars, rand(0, strlen($validchars) - 1), 1);
+				$password .= $char;
+				$c++;
+			}
+			return $password;
 		}
 
 		// Handle option page
