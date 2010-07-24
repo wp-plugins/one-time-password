@@ -48,7 +48,7 @@ if (!class_exists('WPOneTimePassword')) {
 		var $main_file = null;
 
 		// Constructor
-		function WPOneTimePassword() {
+		function __construct() {
 			$bt = debug_backtrace();
 			$this->main_file = $bt[0]['file'];
 
