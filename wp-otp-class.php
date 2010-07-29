@@ -261,7 +261,9 @@ if (!class_exists('WPOneTimePassword')) {
 
 				// Enqueue style sheet
 				$css_name = $this->otp_change_extension(basename($this->main_file), '.css');
-				if (file_exists(TEMPLATEPATH . '/' . $css_name))
+				if (file_exists(WP_CONTENT_DIR . '/uploads/' . $css_name))
+					$css_url = WP_CONTENT_URL . '/uploads/' . $css_name;
+				else if (file_exists(TEMPLATEPATH . '/' . $css_name))
 					$css_url = get_bloginfo('template_directory') . '/' . $css_name;
 				else
 					$css_url = WP_PLUGIN_URL . '/' . basename(dirname($this->main_file)) . '/' . $css_name;
