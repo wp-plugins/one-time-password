@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin, authentication, wpmu, access
 Requires at least: 2.8
 Tested up to: 3.0
-Stable tag: 2.8.6
+Stable tag: 2.12
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -118,7 +118,7 @@ Site wide.
 
 = How does the integration with the http:BL plugin work? =
 
-First of all the integration with the [http:BL plugin](http://wordpress.org/extend/plugins/httpbl/)
+First of all the integration with the [http:BL plugin](http://wordpress.org/extend/plugins/httpbl/ "http:BL")
 has to be enabled using the settings menu.
 If enabled, you can navigate to the login url of your blog, even if http:BL would normally block it.
 A warning indication the age, level and threat type is displayed above the login window.
@@ -148,6 +148,23 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 1. The authorize window for an administrative action (optional)
 
 == Changelog ==
+
+= 2.12 =
+* Added option to store css in upload folder
+
+= 2.11 =
+* Constructor compatibility with PHP 5.3.3+
+
+= 2.10 =
+* Added tool to bulk generate OTP lists
+
+= 2.9 =
+* Option to disable normal password login
+* Improved [http:BL](http://wordpress.org/extend/plugins/httpbl/ "http:BL") integration
+* Improved [Bad Behavior](http://wordpress.org/extend/plugins/bad-behavior/ "Bad Behavior") integration
+* Updated jqPrint to version 0.3.1
+* Updated SimpleModal to version 1.3.5
+* Updated Dutch/Flemish translations
 
 = 2.8.6 =
 * Better default for 'Do not protect'
@@ -308,6 +325,12 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 * Initial version
 
 == Upgrade Notice ==
+
+= 2.12 =
+Compatibility
+
+= 2.11 =
+Compatibility
 
 = 2.8.6 =
 Compatibility
