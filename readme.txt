@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin, authentication, wpmu, access
 Requires at least: 2.8
 Tested up to: 3.0.1
-Stable tag: 2.12
+Stable tag: 2.13
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -148,6 +148,9 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 1. The authorize window for an administrative action (optional)
 
 == Changelog ==
+
+= 2.13 =
+* 'I have donated' removes donate button
 
 = 2.12 =
 * Added option to store css in upload folder
@@ -325,6 +328,9 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 * Initial version
 
 == Upgrade Notice ==
+
+= 2.13 =
+New feature: remove donate button
 
 = 2.12 =
 Compatibility
