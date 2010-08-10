@@ -51,6 +51,9 @@ if (!class_exists('WPOneTimePassword')) {
 		function __construct() {
 			$bt = debug_backtrace();
 			$this->main_file = $bt[0]['file'];
+			$this->plugin_url = WP_PLUGIN_URL . '/' . basename(dirname($this->main_file));
+			if (strpos($this->plugin_url, 'http') === 0 && is_ssl())
+				$this->plugin_url = str_replace('http://', 'https://', $this->plugin_url);
 
 			// Register (de)activation hook
 			register_activation_hook($this->main_file, array(&$this, 'otp_activate'));
@@ -266,7 +269,7 @@ if (!class_exists('WPOneTimePassword')) {
 				else if (file_exists(TEMPLATEPATH . '/' . $css_name))
 					$css_url = get_bloginfo('template_directory') . '/' . $css_name;
 				else
-					$css_url = WP_PLUGIN_URL . '/' . basename(dirname($this->main_file)) . '/' . $css_name;
+					$css_url = $this->plugin_url . '/' . $css_name;
 				wp_register_style('otp_style', $css_url);
 				wp_enqueue_style('otp_style');
 
