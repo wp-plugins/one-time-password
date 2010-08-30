@@ -314,7 +314,7 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 * Added ajax *New* seed link
 * Added query arg *action=challenge*
 * Added *Algorithm*, *Sequence*, *Registered* and *Last login* to revoke form
-* Added Flemish translation (be\_NL)
+* Added Flemish translation (nl\_BE)
 * Changed background admin notice to orange-red
 * Improved formatting of the administration menu
 * Added setting to delete data (database and options) on deactivation
