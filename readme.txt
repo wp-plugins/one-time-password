@@ -43,6 +43,8 @@ See my [other plugins](http://wordpress.org/extend/plugins/profile/m66b "Marcel 
 1. Upload the entire one-time-password/ directory to the /wp-content/plugins/ directory
 1. Activate the plugin through the Plugins menu in WordPress
 
+Amit Banerjee wrote an [excellent guide](http://www.ampercent.com/one-time-passwords-wordpress-blog-prevent-keylogging/7720/) to setup the plugin.
+
 == Frequently Asked Questions ==
 
 = Should the pass-phrase be equal to my main password? =
