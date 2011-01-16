@@ -152,7 +152,7 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 == Changelog ==
 
 = 2.16 =
-* Added Italian translation (it\_IT) by *Aldo*
+* Added Italian translation (it\_IT) by [Aldo](http://profiles.wordpress.org/users/aldolat/ "Aldo")
 
 = 2.15 =
 * Added French translation (fr\_FR) by [Emmanuelle](http://www.translatonline.com/ "Emmanuelle")
