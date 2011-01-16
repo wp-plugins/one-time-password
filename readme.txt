@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin, authentication, wpmu, access
 Requires at least: 2.8
 Tested up to: 3.1
-Stable tag: 2.15
+Stable tag: 2.16
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -42,6 +42,8 @@ See my [other plugins](http://wordpress.org/extend/plugins/profile/m66b "Marcel 
 1. Download and unzip the plugin
 1. Upload the entire one-time-password/ directory to the /wp-content/plugins/ directory
 1. Activate the plugin through the Plugins menu in WordPress
+
+Amit Banerjee wrote an [excellent guide](http://www.ampercent.com/one-time-passwords-wordpress-blog-prevent-keylogging/7720/) to setup the plugin.
 
 == Frequently Asked Questions ==
 
@@ -149,8 +151,11 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 
 == Changelog ==
 
+= 2.16 =
+* Added Italian translation (it\_IT) by *Aldo*
+
 = 2.15 =
-* Added french translation (fr\_FR) by [Emmanuelle](http://www.translatonline.com/ "Emmanuelle")
+* Added French translation (fr\_FR) by [Emmanuelle](http://www.translatonline.com/ "Emmanuelle")
 * Updated Dutch/Flemish translations
 * Updated SimpleModal to version 1.4.1
 * Tested with WordPress 3.1 beta 1
