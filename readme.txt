@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin, authentication, wpmu, access
 Requires at least: 2.8
 Tested up to: 3.1
-Stable tag: 2.15
+Stable tag: 2.16
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -149,8 +149,11 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 
 == Changelog ==
 
+= 2.16 =
+* Added Italian translation (it\_IT) by *Aldo*
+
 = 2.15 =
-* Added french translation (fr\_FR) by [Emmanuelle](http://www.translatonline.com/ "Emmanuelle")
+* Added French translation (fr\_FR) by [Emmanuelle](http://www.translatonline.com/ "Emmanuelle")
 * Updated Dutch/Flemish translations
 * Updated SimpleModal to version 1.4.1
 * Tested with WordPress 3.1 beta 1
