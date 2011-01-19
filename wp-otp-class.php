@@ -796,6 +796,11 @@ if (!class_exists('WPOneTimePassword')) {
 					if (!$_POST['otp_initialize'])
 						$this->otp_render_password_list($current_user, $otp_list);
 				}
+
+//				for ($i = 0; $i < $otp_count; $i++) {
+//					$token = $this->ComputeOathTruncate($this->ComputeOathHotp($otp_pwd, $i));
+//					echo $i . ':' . $token . '<br />';
+//				}
 			}
 
 			// Render generate form
@@ -1318,6 +1323,40 @@ if (!class_exists('WPOneTimePassword')) {
 				}
 			}
 			return false;
+		}
+
+		// RFC 4226
+
+		function ComputeOathHotp($key, $counter)
+		{
+			$cur_counter = array(0, 0, 0, 0, 0, 0, 0, 0);
+			for($i = 7; $i >= 0; $i--)
+			{
+				$cur_counter[$i] = pack('C*', $counter);
+				$counter = $counter >> 8;
+			}
+			$bin_counter = implode($cur_counter);
+			if (strlen($bin_counter) < 8)
+				$bin_counter = str_repeat(chr(0), 8 - strlen($bin_counter)) . $bin_counter;
+
+			return hash_hmac('sha1', $bin_counter, $key);
+		}
+
+		function ComputeOathTruncate($hash, $length = 6)
+		{
+			// Convert to decimal
+			foreach (str_split($hash, 2) as $hex)
+				$hmac_result[] = hexdec($hex);
+
+			// Find offset
+			$offset = $hmac_result[19] & 0xf;
+
+			// Algorithm from RFC
+			return substr(str_repeat('0', $length) .
+				(((($hmac_result[$offset + 0] & 0x7f) << 24) |
+				(($hmac_result[$offset + 1] & 0xff) << 16) |
+				(($hmac_result[$offset + 2] & 0xff) << 8) |
+				($hmac_result[$offset + 3] & 0xff)) % pow(10, $length)), -$length);
 		}
 
 		// Helper change file extension
