@@ -57,7 +57,7 @@ No, if you plan to use a printed one-time password list only.
 
 Yes, if you plan to use a one-time password generator,
 [on your iPhone](http://www.apptism.com/apps/otp-generator "iPhone OTP Generator") (not tried)
-or [on Android](http://www.androlib.com/android.application.net-laserbunny-android-otp-Fxw.aspx "OTP Calculator") (not tried)
+or [on Android](http://www.androlib.com/android.application.ub0r-android-otpdroid-pzmn.aspx "OTPdroid") (tried with success)
 or on mobile phones that support [JavaME](http://en.wikipedia.org/wiki/Java_Platform,_Micro_Edition "JavaME"), for example using
 [j2me-otp](http://tanso.net/j2me-otp/ "j2me-otp") (not tried) or
 [OTPGen](http://www.getjar.com/products/471/OTPGen "OTPGen") (tried with success).
