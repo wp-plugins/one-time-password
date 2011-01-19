@@ -137,6 +137,9 @@ To re-enabled the Bad Behavior plugin you have to disable this option first.
 When this option is enabled the one-time password plugin will load the Bad Behavior plugin instead of WordPress, except for the login page and for every other page when you are logged in using a one-time password.
 Unfortunately it is not possible (yet) to display a warning on the login page that Bad Behavior would block access.
 
+= Will RFC 4226 be supported? =
+
+No, RFC 4226 requires a symmetric key, which should be stored. WordPress does not provide a safe way to store keys.
 
 = Where can I ask questions, report bugs and request features? =
 
