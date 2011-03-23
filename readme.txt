@@ -353,6 +353,9 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 = 2.17 =
 Compatibility
 
+= 2.14 =
+Compatibility
+
 = 2.15 =
 French translation, compatibility
 
@@ -373,11 +376,6 @@ Compatibility
 
 = 2.8.3 =
 Fixed incompatibility with GD Star Rating plugin
-
-== Upgrade Notice ==
-
-= 2.14 =
-Compatibility
 
 == Usage ==
 
