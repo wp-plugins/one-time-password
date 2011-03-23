@@ -49,8 +49,7 @@ if (!class_exists('WPOneTimePassword')) {
 
 		// Constructor
 		function __construct() {
-			$bt = debug_backtrace();
-			$this->main_file = $bt[0]['file'];
+			$this->main_file = str_replace('-class', '', __FILE__);
 			$this->plugin_url = WP_PLUGIN_URL . '/' . basename(dirname($this->main_file));
 			if (strpos($this->plugin_url, 'http') === 0 && is_ssl())
 				$this->plugin_url = str_replace('http://', 'https://', $this->plugin_url);
@@ -61,6 +60,7 @@ if (!class_exists('WPOneTimePassword')) {
 
 			// Register actions
 			add_action('init', array(&$this, 'otp_init'), 0);
+			add_action('init', array(&$this, 'otp_init_late'), 9999);
 			add_action('login_head', array(&$this, 'otp_login_head'));
 			add_action('login_form', array(&$this, 'otp_login_form'));
 			add_action('wp_logout', array(&$this, 'otp_wp_logout'));
@@ -100,12 +100,12 @@ if (!class_exists('WPOneTimePassword')) {
 				$rows = $wpdb->get_results("SELECT * FROM " . $otp_table);
 				foreach ($rows as $row) {
 					$user = new WP_User($row->user);
-					update_usermeta($user->ID, c_otp_meta_seed, $row->seed);
-					update_usermeta($user->ID, c_otp_meta_algorithm, $row->algorithm);
-					update_usermeta($user->ID, c_otp_meta_sequence, $row->sequence + 1);
-					update_usermeta($user->ID, c_otp_meta_hash, $row->hash);
-					update_usermeta($user->ID, c_otp_meta_generated, $row->generated);
-					update_usermeta($user->ID, c_otp_meta_last_login, $row->last_login);
+					update_user_meta($user->ID, c_otp_meta_seed, $row->seed);
+					update_user_meta($user->ID, c_otp_meta_algorithm, $row->algorithm);
+					update_user_meta($user->ID, c_otp_meta_sequence, $row->sequence + 1);
+					update_user_meta($user->ID, c_otp_meta_hash, $row->hash);
+					update_user_meta($user->ID, c_otp_meta_generated, $row->generated);
+					update_user_meta($user->ID, c_otp_meta_last_login, $row->last_login);
 				}
 
 				$sql = "DROP TABLE " . $wpdb->prefix . c_otp_table_name;
@@ -282,6 +282,13 @@ if (!class_exists('WPOneTimePassword')) {
 					wp_enqueue_script('jQuery-Plugin-SimpleModal', $plugin_dir . '/js/jquery.simplemodal.js');
 				}
 			}
+		}
+
+		// Handle late initialize
+		function otp_init_late() {
+			// Compatibility
+			if ($this->otp_is_login())
+				remove_action('wp_print_scripts', 'ga_external_tracking_js');
 		}
 
 		function otp_is_login() {
@@ -507,7 +514,7 @@ if (!class_exists('WPOneTimePassword')) {
 			get_currentuserinfo();
 
 			// Display if list should be generated
-			$sequence = get_usermeta($current_user->ID, c_otp_meta_sequence);
+			$sequence = get_user_meta($current_user->ID, c_otp_meta_sequence, true);
 			if ($sequence <= 0) {
 				$url = admin_url('options-general.php?page=' . plugin_basename($this->main_file));
 				echo '<div class="error fade otp_admin_notice"><p>' . __('One-Time Password list', c_otp_text_domain);
@@ -539,8 +546,8 @@ if (!class_exists('WPOneTimePassword')) {
 		function otp_authenticate($user) {
 			try {
 				// Get data
-				$user = new WP_User(sanitize_user($_POST['log']));
-				$pwd = $_POST['pwd'];
+				$user = new WP_User(sanitize_user(isset($_POST['log']) ? $_POST['log'] : null));
+				$pwd = (isset($_POST['pwd']) ? $_POST['pwd'] : null);
 				$otp_auth = $this->otp_check_otp($user, $pwd);
 				if ($otp_auth != null)
 					$_SESSION[c_otp_session] = true;
@@ -572,7 +579,7 @@ if (!class_exists('WPOneTimePassword')) {
 				add_options_page(
 					__('One-Time Password Administration', c_otp_text_domain),
 					__('One-Time Password', c_otp_text_domain),
-					0,
+					'read',
 					$this->main_file,
 					array(&$this, 'otp_administration'));
 		}
@@ -647,12 +654,12 @@ if (!class_exists('WPOneTimePassword')) {
 					$otp_hash = $otp_list[0]['hex_otp'];
 
 					// Store data
-					update_usermeta($user->ID, c_otp_meta_seed, $otp_seed);
-					update_usermeta($user->ID, c_otp_meta_algorithm, $otp_algorithm);
-					update_usermeta($user->ID, c_otp_meta_sequence, $otp_seq + 1);
-					update_usermeta($user->ID, c_otp_meta_hash, $otp_hash);
-					update_usermeta($user->ID, c_otp_meta_generated, date('r'));
-					delete_usermeta($user->ID, c_otp_meta_last_login);
+					update_user_meta($user->ID, c_otp_meta_seed, $otp_seed);
+					update_user_meta($user->ID, c_otp_meta_algorithm, $otp_algorithm);
+					update_user_meta($user->ID, c_otp_meta_sequence, $otp_seq + 1);
+					update_user_meta($user->ID, c_otp_meta_hash, $otp_hash);
+					update_user_meta($user->ID, c_otp_meta_generated, date('r'));
+					delete_user_meta($user->ID, c_otp_meta_last_login);
 
 					echo '<td>' . $otp_pwd . '</td>';
 					echo '<td>' . $otp_seed . '</td>';
@@ -728,6 +735,9 @@ if (!class_exists('WPOneTimePassword')) {
 			echo '<div id="otp_admin_panel">';
 			echo '<h2>' . __('One-Time Password Administration', c_otp_text_domain) . '</h2>';
 
+			// Check parameters
+			$otp_msg = array();
+
 			// Handle generate action
 			if (isset($_REQUEST[c_otp_action_arg]) && $_REQUEST[c_otp_action_arg] == c_otp_action_generate) {
 				// Security check
@@ -740,8 +750,8 @@ if (!class_exists('WPOneTimePassword')) {
 				$otp_seed = $_POST['otp_seed'];
 				$otp_algorithm = $_POST['otp_algorithm'];
 
-				// Check parameters
-				$otp_msg = array();
+				if (!isset($_POST['otp_initialize']))
+					$_POST['otp_initialize'] = null;
 
 				// Check pass-phrase
 				if ($_POST['otp_initialize']) {
@@ -760,7 +770,7 @@ if (!class_exists('WPOneTimePassword')) {
 				if (!$otp_class->isValidSeed($otp_seed))
 					$otp_msg[] = __('Invalid seed', c_otp_text_domain);
 				if ($_POST['otp_initialize']) {
-					$old_seed = get_usermeta($current_user->ID, c_otp_meta_seed);
+					$old_seed = get_user_meta($current_user->ID, c_otp_meta_seed, true);
 					if ($old_seed && $otp_seed == $old_seed)
 						$otp_msg[] = __('Invalid seed', c_otp_text_domain);
 				}
@@ -785,12 +795,12 @@ if (!class_exists('WPOneTimePassword')) {
 					}
 
 					// Store data
-					update_usermeta($current_user->ID, c_otp_meta_seed, $otp_seed);
-					update_usermeta($current_user->ID, c_otp_meta_algorithm, $otp_algorithm);
-					update_usermeta($current_user->ID, c_otp_meta_sequence, $otp_seq + 1);
-					update_usermeta($current_user->ID, c_otp_meta_hash, $otp_hash);
-					update_usermeta($current_user->ID, c_otp_meta_generated, date('r'));
-					delete_usermeta($current_user->ID, c_otp_meta_last_login);
+					update_user_meta($current_user->ID, c_otp_meta_seed, $otp_seed);
+					update_user_meta($current_user->ID, c_otp_meta_algorithm, $otp_algorithm);
+					update_user_meta($current_user->ID, c_otp_meta_sequence, $otp_seq + 1);
+					update_user_meta($current_user->ID, c_otp_meta_hash, $otp_hash);
+					update_user_meta($current_user->ID, c_otp_meta_generated, date('r'));
+					delete_user_meta($current_user->ID, c_otp_meta_last_login);
 
 					// Render password list / print form
 					if (!$_POST['otp_initialize'])
@@ -812,6 +822,9 @@ if (!class_exists('WPOneTimePassword')) {
 					echo '<span class="otp_admin_error">' . $msg . '</span><br />';
 			}
 
+			if (!isset($_POST['otp_revoke']))
+				$_POST['otp_revoke'] = null;
+
 			// Handle revoke action
 			if (isset($_REQUEST[c_otp_action_arg]) && $_REQUEST[c_otp_action_arg] == c_otp_action_revoke) {
 				// Security check
@@ -823,12 +836,12 @@ if (!class_exists('WPOneTimePassword')) {
 				// Revoke
 				if ($otp_revoke) {
 					// Delete data
-					delete_usermeta($current_user->ID, c_otp_meta_seed);
-					delete_usermeta($current_user->ID, c_otp_meta_algorithm);
-					delete_usermeta($current_user->ID, c_otp_meta_sequence);
-					delete_usermeta($current_user->ID, c_otp_meta_hash);
-					delete_usermeta($current_user->ID, c_otp_meta_generated);
-					delete_usermeta($current_user->ID, c_otp_meta_last_login);
+					delete_user_meta($current_user->ID, c_otp_meta_seed);
+					delete_user_meta($current_user->ID, c_otp_meta_algorithm);
+					delete_user_meta($current_user->ID, c_otp_meta_sequence);
+					delete_user_meta($current_user->ID, c_otp_meta_hash);
+					delete_user_meta($current_user->ID, c_otp_meta_generated);
+					delete_user_meta($current_user->ID, c_otp_meta_last_login);
 				}
 			}
 
@@ -940,15 +953,15 @@ if (!class_exists('WPOneTimePassword')) {
 
 		function otp_render_revoke_form($user) {
 			// Check for existing data
-			$sequence = get_usermeta($user->ID, c_otp_meta_sequence);
+			$sequence = get_user_meta($user->ID, c_otp_meta_sequence, true);
 			if ($sequence > 0) {
 				// get data
 				$sequence--;
-				$seed = get_usermeta($user->ID, c_otp_meta_seed);
-				$algorithm = get_usermeta($user->ID, c_otp_meta_algorithm);
-				$hash = get_usermeta($user->ID, c_otp_meta_hash);
-				$generated = get_usermeta($user->ID, c_otp_meta_generated);
-				$last_login = get_usermeta($user->ID, c_otp_meta_last_login);
+				$seed = get_user_meta($user->ID, c_otp_meta_seed, true);
+				$algorithm = get_user_meta($user->ID, c_otp_meta_algorithm, true);
+				$hash = get_user_meta($user->ID, c_otp_meta_hash, true);
+				$generated = get_user_meta($user->ID, c_otp_meta_generated, true);
+				$last_login = get_user_meta($user->ID, c_otp_meta_last_login, true);
 ?>
 				<hr />
 				<h3><?php _e('Revoke One-Time Password list', c_otp_text_domain) ?></h3>
@@ -986,13 +999,13 @@ if (!class_exists('WPOneTimePassword')) {
 
 		function otp_render_password_list($user, $otp_list) {
 			// Check for existing data
-			$sequence = get_usermeta($user->ID, c_otp_meta_sequence);
+			$sequence = get_user_meta($user->ID, c_otp_meta_sequence, true);
 			if ($sequence > 0) {
 				// get data
 				$sequence--;
-				$seed = get_usermeta($user->ID, c_otp_meta_seed);
-				$algorithm = get_usermeta($user->ID, c_otp_meta_algorithm);
-				$generated = get_usermeta($user->ID, c_otp_meta_generated);
+				$seed = get_user_meta($user->ID, c_otp_meta_seed, true);
+				$algorithm = get_user_meta($user->ID, c_otp_meta_algorithm, true);
+				$generated = get_user_meta($user->ID, c_otp_meta_generated, true);
 ?>
 				<hr />
 				<h3><?php _e('One-Time Password list', c_otp_text_domain) ?></h3>
@@ -1250,12 +1263,12 @@ if (!class_exists('WPOneTimePassword')) {
 		// Helper get challenge
 		function otp_get_challenge($user) {
 			// Get/check sequence
-			$sequence = get_usermeta($user->ID, c_otp_meta_sequence);
+			$sequence = get_user_meta($user->ID, c_otp_meta_sequence, true);
 			if ($sequence > 0) {
 				// Get data
 				$sequence--;
-				$seed = get_usermeta($user->ID, c_otp_meta_seed);
-				$algorithm = get_usermeta($user->ID, c_otp_meta_algorithm);
+				$seed = get_user_meta($user->ID, c_otp_meta_seed, true);
+				$algorithm = get_user_meta($user->ID, c_otp_meta_algorithm, true);
 
 				// Create challenge
 				$otp_class = new otp();
@@ -1268,13 +1281,13 @@ if (!class_exists('WPOneTimePassword')) {
 		// Helper check otp
 		function otp_check_otp($user, $pwd) {
 			// Get/check current sequence
-			$sequence = get_usermeta($user->ID, c_otp_meta_sequence);
+			$sequence = get_user_meta($user->ID, c_otp_meta_sequence, true);
 			if ($sequence > 0) {
 				// Get data
 				$sequence--;
-				$seed = get_usermeta($user->ID, c_otp_meta_seed);
-				$algorithm = get_usermeta($user->ID, c_otp_meta_algorithm);
-				$hash = get_usermeta($user->ID, c_otp_meta_hash);
+				$seed = get_user_meta($user->ID, c_otp_meta_seed, true);
+				$algorithm = get_user_meta($user->ID, c_otp_meta_algorithm, true);
+				$hash = get_user_meta($user->ID, c_otp_meta_hash, true);
 
 				// Check password
 				$otp_class = new otp();
@@ -1283,9 +1296,9 @@ if (!class_exists('WPOneTimePassword')) {
 				if ($otp_auth['result']) {
 					// Update data
 					$next_seq = $sequence - 1;
-					update_usermeta($user->ID, c_otp_meta_sequence, $next_seq + 1);
-					update_usermeta($user->ID, c_otp_meta_hash, $otp_auth['otp']['previous_hex_otp']);
-					update_usermeta($user->ID, c_otp_meta_last_login, date('r'));
+					update_user_meta($user->ID, c_otp_meta_sequence, $next_seq + 1);
+					update_user_meta($user->ID, c_otp_meta_hash, $otp_auth['otp']['previous_hex_otp']);
+					update_user_meta($user->ID, c_otp_meta_last_login, date('r'));
 
 					// Athenticate user
 					return $user;
