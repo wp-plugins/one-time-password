@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin, authentication, wpmu, access
 Requires at least: 2.8
 Tested up to: 3.1
-Stable tag: 2.16
+Stable tag: 2.18
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -153,6 +153,13 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 1. The authorize window for an administrative action (optional)
 
 == Changelog ==
+
+= 2.18 =
+* Re-release because of a bug in the WordPress repository
+
+= 2.17 =
+* Fixed all PHP notices
+* Compatibility with [Google Analyticator](http://wordpress.org/extend/plugins/google-analyticator/ "Google Analyticator")
 
 = 2.16 =
 * Added Italian translation (it\_IT) by [Aldo](http://profiles.wordpress.org/users/aldolat/ "Aldo")
@@ -346,6 +353,12 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 
 == Upgrade Notice ==
 
+= 2.17 =
+Compatibility
+
+= 2.14 =
+Compatibility
+
 = 2.15 =
 French translation, compatibility
 
@@ -366,11 +379,6 @@ Compatibility
 
 = 2.8.3 =
 Fixed incompatibility with GD Star Rating plugin
-
-== Upgrade Notice ==
-
-= 2.14 =
-Compatibility
 
 == Usage ==
 
