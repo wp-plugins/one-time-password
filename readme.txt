@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin, authentication, wpmu, access
 Requires at least: 2.8
 Tested up to: 3.1
-Stable tag: 2.20
+Stable tag: 2.21
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -153,6 +153,9 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 1. The authorize window for an administrative action (optional)
 
 == Changelog ==
+
+= 2.21 =
+* Added Polish translation (pl\_PL) by [Positionmaker](http://positionmaker.pl/ "Positionmaker")
 
 = 2.20 =
 * Re-release because of a bug in the WordPress repository
@@ -358,6 +361,9 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 * Initial version
 
 == Upgrade Notice ==
+
+= 2.21 =
+Polish translation
 
 = 2.17 =
 Compatibility
