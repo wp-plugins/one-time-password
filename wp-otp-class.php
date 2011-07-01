@@ -868,7 +868,7 @@ if (!class_exists('WPOneTimePassword')) {
 ?>
 				<script type="text/javascript">
 				var psHost = (("https:" == document.location.protocol) ? "https://" : "http://");
-				document.write(unescape("%3Cscript src='" + psHost + "pluginsponsors.com/direct/spsn/display.php?client=wponetimepassword&spot=' type='text/javascript'%3E%3C/script%3E"));
+				document.write(unescape("%3Cscript src='" + psHost + "pluginsponsors.com/direct/spsn/display.php?client=one-time-password&spot=' type='text/javascript'%3E%3C/script%3E"));
 				</script>
 				<a href="http://pluginsponsors.com/privacy.html" target=_blank" style="font-size: 8px;">Privacy in the Sustainable Plugins Sponsorship Network</a>
 <?php
