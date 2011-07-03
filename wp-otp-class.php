@@ -724,8 +724,6 @@ if (!class_exists('WPOneTimePassword')) {
 			global $current_user;
 			get_currentuserinfo();
 
-			$this->otp_render_pluginsponsor();
-
 			echo '<div class="wrap">';
 
 			// Render Info panel
@@ -861,18 +859,6 @@ if (!class_exists('WPOneTimePassword')) {
 
 			// Output admin jQuery
 			$this->otp_output_admin_query();
-		}
-
-		function otp_render_pluginsponsor() {
-			if (!get_option(c_otp_option_donated)) {
-?>
-				<script type="text/javascript">
-				var psHost = (("https:" == document.location.protocol) ? "https://" : "http://");
-				document.write(unescape("%3Cscript src='" + psHost + "pluginsponsors.com/direct/spsn/display.php?client=one-time-password&spot=' type='text/javascript'%3E%3C/script%3E"));
-				</script>
-				<a href="http://pluginsponsors.com/privacy.html" target=_blank" style="font-size: 8px;">Privacy in the Sustainable Plugins Sponsorship Network</a>
-<?php
-			}
 		}
 
 		function otp_render_info_panel() {
