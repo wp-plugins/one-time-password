@@ -61,7 +61,6 @@ if (!class_exists('WPOneTimePassword')) {
 
 			// Register actions
 			add_action('init', array(&$this, 'otp_init'), 0);
-			add_action('init', array(&$this, 'otp_init_late'), 9999);
 			add_action('login_head', array(&$this, 'otp_login_head'));
 			add_action('login_form', array(&$this, 'otp_login_form'));
 			add_action('wp_logout', array(&$this, 'otp_wp_logout'));
@@ -286,13 +285,6 @@ if (!class_exists('WPOneTimePassword')) {
 			}
 		}
 
-		// Handle late initialize
-		function otp_init_late() {
-			// Compatibility
-			if ($this->otp_is_login())
-				remove_action('wp_print_scripts', 'ga_external_tracking_js');
-		}
-
 		function otp_is_login() {
 			return (strpos(strtolower($_SERVER['REQUEST_URI']), 'wp-login.php') !== false);
 		}
@@ -300,9 +292,11 @@ if (!class_exists('WPOneTimePassword')) {
 		// Modify login head
 		function otp_login_head() {
 			// Print styles and scripts not called on login page
-			wp_print_styles();
-			wp_deregister_script('gdsr_script');
-			wp_print_scripts();
+			wp_print_styles('otp_style');
+			wp_print_scripts('jquery');
+			wp_print_scripts('jQuery-Plugin-jqPrint');
+			wp_print_scripts('jQuery-Plugin-URL-Utils');
+			wp_print_scripts('jQuery-Plugin-SimpleModal');
 		}
 
 		// Modify login form
