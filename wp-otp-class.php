@@ -294,9 +294,6 @@ if (!class_exists('WPOneTimePassword')) {
 			// Print styles and scripts not called on login page
 			wp_print_styles('otp_style');
 			wp_print_scripts('jquery');
-			wp_print_scripts('jQuery-Plugin-jqPrint');
-			wp_print_scripts('jQuery-Plugin-URL-Utils');
-			wp_print_scripts('jQuery-Plugin-SimpleModal');
 		}
 
 		// Modify login form
