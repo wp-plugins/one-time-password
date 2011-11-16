@@ -151,6 +151,10 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 
 == Changelog ==
 
+= Development version =
+* Added Rusian translation (ru\_RU) by [Yurij](http://wordpress.org/ "Yurij")
+* You can download the development version [here](http://downloads.wordpress.org/plugin/one-time-password.zip)
+
 = 2.26 =
 * Removed tools page
 * Fixed notice
