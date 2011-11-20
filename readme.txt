@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin, authentication, wpmu, access
 Requires at least: 2.8
 Tested up to: 3.3
-Stable tag: 2.26
+Stable tag: 2.27
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -152,8 +152,10 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 == Changelog ==
 
 = Development version =
-* Added Rusian translation (ru\_RU) by [Yurij](http://wordpress.org/ "Yurij")
 * You can download the development version [here](http://downloads.wordpress.org/plugin/one-time-password.zip)
+
+= 2.27 =
+* Added Rusian translation (ru\_RU) by *Yurij*
 
 = 2.26 =
 * Removed tools page
@@ -382,6 +384,9 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 * Initial version
 
 == Upgrade Notice ==
+
+= 2.27 =
+Rusian translation
 
 = 2.26 =
 Compatibility
