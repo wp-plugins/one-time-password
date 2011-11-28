@@ -27,7 +27,6 @@ define('c_otp_option_httpbl', 'otp_http');
 define('c_otp_option_bb', 'otp_bb');
 define('c_otp_option_cleanup', 'otp_cleanup');
 define('c_otp_option_donated', 'otp_donated');
-define('c_otp_option_nospsn', 'otp_nospsn');
 define('c_otp_option_nopwd', 'otp_nopwd');
 
 define('c_otp_text_domain', 'one-time-password');
@@ -145,7 +144,6 @@ if (!class_exists('WPOneTimePassword')) {
 				delete_option(c_otp_option_bb);
 				delete_option(c_otp_option_cleanup);
 				delete_option(c_otp_option_donated);
-				delete_option(c_otp_option_nospsn);
 				delete_option(c_otp_option_nopwd);
 			}
 			$_SESSION[c_otp_session] = false;
@@ -580,8 +578,6 @@ if (!class_exists('WPOneTimePassword')) {
 			global $current_user;
 			get_currentuserinfo();
 
-			$this->otp_render_pluginsponsor();
-
 			echo '<div class="wrap">';
 
 			// Render Info panel
@@ -717,18 +713,6 @@ if (!class_exists('WPOneTimePassword')) {
 
 			// Output admin jQuery
 			$this->otp_output_admin_query();
-		}
-
-		function otp_render_pluginsponsor() {
-			if (!get_option(c_otp_option_nospsn)) {
-?>
-				<script type="text/javascript">
-				var psHost = (("https:" == document.location.protocol) ? "https://" : "http://");
-				document.write(unescape("%3Cscript src='" + psHost + "pluginsponsors.com/direct/spsn/display.php?client=one-time-password&spot=' type='text/javascript'%3E%3C/script%3E"));
-				</script>
-				<a href="http://pluginsponsors.com/privacy.html" target=_blank" style="font-size: 8px;">Privacy in the Sustainable Plugins Sponsorship Network</a>
-<?php
-			}
 		}
 
 		function otp_render_info_panel() {
@@ -917,7 +901,6 @@ if (!class_exists('WPOneTimePassword')) {
 				$otp_bb = get_option(c_otp_option_bb) ? 'checked="checked"' : '';
 				$otp_cleanup = get_option(c_otp_option_cleanup) ? 'checked="checked"' : '';
 				$otp_donated = get_option(c_otp_option_donated) ? 'checked="checked"' : '';
-				$otp_nospsn = get_option(c_otp_option_nospsn) ? 'checked="checked"' : '';
 				$otp_nopwd = get_option(c_otp_option_nopwd) ? 'checked="checked"' : '';
 
 				$referer = admin_url('options-general.php?page=' . plugin_basename($this->main_file));
@@ -961,13 +944,10 @@ if (!class_exists('WPOneTimePassword')) {
 				<tr><th scope="row"><?php _e('I have donated to this plugin:', c_otp_text_domain); ?></th>
 				<td><input type="checkbox" name="<?php echo c_otp_option_donated; ?>" <?php echo $otp_donated; ?> /></td></tr>
 
-				<tr><th scope="row"><?php _e('I don\'t want to support this plugin with the Sustainable Plugins Sponsorship Network:', c_otp_text_domain); ?></th>
-				<td><input type="checkbox" name="<?php echo c_otp_option_nospsn; ?>" <?php echo $otp_nospsn; ?> /></td></tr>
-
 				</table>
 
 				<input type="hidden" name="action" value="update" />
-				<input type="hidden" name="page_options" value="<?php echo c_otp_option_strict . ',' . c_otp_option_allow . ',' . c_otp_option_httpbl . ',' . c_otp_option_bb . ',' . c_otp_option_cleanup . ',' . c_otp_option_donated . ',' . c_otp_option_nospsn . ',' . c_otp_option_nopwd; ?>" />
+				<input type="hidden" name="page_options" value="<?php echo c_otp_option_strict . ',' . c_otp_option_allow . ',' . c_otp_option_httpbl . ',' . c_otp_option_bb . ',' . c_otp_option_cleanup . ',' . c_otp_option_donated . ',' . c_otp_option_nopwd; ?>" />
 
 				<p class="submit"><input type="submit" class="button-primary" value="<?php _e('Save', c_otp_text_domain); ?>" /></p>
 				</form>
