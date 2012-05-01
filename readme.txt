@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AJSBB
 Tags: login, password, security, admin, authentication, wpmu, access
 Requires at least: 2.8
 Tested up to: 3.3
-Stable tag: 2.27
+Stable tag: 2.29
 
 One-time password system conform RFC 2289 to protect your weblog in less trustworthy environments, like internet cafés.
 
@@ -16,7 +16,7 @@ This simple to use plugin enables you to login to your WordPress weblog using pa
 
 See [Other Notes](http://wordpress.org/extend/plugins/one-time-password/other_notes/ "Other Notes") for usage instructions.
 
-**This plugin requires at least PHP 5.0.0**
+**This plugin requires at least PHP 5**
 
 Please report any issue you have with this plugin on the [support page](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/ "Marcel's weblog"), so I can at least try to fix it. If you rate this plugin low, please [let me know why](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/#respond "Marcel's weblog").
 
@@ -153,6 +153,12 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 
 = Development version =
 * You can download the development version [here](http://downloads.wordpress.org/plugin/one-time-password.zip)
+
+= 2.29 =
+* Added Romanian translation (ro\_RO) by *Alexander Ovsov*
+
+= 2.28 =
+* Removed [Sustainable Plugins Sponsorship Network](http://pluginsponsors.com/)
 
 = 2.27 =
 * Added Rusian translation (ru\_RU) by *Yurij*
@@ -384,6 +390,12 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 * Initial version
 
 == Upgrade Notice ==
+
+= 2.29 =
+Romanian translation
+
+= 2.28 =
+Compliance
 
 = 2.27 =
 Rusian translation
