@@ -153,7 +153,6 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 
 = Development version =
 * Added Lithuanian (lt\_LT) by [Host1Free](http://www.host1free.com/ "Host1Free")
-
 * You can download the development version [here](http://downloads.wordpress.org/plugin/one-time-password.zip)
 
 = 2.29 =
