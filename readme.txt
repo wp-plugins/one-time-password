@@ -20,7 +20,7 @@ See [Other Notes](http://wordpress.org/extend/plugins/one-time-password/other_no
 
 Please report any issue you have with this plugin on the [support page](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/ "Marcel's weblog"), so I can at least try to fix it. If you rate this plugin low, please [let me know why](http://blog.bokhorst.biz/2200/computers-en-internet/wordpress-plugin-one-time-password/#respond "Marcel's weblog").
 
-See my [other plugins](http://wordpress.org/extend/plugins/profile/m66b "Marcel Bokhorst")
+See my [other plugins](http://wordpress.org/extend/plugins/profile/m66b "Marcel Bokhorst").
 
 == Installation ==
 
@@ -152,7 +152,7 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 == Changelog ==
 
 = Development version =
-* Bugfix: PHP warning
+* Bugfix: PHP warning WP 3.5
 * You can download the development version [here](http://downloads.wordpress.org/plugin/one-time-password.zip)
 
 = 2.31 =
