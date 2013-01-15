@@ -152,7 +152,7 @@ You can write a comment on the [support page](http://blog.bokhorst.biz/2200/comp
 == Changelog ==
 
 = Development version =
-* Bugfix: PHP warning
+* Bugfix: PHP warning WP 3.5
 * You can download the development version [here](http://downloads.wordpress.org/plugin/one-time-password.zip)
 
 = 2.31 =
