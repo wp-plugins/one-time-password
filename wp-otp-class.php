@@ -2,7 +2,7 @@
 
 /*
 	Support class One-Time Password WordPress Plugin
-	Copyright (c) 2009, 2010, 2011 by Marcel Bokhorst
+	Copyright (c) 2009-2013 by Marcel Bokhorst
 */
 
 // Include OTP library
@@ -1019,7 +1019,7 @@ if (!class_exists('WPOneTimePassword')) {
 					$user_name = sanitize_user($_GET[c_otp_user_arg]);
 					global $wpdb;
 					$sql = "SELECT * FROM " . $wpdb->users . " WHERE user_login='" . $user_name . "'";
-					$user = $wpdb->get_row($wpdb->prepare($sql));
+					$user = $wpdb->get_row($sql);
 					echo ($user == null ? '' : WPOneTimePassword::otp_get_challenge($user));
 					exit();
 				}
