@@ -2,7 +2,7 @@
 
 /*
 	Support class One-Time Password WordPress Plugin
-	Copyright (c) 2009-2013 by Marcel Bokhorst
+	Copyright (c) 2009 - 2013 by Marcel Bokhorst
 */
 
 // Include OTP library
